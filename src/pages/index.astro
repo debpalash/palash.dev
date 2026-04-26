@@ -11,16 +11,11 @@ import Grid from '../flux/components/Grid.astro';
 import Divider from '../flux/components/Divider.astro';
 import ThemeToggle from '../flux/react/ThemeToggle';
 import LiquidDrip from '../flux/react/LiquidDrip';
+import Projects3D from '../flux/react/Projects3D';
 import { getCollection } from 'astro:content';
 
 const allProducts = (await getCollection('products'))
   .sort((a, b) => a.data.order - b.data.order);
-
-const statusVariant: Record<string, 'success' | 'info' | 'warning'> = {
-  live: 'success',
-  beta: 'info',
-  'coming-soon': 'warning',
-};
 ---
 
 <FluxLayout title="Home">
@@ -28,76 +23,12 @@ const statusVariant: Record<string, 'success' | 'info' | 'warning'> = {
     <ThemeToggle client:load slot="actions" />
   </Nav>
 
-  <!-- ═══ PROJECTS REEL ═══ -->
-  <Section grain id="projects" style="padding-top:var(--spacing-12);padding-bottom:var(--spacing-12);">
+  <!-- ═══ PROJECTS 3D REEL ═══ -->
+  <Section grain id="projects" style="padding-top:var(--spacing-8);padding-bottom:var(--spacing-8);">
     <Heading level={2} marker="01">Projects</Heading>
     
-    <div class="movie-reel">
-      {allProducts.map((p) => (
-        <div class="reel-item">
-          <Card glow href={`/projects/${p.id}`} class="reel-card">
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--spacing-4);">
-              <div style="display:flex;align-items:center;gap:var(--spacing-3);">
-                <div style="font-size:2rem;background:var(--flux-bg-base);width:48px;height:48px;border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;border:1px solid var(--flux-glass-border);">
-                  {p.data.icon}
-                </div>
-                <h3 style="font-family:var(--font-display);font-size:var(--text-lg);font-weight:700;color:var(--flux-fg-primary);margin:0;">{p.data.name}</h3>
-              </div>
-            </div>
-            
-            <p style="font-size:var(--text-base);color:var(--flux-fg-secondary);margin-bottom:var(--spacing-4);flex-grow:1;line-height:1.6;">
-              {p.data.description}
-            </p>
-            
-            <div style="display:flex;flex-wrap:wrap;gap:var(--spacing-2);margin-bottom:var(--spacing-4);">
-              {p.data.stack.map((t) => (
-                <span style="font-family:var(--font-mono);font-size:var(--text-xs);padding:var(--spacing-1) var(--spacing-2);border-radius:var(--radius-sm);background:var(--flux-bg-base);color:var(--flux-fg-muted);border:1px solid var(--flux-glass-border);">{t}</span>
-              ))}
-            </div>
-
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-top:auto;padding-top:var(--spacing-4);border-top:1px solid var(--flux-glass-border);">
-               <Badge variant={statusVariant[p.data.status] || 'default'}>{p.data.status}</Badge>
-               {p.data.url && (
-                 <a href={p.data.url} target="_blank" rel="noopener" style="font-family:var(--font-mono);font-size:var(--text-sm);color:var(--flux-accent);text-decoration:none;">→ view</a>
-               )}
-            </div>
-          </Card>
-        </div>
-      ))}
-    </div>
+    <Projects3D client:only="react" projects={allProducts} />
   </Section>
-
-  <style is:global>
-    .movie-reel {
-      display: flex;
-      gap: var(--spacing-6);
-      overflow-x: auto;
-      padding-bottom: var(--spacing-8);
-      padding-top: var(--spacing-2);
-      scroll-snap-type: x mandatory;
-      scrollbar-width: none; /* Firefox */
-      -ms-overflow-style: none; /* IE/Edge */
-    }
-    .movie-reel::-webkit-scrollbar {
-      display: none; /* Chrome/Safari */
-    }
-    .reel-item {
-      flex: 0 0 380px;
-      scroll-snap-align: start;
-      display: flex;
-    }
-    .reel-card {
-      width: 100%;
-      height: 420px; /* Force uniform height */
-      display: flex;
-      flex-direction: column;
-    }
-    @media (max-width: 768px) {
-      .reel-item {
-        flex: 0 0 85vw;
-      }
-    }
-  </style>
 
   <FluxFooter>
     <LiquidDrip client:visible dripCount={1} dripDistance={14} dripColor="var(--flux-fg-faint)">
