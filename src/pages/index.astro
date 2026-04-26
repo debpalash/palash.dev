@@ -8,14 +8,18 @@ import Button from '../flux/components/Button.astro';
 import Card from '../flux/components/Card.astro';
 import Badge from '../flux/components/Badge.astro';
 import Grid from '../flux/components/Grid.astro';
-import Divider from '../flux/components/Divider.astro';
-import ThemeToggle from '../flux/react/ThemeToggle';
-import LiquidDrip from '../flux/react/LiquidDrip';
-import ProjectCard3D from '../flux/react/ProjectCard3D';
+import Card from '../flux/components/Card.astro';
+import Badge from '../flux/components/Badge.astro';
 import { getCollection } from 'astro:content';
 
 const allProducts = (await getCollection('products'))
   .sort((a, b) => a.data.order - b.data.order);
+
+const statusVariant: Record<string, 'success' | 'info' | 'warning'> = {
+  live: 'success',
+  beta: 'info',
+  'coming-soon': 'warning',
+};
 ---
 
 <FluxLayout title="Home">
@@ -23,16 +27,51 @@ const allProducts = (await getCollection('products'))
     <ThemeToggle client:load slot="actions" />
   </Nav>
 
-  <!-- ═══ PROJECTS 3D CARDS ═══ -->
   <Section id="projects" style="padding-top:var(--spacing-16);padding-bottom:var(--spacing-16);">
     <div style="margin-bottom:var(--spacing-12);">
       <Heading level={2} marker="01">Projects</Heading>
     </div>
     
     <div style="display:flex;flex-direction:column;gap:var(--spacing-12);">
-      {allProducts.map((p, index) => (
-        <ProjectCard3D client:only="react" project={p} index={index} />
-      ))}
+      {allProducts.map((p, i) => {
+        const isEven = i % 2 === 0;
+        return (
+          <Card glow href={`/projects/${p.id}`} style={`display:flex;flex-direction:${isEven ? 'row' : 'row-reverse'};gap:var(--spacing-8);align-items:center;padding:var(--spacing-8);`}>
+            {/* Logo Side */}
+            <div style="flex:0 0 250px;display:flex;justify-content:center;align-items:center;padding:var(--spacing-8);background:var(--flux-bg-base);border-radius:var(--radius-lg);border:1px solid var(--flux-glass-border);height:250px;">
+               {p.data.logoUrl ? (
+                 <img src={p.data.logoUrl} alt={p.data.name} style="max-width:120px;max-height:120px;object-fit:contain;filter:drop-shadow(0 4px 12px rgba(0,0,0,0.5));" />
+               ) : (
+                 <div style="font-size:5rem;">{p.data.icon}</div>
+               )}
+            </div>
+
+            {/* Content Side */}
+            <div style="flex:1;display:flex;flex-direction:column;gap:var(--spacing-4);">
+              <div style="display:flex;align-items:center;justify-content:space-between;">
+                <h3 style="font-family:var(--font-display);font-size:var(--text-3xl);font-weight:800;color:var(--flux-fg-primary);margin:0;">{p.data.name}</h3>
+                <Badge variant={statusVariant[p.data.status] || 'default'}>{p.data.status}</Badge>
+              </div>
+              
+              <p style="font-size:var(--text-lg);color:var(--flux-fg-secondary);line-height:1.6;margin:0;">
+                {p.data.description}
+              </p>
+              
+              <div style="display:flex;flex-wrap:wrap;gap:var(--spacing-2);margin-top:var(--spacing-2);">
+                {p.data.stack.map((t) => (
+                  <span style="font-family:var(--font-mono);font-size:var(--text-xs);padding:var(--spacing-1) var(--spacing-2);border-radius:var(--radius-sm);background:var(--flux-bg-base);color:var(--flux-fg-muted);border:1px solid var(--flux-glass-border);">{t}</span>
+                ))}
+              </div>
+
+              {p.data.url && (
+                <div style="margin-top:var(--spacing-4);font-family:var(--font-mono);font-size:var(--text-sm);color:var(--flux-accent);">
+                  → View Project
+                </div>
+              )}
+            </div>
+          </Card>
+        );
+      })}
     </div>
   </Section>
 
