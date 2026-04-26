@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { Environment, PresentationControls, Float, MeshDistortMaterial, Sphere } from '@react-three/drei';
+import { Environment, PresentationControls, Float, MeshDistortMaterial, Sphere, Html } from '@react-three/drei';
 import * as THREE from 'three';
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 
