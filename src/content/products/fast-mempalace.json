@@ -12,5 +12,9 @@
     "AI Memory"
   ],
   "order": 2,
-  "logoUrl": "https://raw.githubusercontent.com/debpalash/fast-mempalace/main/assets/logo.svg"
+  "logoUrl": "https://raw.githubusercontent.com/debpalash/fast-mempalace/main/assets/logo.svg",
+  "screenshots": [
+    "https://picsum.photos/seed/mem1/800/600",
+    "https://picsum.photos/seed/mem2/800/600"
+  ]
 }

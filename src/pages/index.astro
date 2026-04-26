@@ -11,6 +11,7 @@ import Grid from '../flux/components/Grid.astro';
 import Divider from '../flux/components/Divider.astro';
 import ThemeToggle from '../flux/react/ThemeToggle';
 import LiquidDrip from '../flux/react/LiquidDrip';
+import HoverSlider from '../flux/react/HoverSlider';
 import { getCollection } from 'astro:content';
 
 const allProducts = (await getCollection('products'))
@@ -35,11 +36,13 @@ const statusVariant: Record<string, 'success' | 'info' | 'warning'> = {
           <a href={`/projects/${p.id}`} class="project-card-premium">
             {/* Logo Side */}
             <div class="project-logo-container">
-               {p.data.logoUrl ? (
-                 <img src={p.data.logoUrl} alt={p.data.name} class="project-logo-image" style="max-width:140px;max-height:140px;object-fit:contain;" />
-               ) : (
-                 <div class="project-logo-image" style="font-size:6rem;">{p.data.icon}</div>
-               )}
+               <HoverSlider 
+                 client:visible
+                 logoUrl={p.data.logoUrl}
+                 icon={p.data.icon}
+                 screenshots={p.data.screenshots}
+                 alt={p.data.name}
+               />
             </div>
 
             {/* Content Side */}
@@ -120,10 +123,10 @@ const statusVariant: Record<string, 'success' | 'info' | 'warning'> = {
     background: radial-gradient(circle at 50% 0%, rgba(255,255,255,0.08) 0%, transparent 60%);
     pointer-events: none;
   }
-  .project-card-premium:hover .project-logo-image {
+  :global(.project-card-premium:hover .project-logo-image) {
     transform: scale(1.1);
   }
-  .project-logo-image {
+  :global(.project-logo-image) {
     transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
     filter: drop-shadow(0 15px 25px rgba(0,0,0,0.6));
   }
