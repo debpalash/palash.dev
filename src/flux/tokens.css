@@ -74,51 +74,51 @@
 }
 
 /* ============================================================
-   DARK THEME — LIQUID GLASS
+   DARK THEME — MONOCHROME
    ============================================================ */
 [data-theme="dark"] {
   color-scheme: dark;
 
   /* Backgrounds */
-  --flux-bg-void: #050508;
-  --flux-bg-deep: #0a0b10;
-  --flux-bg-base: #111320;
-  --flux-bg-raised: #1a1d30;
-  --flux-bg-elevated: #232740;
+  --flux-bg-void: #0a0a0a;
+  --flux-bg-deep: #0f0f0f;
+  --flux-bg-base: #151515;
+  --flux-bg-raised: #1c1c1c;
+  --flux-bg-elevated: #242424;
 
   /* Glass surfaces */
-  --flux-glass-bg: rgba(14, 16, 28, 0.55);
-  --flux-glass-border: rgba(255, 255, 255, 0.06);
+  --flux-glass-bg: rgba(15, 15, 15, 0.55);
+  --flux-glass-border: rgba(255, 255, 255, 0.08);
   --flux-glass-sheen: rgba(255, 255, 255, 0.03);
   --flux-glass-blur: 16px;
   --flux-glass-blur-heavy: 32px;
 
   /* Foreground */
-  --flux-fg-primary: #e8eaf0;
-  --flux-fg-secondary: #9b9db5;
-  --flux-fg-muted: #6b6d85;
-  --flux-fg-faint: #4a4c60;
+  --flux-fg-primary: #e8e8e8;
+  --flux-fg-secondary: #a0a0a0;
+  --flux-fg-muted: #707070;
+  --flux-fg-faint: #484848;
 
-  /* Accents — liquid refraction spectrum */
-  --flux-accent: #7c8bff;
-  --flux-accent-glow: rgba(124, 139, 255, 0.25);
-  --flux-accent-hot: #a78bfa;
-  --flux-accent-cool: #38bdf8;
-  --flux-accent-warm: #fb923c;
-  --flux-accent-danger: #f87171;
-  --flux-accent-success: #4ade80;
+  /* Accents — monochrome */
+  --flux-accent: #d0d0d0;
+  --flux-accent-glow: rgba(200, 200, 200, 0.15);
+  --flux-accent-hot: #b8b8b8;
+  --flux-accent-cool: #c0c0c0;
+  --flux-accent-warm: #a0a0a0;
+  --flux-accent-danger: #888888;
+  --flux-accent-success: #909090;
 
-  /* Liquid glow gradient */
-  --flux-glow-from: #3b82f6;
-  --flux-glow-to: #8b5cf6;
+  /* Glow */
+  --flux-glow-from: rgba(255, 255, 255, 0.06);
+  --flux-glow-to: rgba(255, 255, 255, 0.02);
 
   /* Rain */
-  --flux-rain-color: rgba(180, 200, 255, 0.15);
+  --flux-rain-color: rgba(200, 200, 200, 0.10);
 
   /* Surfaces */
   --flux-surface-bg: var(--flux-glass-bg);
   --flux-surface-border: var(--flux-glass-border);
-  --flux-surface-hover-border: rgba(255, 255, 255, 0.12);
+  --flux-surface-hover-border: rgba(255, 255, 255, 0.14);
 
   /* Body */
   --flux-body-bg: var(--flux-bg-void);
@@ -126,51 +126,51 @@
 }
 
 /* ============================================================
-   LIGHT THEME — DESERT TERMINAL
+   LIGHT THEME — MONOCHROME
    ============================================================ */
 [data-theme="light"] {
   color-scheme: light;
 
-  /* Backgrounds — cool neutral */
-  --flux-bg-void: #f5f6f8;
-  --flux-bg-deep: #eceef2;
-  --flux-bg-base: #e4e7ec;
-  --flux-bg-raised: #dde0e7;
-  --flux-bg-elevated: #d1d5de;
+  /* Backgrounds — warm white */
+  --flux-bg-void: #f7f7f7;
+  --flux-bg-deep: #efefef;
+  --flux-bg-base: #e6e6e6;
+  --flux-bg-raised: #dedede;
+  --flux-bg-elevated: #d2d2d2;
 
-  /* Subtle glass in light */
-  --flux-glass-bg: rgba(245, 246, 248, 0.85);
-  --flux-glass-border: rgba(45, 50, 65, 0.10);
+  /* Glass */
+  --flux-glass-bg: rgba(245, 245, 245, 0.85);
+  --flux-glass-border: rgba(0, 0, 0, 0.08);
   --flux-glass-sheen: transparent;
   --flux-glass-blur: 0px;
   --flux-glass-blur-heavy: 0px;
 
-  /* Foreground — cool ink */
-  --flux-fg-primary: #1e2130;
-  --flux-fg-secondary: #3a3f52;
-  --flux-fg-muted: #5c6178;
-  --flux-fg-faint: #8990a5;
+  /* Foreground */
+  --flux-fg-primary: #1a1a1a;
+  --flux-fg-secondary: #3d3d3d;
+  --flux-fg-muted: #666666;
+  --flux-fg-faint: #999999;
 
-  /* Accents — cool blue-indigo */
-  --flux-accent: #4f5fd5;
-  --flux-accent-glow: rgba(79, 95, 213, 0.12);
-  --flux-accent-hot: #6c5ce7;
-  --flux-accent-cool: #3b82f6;
-  --flux-accent-warm: #f59e0b;
-  --flux-accent-danger: #ef4444;
-  --flux-accent-success: #22c55e;
+  /* Accents — monochrome */
+  --flux-accent: #333333;
+  --flux-accent-glow: rgba(0, 0, 0, 0.06);
+  --flux-accent-hot: #444444;
+  --flux-accent-cool: #555555;
+  --flux-accent-warm: #666666;
+  --flux-accent-danger: #555555;
+  --flux-accent-success: #555555;
 
-  /* No glow in light */
+  /* No glow */
   --flux-glow-from: transparent;
   --flux-glow-to: transparent;
 
-  /* Rain off, grain on */
+  /* Rain off */
   --flux-rain-color: transparent;
 
   /* Surfaces */
   --flux-surface-bg: var(--flux-bg-raised);
   --flux-surface-border: var(--flux-glass-border);
-  --flux-surface-hover-border: rgba(45, 50, 65, 0.20);
+  --flux-surface-hover-border: rgba(0, 0, 0, 0.15);
 
   /* Body */
   --flux-body-bg: var(--flux-bg-void);
