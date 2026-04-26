@@ -21,7 +21,13 @@ export async function getStaticPaths() {
 const { product } = Astro.props;
 const { name, tagline, description, url, status, stack } = product.data;
 
-// Extract repo path from GitHub URL and fetch README
+import { unified } from 'unified';
+import remarkParse from 'remark-parse';
+import remarkGfm from 'remark-gfm';
+import remarkRehype from 'remark-rehype';
+import rehypeRaw from 'rehype-raw';
+import rehypeStringify from 'rehype-stringify';
+
 let readmeHtml = '';
 let readmeError = '';
 
@@ -39,35 +45,25 @@ if (url && url.includes('github.com')) {
     if (res.ok) {
       const md = await res.text();
 
-      // Use GitHub's Markdown API to render HTML
-      const renderRes = await fetch('https://api.github.com/markdown', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/vnd.github+json',
-          'User-Agent': 'palash.dev',
-        },
-        body: JSON.stringify({
-          text: md,
-          mode: 'gfm',
-          context: repoPath,
-        }),
-      });
+      // Parse markdown locally
+      const processor = unified()
+        .use(remarkParse)
+        .use(remarkGfm)
+        .use(remarkRehype, { allowDangerousHtml: true })
+        .use(rehypeRaw)
+        .use(rehypeStringify);
 
-      if (renderRes.ok) {
-        readmeHtml = await renderRes.text();
-        // Rewrite relative image src to absolute GitHub raw URLs
-        const rawBase = `https://raw.githubusercontent.com/${repoPath}/main/`;
-        const ghBase = `https://github.com/${repoPath}/blob/main/`;
-        readmeHtml = readmeHtml
-          // Fix relative src="path/to/img.png"
-          .replace(/src="(?!https?:\/\/|\/\/|data:)([^"]+)"/g, `src="${rawBase}$1"`)
-          // Fix relative href="path/to/file" (non-anchor, non-absolute)
-          .replace(/href="(?!https?:\/\/|\/\/|#|mailto:)([^"]+)"/g, `href="${ghBase}$1"`);
-      } else {
-        // Fallback: serve raw markdown in a <pre> block
-        readmeHtml = `<pre style="white-space:pre-wrap;word-break:break-word;">${md.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</pre>`;
-      }
+      const vfile = await processor.process(md);
+      readmeHtml = String(vfile);
+
+      // Rewrite relative image src to absolute GitHub raw URLs
+      const rawBase = `https://raw.githubusercontent.com/${repoPath}/main/`;
+      const ghBase = `https://github.com/${repoPath}/blob/main/`;
+      readmeHtml = readmeHtml
+        // Fix relative src="path/to/img.png"
+        .replace(/src="(?!https?:\/\/|\/\/|data:)([^"]+)"/g, `src="${rawBase}$1"`)
+        // Fix relative href="path/to/file" (non-anchor, non-absolute)
+        .replace(/href="(?!https?:\/\/|\/\/|#|mailto:)([^"]+)"/g, `href="${ghBase}$1"`);
     } else {
       readmeError = 'README not found in repository.';
     }
