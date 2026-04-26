@@ -1,0 +1,10 @@
+{
+  "name": "fast-mempalace",
+  "tagline": "200x faster AI memory system in Zig",
+  "description": "A blazing-fast AI memory system — a 200x faster Zig port of mempalace. Designed for LLM context management, MCP integration, and high-performance AI agent memory.",
+  "url": "https://github.com/debpalash/fast-mempalace",
+  "icon": "🧠",
+  "status": "live",
+  "stack": ["Zig", "LLM", "MCP", "AI Memory"],
+  "order": 2
+}

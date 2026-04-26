@@ -1,0 +1,22 @@
+---
+import Waveform from '../svg/Waveform.astro';
+
+interface Props {
+  variant?: 'waveform' | 'ascii' | 'ascii-dots' | 'ascii-wave' | 'ascii-circuit' | 'line';
+}
+const { variant = 'line' } = Astro.props;
+---
+
+{variant === 'waveform' ? (
+  <Waveform thin />
+) : variant === 'ascii' ? (
+  <div class="flux-ascii-hr" role="separator"></div>
+) : variant === 'ascii-dots' ? (
+  <div class="flux-ascii-hr flux-ascii-hr-dots" role="separator"></div>
+) : variant === 'ascii-wave' ? (
+  <div class="flux-ascii-hr flux-ascii-hr-wave" role="separator"></div>
+) : variant === 'ascii-circuit' ? (
+  <div class="flux-ascii-hr flux-ascii-hr-circuit" role="separator"></div>
+) : (
+  <hr style={`border:none;height:1px;background:var(--flux-glass-border);margin:var(--spacing-8) 0;`} />
+)}

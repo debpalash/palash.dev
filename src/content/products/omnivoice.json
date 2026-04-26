@@ -1,0 +1,10 @@
+{
+  "name": "OmniVoice Studio",
+  "tagline": "Cinematic audio dubbing, cloning & voice generation",
+  "description": "A cinematic audio dubbing, cloning and voice generation studio. Enterprise-grade processing with AI-powered voice synthesis, 600+ language support, and self-hosted deployment.",
+  "url": "https://github.com/debpalash/OmniVoice-Studio",
+  "icon": "🎙️",
+  "status": "live",
+  "stack": ["Python", "Tauri", "CUDA", "Docker", "MLX", "Whisper"],
+  "order": 1
+}

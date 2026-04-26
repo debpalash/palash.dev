@@ -1,0 +1,133 @@
+---
+import FluxLayout from '../../flux/components/FluxLayout.astro';
+import Nav from '../../flux/components/Nav.astro';
+import FluxFooter from '../../flux/components/FluxFooter.astro';
+import Section from '../../flux/components/Section.astro';
+import Heading from '../../flux/components/Heading.astro';
+import Badge from '../../flux/components/Badge.astro';
+import Prose from '../../flux/components/Prose.astro';
+import Button from '../../flux/components/Button.astro';
+import ThemeToggle from '../../flux/react/ThemeToggle';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const products = await getCollection('products');
+  return products.map((product) => ({
+    params: { slug: product.id },
+    props: { product },
+  }));
+}
+
+const { product } = Astro.props;
+const { name, tagline, description, url, status, stack } = product.data;
+
+// Extract repo path from GitHub URL and fetch README
+let readmeHtml = '';
+let readmeError = '';
+
+if (url && url.includes('github.com')) {
+  const repoPath = url.replace('https://github.com/', '');
+  const rawUrl = `https://raw.githubusercontent.com/${repoPath}/main/README.md`;
+
+  try {
+    let res = await fetch(rawUrl);
+    if (!res.ok) {
+      const masterUrl = `https://raw.githubusercontent.com/${repoPath}/master/README.md`;
+      res = await fetch(masterUrl);
+    }
+
+    if (res.ok) {
+      const md = await res.text();
+
+      // Use GitHub's Markdown API to render HTML
+      const renderRes = await fetch('https://api.github.com/markdown', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/vnd.github+json',
+          'User-Agent': 'palash.dev',
+        },
+        body: JSON.stringify({
+          text: md,
+          mode: 'gfm',
+          context: repoPath,
+        }),
+      });
+
+      if (renderRes.ok) {
+        readmeHtml = await renderRes.text();
+        // Rewrite relative image src to absolute GitHub raw URLs
+        const rawBase = `https://raw.githubusercontent.com/${repoPath}/main/`;
+        const ghBase = `https://github.com/${repoPath}/blob/main/`;
+        readmeHtml = readmeHtml
+          // Fix relative src="path/to/img.png"
+          .replace(/src="(?!https?:\/\/|\/\/|data:)([^"]+)"/g, `src="${rawBase}$1"`)
+          // Fix relative href="path/to/file" (non-anchor, non-absolute)
+          .replace(/href="(?!https?:\/\/|\/\/|#|mailto:)([^"]+)"/g, `href="${ghBase}$1"`);
+      } else {
+        // Fallback: serve raw markdown in a <pre> block
+        readmeHtml = `<pre style="white-space:pre-wrap;word-break:break-word;">${md.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</pre>`;
+      }
+    } else {
+      readmeError = 'README not found in repository.';
+    }
+  } catch (e) {
+    readmeError = `Failed to fetch README: ${e}`;
+  }
+}
+
+const statusVariant: Record<string, 'success' | 'info' | 'warning'> = {
+  live: 'success',
+  beta: 'info',
+  'coming-soon': 'warning',
+};
+---
+
+<FluxLayout title={name}>
+  <Nav>
+    <ThemeToggle client:load slot="actions" />
+  </Nav>
+
+  <Section>
+    <div style="display:flex;align-items:center;gap:var(--spacing-3);margin-bottom:var(--spacing-2);">
+      <a href="/projects" style="font-family:var(--font-mono);font-size:var(--text-sm);color:var(--flux-fg-muted);text-decoration:none;">← Projects</a>
+    </div>
+
+    <div style="display:flex;align-items:center;gap:var(--spacing-4);margin-bottom:var(--spacing-2);">
+      <Heading level={1} marker="▸">{name}</Heading>
+      <Badge variant={statusVariant[status] || 'default'}>{status}</Badge>
+    </div>
+
+    <p style="color:var(--flux-fg-secondary);font-size:var(--text-lg);max-width:42rem;margin-bottom:var(--spacing-4);">{tagline}</p>
+
+    <div style="display:flex;flex-wrap:wrap;gap:var(--spacing-2);margin-bottom:var(--spacing-6);">
+      {stack.map((t) => (
+        <span style="font-family:var(--font-mono);font-size:var(--text-xs);padding:var(--spacing-1) var(--spacing-3);border-radius:var(--radius-md);background:var(--flux-glass-bg);color:var(--flux-fg-muted);border:1px solid var(--flux-glass-border);">{t}</span>
+      ))}
+    </div>
+
+    {url && (
+      <div style="margin-bottom:var(--spacing-8);">
+        <Button href={url} size="sm">View on GitHub ↗</Button>
+      </div>
+    )}
+  </Section>
+
+  {readmeHtml && (
+    <Section>
+      <div style="border-top:1px solid var(--flux-glass-border);padding-top:var(--spacing-8);">
+        <Prose>
+          <Fragment set:html={readmeHtml} />
+        </Prose>
+      </div>
+    </Section>
+  )}
+
+  {readmeError && (
+    <Section>
+      <p style="color:var(--flux-fg-muted);font-family:var(--font-mono);font-size:var(--text-sm);">{readmeError}</p>
+    </Section>
+  )}
+
+  <FluxFooter />
+</FluxLayout>

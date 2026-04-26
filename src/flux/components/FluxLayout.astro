@@ -1,0 +1,98 @@
+---
+import '../../styles/global.css';
+import { ClientRouter } from 'astro:transitions';
+import LiquidField from '../react/LiquidField';
+
+interface Props {
+  title: string;
+  description?: string;
+  ogImage?: string;
+}
+
+const {
+  title,
+  description = 'Palash — builder, engineer, maker of things that ship.',
+  ogImage = '/og-default.png',
+} = Astro.props;
+
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
+---
+
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/avatar-original.png" />
+    <link rel="apple-touch-icon" href="/avatar-original.png" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <link rel="alternate" type="application/rss+xml" title="palash.dev RSS" href="/rss.xml" />
+
+    <title>{title} | palash.dev</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalUrl} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:title" content={`${title} | palash.dev`} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImage} />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700;800&display=swap" rel="stylesheet" />
+
+    <ClientRouter />
+
+    <!-- Theme: must run in head (blocking) to prevent flash -->
+    <script is:inline>
+      (function() {
+        var t = localStorage.getItem('flux-theme');
+        if (!t) t = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', t);
+      })();
+    </script>
+  </head>
+  <body>
+    <!-- SVG filters (hidden, referenced by CSS) -->
+    <svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;overflow:hidden">
+      <defs>
+        <filter id="flux-glass-refraction">
+          <feTurbulence type="fractalNoise" baseFrequency="0.01" numOctaves="3" result="noise"/>
+          <feDisplacementMap in="SourceGraphic" in2="noise" scale="3" xChannelSelector="R" yChannelSelector="G"/>
+        </filter>
+        <filter id="flux-gooey">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur"/>
+          <feColorMatrix in="blur" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7" result="gooey"/>
+          <feComposite in="SourceGraphic" in2="gooey" operator="atop"/>
+        </filter>
+      </defs>
+    </svg>
+
+    <!-- Liquid physics engine — no DOM output, just runs the wave simulation -->
+    <LiquidField client:idle />
+
+    <slot />
+
+    <script>
+      // Carry theme across Astro view transitions
+      function applyStoredTheme() {
+        const t = localStorage.getItem('flux-theme')
+          || (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+        document.documentElement.setAttribute('data-theme', t);
+      }
+
+      // Before swap: apply theme to incoming document so it never flashes
+      document.addEventListener('astro:before-swap', (e) => {
+        const t = localStorage.getItem('flux-theme')
+          || (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+        (e as any).newDocument.documentElement.setAttribute('data-theme', t);
+      });
+
+      // After swap: ensure theme is correct
+      document.addEventListener('astro:after-swap', applyStoredTheme);
+    </script>
+  </body>
+</html>

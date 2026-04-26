@@ -1,0 +1,60 @@
+---
+import LiquidDrip from '../react/LiquidDrip';
+
+interface Props {
+  variant?: 'primary' | 'secondary' | 'ghost';
+  href?: string;
+  size?: 'sm' | 'md' | 'lg';
+  class?: string;
+  id?: string;
+  /** Disable liquid drip effect */
+  noLiquid?: boolean;
+}
+const { variant = 'primary', href, size = 'md', class: cls = '', id, noLiquid = false } = Astro.props;
+const Tag = href ? 'a' : 'button';
+
+const sizeMap = {
+  sm: 'padding:var(--spacing-1_5) var(--spacing-3);font-size:var(--text-sm);',
+  md: 'padding:var(--spacing-2) var(--spacing-5);font-size:var(--text-base);',
+  lg: 'padding:var(--spacing-3) var(--spacing-8);font-size:var(--text-md);',
+};
+
+const variantStyles = {
+  primary: `background:var(--flux-accent);color:var(--flux-bg-void);border:1px solid transparent;font-weight:600;`,
+  secondary: `background:var(--flux-glass-bg);color:var(--flux-fg-primary);border:1px solid var(--flux-glass-border);backdrop-filter:blur(8px);`,
+  ghost: `background:transparent;color:var(--flux-fg-secondary);border:1px solid transparent;`,
+};
+
+const baseStyle = `
+  display:inline-flex;align-items:center;gap:var(--spacing-2);
+  font-family:var(--font-mono);letter-spacing:-0.01em;
+  border-radius:var(--radius-lg);cursor:pointer;
+  text-decoration:none;white-space:nowrap;
+  transition:all var(--duration-normal) var(--ease-flux);
+  ${sizeMap[size]}${variantStyles[variant]}
+`.replace(/\n/g, '');
+
+/* Drip color matches the button variant */
+const dripColorMap = {
+  primary: 'var(--flux-accent)',
+  secondary: 'var(--flux-fg-muted)',
+  ghost: 'var(--flux-fg-faint)',
+};
+---
+
+{noLiquid ? (
+  <Tag href={href} style={baseStyle} class={`flux-liquid ${cls}`} id={id}>
+    <slot />
+  </Tag>
+) : (
+  <LiquidDrip
+    client:visible
+    dripColor={dripColorMap[variant]}
+    dripCount={4}
+    dripDistance={32}
+  >
+    <Tag href={href} style={baseStyle} class={`flux-liquid ${cls}`} id={id}>
+      <slot />
+    </Tag>
+  </LiquidDrip>
+)}

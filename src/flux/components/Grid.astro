@@ -1,0 +1,22 @@
+---
+interface Props {
+  cols?: number;
+  gap?: string;
+  class?: string;
+}
+const { cols = 3, gap = 'var(--spacing-6)', class: cls = '' } = Astro.props;
+const style = `display:grid;grid-template-columns:repeat(${cols},1fr);gap:${gap};`;
+---
+
+<div style={style} class={`flux-grid ${cls}`}>
+  <slot />
+</div>
+
+<style>
+  @media (max-width: 768px) {
+    .flux-grid { grid-template-columns: 1fr !important; }
+  }
+  @media (min-width: 769px) and (max-width: 1024px) {
+    .flux-grid { grid-template-columns: repeat(2, 1fr) !important; }
+  }
+</style>

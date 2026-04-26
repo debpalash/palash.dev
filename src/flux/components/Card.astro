@@ -1,0 +1,34 @@
+---
+import LiquidDrip from '../react/LiquidDrip';
+
+interface Props {
+  glow?: boolean;
+  class?: string;
+  href?: string;
+  /** Disable liquid physics on this card */
+  noLiquid?: boolean;
+}
+const { glow = false, class: cls = '', href, noLiquid = false } = Astro.props;
+const Tag = href ? 'a' : 'div';
+const classes = `flux-glass flux-liquid flux-wet ${glow ? 'flux-glass-glow' : ''} ${cls}`.trim();
+---
+
+{noLiquid ? (
+  <Tag
+    href={href}
+    class={classes}
+    style="position:relative;display:block;padding:var(--spacing-6);overflow:hidden;"
+  >
+    <slot />
+  </Tag>
+) : (
+  <LiquidDrip client:visible dripCount={3} dripDistance={35} dripColor="var(--flux-accent)">
+    <Tag
+      href={href}
+      class={classes}
+      style="position:relative;display:block;padding:var(--spacing-6);overflow:hidden;"
+    >
+      <slot />
+    </Tag>
+  </LiquidDrip>
+)}

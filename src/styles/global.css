@@ -1,0 +1,12 @@
+@import "tailwindcss";
+@import "../flux/tokens.css";
+@import "../flux/effects/glass.css";
+@import "../flux/effects/rain.css";
+@import "../flux/effects/waveform.css";
+@import "../flux/effects/grain.css";
+@import "../flux/effects/liquid-transition.css";
+@import "../flux/effects/ascii.css";
+@import "../flux/effects/liquid-field.css";
+@import "../flux/effects/soaked.css";
+
+@plugin "@tailwindcss/typography";

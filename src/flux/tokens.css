@@ -1,0 +1,235 @@
+/* ============================================================
+   FLUX DESIGN TOKENS
+   Single source of truth for the Flux UI library.
+   Theme switching via data-theme="dark"|"light" on <html>.
+   ============================================================ */
+
+/* --- Spacing Scale (px → rem) --- */
+@theme {
+  --spacing-0: 0;
+  --spacing-0_5: 0.125rem;
+  --spacing-1: 0.25rem;
+  --spacing-1_5: 0.375rem;
+  --spacing-2: 0.5rem;
+  --spacing-3: 0.75rem;
+  --spacing-4: 1rem;
+  --spacing-5: 1.25rem;
+  --spacing-6: 1.5rem;
+  --spacing-8: 2rem;
+  --spacing-10: 2.5rem;
+  --spacing-12: 3rem;
+  --spacing-16: 4rem;
+  --spacing-20: 5rem;
+  --spacing-24: 6rem;
+  --spacing-32: 8rem;
+
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
+  --font-display: 'JetBrains Mono', ui-monospace, monospace;
+
+  --radius-none: 0;
+  --radius-sm: 2px;
+  --radius-md: 4px;
+  --radius-lg: 6px;
+  --radius-xl: 8px;
+  --radius-2xl: 12px;
+  --radius-3xl: 16px;
+  --radius-full: 9999px;
+}
+
+/* --- Easing & Duration --- */
+:root {
+  --ease-flux: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+
+  --duration-fast: 100ms;
+  --duration-normal: 200ms;
+  --duration-slow: 300ms;
+  --duration-slower: 500ms;
+  --duration-crawl: 700ms;
+  --duration-glacial: 1000ms;
+
+  /* Z-index layers */
+  --z-base: 0;
+  --z-dropdown: 10;
+  --z-sticky: 20;
+  --z-overlay: 30;
+  --z-modal: 40;
+  --z-toast: 50;
+
+  /* Type scale (minor third — 1.2) */
+  --text-xs: 0.6875rem;    /* 11px */
+  --text-sm: 0.75rem;      /* 12px */
+  --text-caption: 0.8125rem; /* 13px */
+  --text-base: 0.875rem;   /* 14px */
+  --text-md: 1rem;         /* 16px */
+  --text-lg: 1.125rem;     /* 18px */
+  --text-xl: 1.25rem;      /* 20px */
+  --text-2xl: 1.5rem;      /* 24px */
+  --text-3xl: 1.875rem;    /* 30px */
+  --text-4xl: 2.25rem;     /* 36px */
+  --text-5xl: 3rem;        /* 48px */
+  --text-6xl: 3.75rem;     /* 60px */
+}
+
+/* ============================================================
+   DARK THEME — LIQUID GLASS
+   ============================================================ */
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  /* Backgrounds */
+  --flux-bg-void: #050508;
+  --flux-bg-deep: #0a0b10;
+  --flux-bg-base: #111320;
+  --flux-bg-raised: #1a1d30;
+  --flux-bg-elevated: #232740;
+
+  /* Glass surfaces */
+  --flux-glass-bg: rgba(14, 16, 28, 0.55);
+  --flux-glass-border: rgba(255, 255, 255, 0.06);
+  --flux-glass-sheen: rgba(255, 255, 255, 0.03);
+  --flux-glass-blur: 16px;
+  --flux-glass-blur-heavy: 32px;
+
+  /* Foreground */
+  --flux-fg-primary: #e8eaf0;
+  --flux-fg-secondary: #9b9db5;
+  --flux-fg-muted: #6b6d85;
+  --flux-fg-faint: #4a4c60;
+
+  /* Accents — liquid refraction spectrum */
+  --flux-accent: #7c8bff;
+  --flux-accent-glow: rgba(124, 139, 255, 0.25);
+  --flux-accent-hot: #a78bfa;
+  --flux-accent-cool: #38bdf8;
+  --flux-accent-warm: #fb923c;
+  --flux-accent-danger: #f87171;
+  --flux-accent-success: #4ade80;
+
+  /* Liquid glow gradient */
+  --flux-glow-from: #3b82f6;
+  --flux-glow-to: #8b5cf6;
+
+  /* Rain */
+  --flux-rain-color: rgba(180, 200, 255, 0.15);
+
+  /* Surfaces */
+  --flux-surface-bg: var(--flux-glass-bg);
+  --flux-surface-border: var(--flux-glass-border);
+  --flux-surface-hover-border: rgba(255, 255, 255, 0.12);
+
+  /* Body */
+  --flux-body-bg: var(--flux-bg-void);
+  --flux-body-fg: var(--flux-fg-primary);
+}
+
+/* ============================================================
+   LIGHT THEME — DESERT TERMINAL
+   ============================================================ */
+[data-theme="light"] {
+  color-scheme: light;
+
+  /* Backgrounds — cool neutral */
+  --flux-bg-void: #f5f6f8;
+  --flux-bg-deep: #eceef2;
+  --flux-bg-base: #e4e7ec;
+  --flux-bg-raised: #dde0e7;
+  --flux-bg-elevated: #d1d5de;
+
+  /* Subtle glass in light */
+  --flux-glass-bg: rgba(245, 246, 248, 0.85);
+  --flux-glass-border: rgba(45, 50, 65, 0.10);
+  --flux-glass-sheen: transparent;
+  --flux-glass-blur: 0px;
+  --flux-glass-blur-heavy: 0px;
+
+  /* Foreground — cool ink */
+  --flux-fg-primary: #1e2130;
+  --flux-fg-secondary: #3a3f52;
+  --flux-fg-muted: #5c6178;
+  --flux-fg-faint: #8990a5;
+
+  /* Accents — cool blue-indigo */
+  --flux-accent: #4f5fd5;
+  --flux-accent-glow: rgba(79, 95, 213, 0.12);
+  --flux-accent-hot: #6c5ce7;
+  --flux-accent-cool: #3b82f6;
+  --flux-accent-warm: #f59e0b;
+  --flux-accent-danger: #ef4444;
+  --flux-accent-success: #22c55e;
+
+  /* No glow in light */
+  --flux-glow-from: transparent;
+  --flux-glow-to: transparent;
+
+  /* Rain off, grain on */
+  --flux-rain-color: transparent;
+
+  /* Surfaces */
+  --flux-surface-bg: var(--flux-bg-raised);
+  --flux-surface-border: var(--flux-glass-border);
+  --flux-surface-hover-border: rgba(45, 50, 65, 0.20);
+
+  /* Body */
+  --flux-body-bg: var(--flux-bg-void);
+  --flux-body-fg: var(--flux-fg-primary);
+}
+
+/* ============================================================
+   BASE RESETS
+   ============================================================ */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  line-height: 1.6;
+  color: var(--flux-body-fg);
+  background-color: var(--flux-body-bg);
+  min-height: 100dvh;
+  transition: background-color var(--duration-slow) var(--ease-smooth),
+              color var(--duration-slow) var(--ease-smooth);
+}
+
+::selection {
+  background-color: var(--flux-accent-glow);
+  color: var(--flux-fg-primary);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  color: var(--flux-fg-primary);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+a {
+  color: var(--flux-accent);
+  text-decoration: none;
+  transition: color var(--duration-normal) var(--ease-smooth);
+}
+
+a:hover {
+  color: var(--flux-accent-hot);
+}
+
+code, pre {
+  font-family: var(--font-mono);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--flux-bg-deep); }
+::-webkit-scrollbar-thumb { background: var(--flux-fg-faint); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--flux-fg-muted); }

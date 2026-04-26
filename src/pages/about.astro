@@ -1,0 +1,67 @@
+---
+import FluxLayout from '../flux/components/FluxLayout.astro';
+import Nav from '../flux/components/Nav.astro';
+import FluxFooter from '../flux/components/FluxFooter.astro';
+import Section from '../flux/components/Section.astro';
+import Heading from '../flux/components/Heading.astro';
+import Divider from '../flux/components/Divider.astro';
+import Card from '../flux/components/Card.astro';
+import Badge from '../flux/components/Badge.astro';
+import Grid from '../flux/components/Grid.astro';
+import ThemeToggle from '../flux/react/ThemeToggle';
+---
+
+<FluxLayout title="About">
+  <Nav>
+    <ThemeToggle client:load slot="actions" />
+  </Nav>
+
+  <Section rain>
+    <Heading level={1} marker="▸">About</Heading>
+    <p style="color:var(--flux-fg-secondary);font-size:var(--text-lg);max-width:42rem;margin-top:var(--spacing-4);line-height:1.7;">
+      Engineer, product builder, and systems thinker. I make developer tools, media platforms, and infrastructure that bridge the gap between low-level performance and high-level UX.
+    </p>
+  </Section>
+
+  <Divider variant="dots" />
+
+  <Section grain>
+    <Heading level={2} marker="01">Current Focus</Heading>
+    <Grid cols={2} gap="var(--spacing-6)">
+      <Card glow>
+        <h3 style="font-family:var(--font-display);font-size:var(--text-lg);font-weight:700;color:var(--flux-fg-primary);margin-bottom:var(--spacing-2);">OmniVoice Studio</h3>
+        <p style="color:var(--flux-fg-muted);font-size:var(--text-sm);margin-bottom:var(--spacing-4);">Cinematic audio dubbing and voice generation platform using MLX and Whisper.</p>
+        <Badge variant="success">Active</Badge>
+      </Card>
+      <Card glow>
+        <h3 style="font-family:var(--font-display);font-size:var(--text-lg);font-weight:700;color:var(--flux-fg-primary);margin-bottom:var(--spacing-2);">fast-mempalace</h3>
+        <p style="color:var(--flux-fg-muted);font-size:var(--text-sm);margin-bottom:var(--spacing-4);">High-performance AI memory system built in Zig for agentic workflows.</p>
+        <Badge variant="info">Beta</Badge>
+      </Card>
+    </Grid>
+  </Section>
+
+  <Divider variant="ascii-circuit" />
+
+  <Section>
+    <Heading level={2} marker="02">Stack</Heading>
+    <div style="display:flex;flex-wrap:wrap;gap:var(--spacing-3);margin-top:var(--spacing-6);">
+      {['TypeScript', 'Rust', 'Zig', 'Python', 'Astro', 'React', 'Tailwind v4', 'Cloudflare Workers', 'CUDA', 'Tauri'].map((tech) => (
+        <span class="flux-glass flux-liquid" style="font-family:var(--font-mono);font-size:var(--text-sm);padding:var(--spacing-2) var(--spacing-4);border-radius:var(--radius-lg);color:var(--flux-fg-primary);">
+          {tech}
+        </span>
+      ))}
+    </div>
+  </Section>
+
+  <Divider variant="ascii-circuit" />
+
+  <Section>
+    <Heading level={2} marker="03">Connect</Heading>
+    <div style="display:flex;gap:var(--spacing-4);margin-top:var(--spacing-4);">
+      <a href="https://github.com/debpalash" target="_blank" rel="noopener" class="flux-glass flux-liquid" style="display:block;padding:var(--spacing-3) var(--spacing-5);font-family:var(--font-mono);font-size:var(--text-sm);color:var(--flux-fg-primary);text-decoration:none;">↗ GitHub</a>
+    </div>
+  </Section>
+
+  <FluxFooter />
+</FluxLayout>

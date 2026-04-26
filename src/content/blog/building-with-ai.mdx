@@ -1,0 +1,65 @@
+---
+title: "Building with AI — Lessons from the Trenches"
+description: "Practical lessons from integrating AI into real products. Not the hype — the craft."
+publishDate: 2026-04-15
+tags: ["ai", "engineering", "product"]
+---
+
+# Building with AI — Lessons from the Trenches
+
+Everyone's building with AI now. But there's a difference between demoing a ChatGPT wrapper and shipping an AI-powered product that users trust.
+
+Here are some lessons from building AI features in production.
+
+## Lesson 1: Latency is a feature
+
+Users will forgive imperfect AI output. They won't forgive waiting 8 seconds for it. Every millisecond of perceived latency erodes trust.
+
+Techniques that help:
+
+- **Streaming responses** — show partial results as they generate
+- **Optimistic UI** — update the interface before the API responds
+- **Caching** — most AI queries cluster around common patterns
+- **Edge inference** — run smaller models closer to users
+
+## Lesson 2: The prompt is the product
+
+Your prompt engineering is your product logic. Treat it like code:
+
+```markdown
+# Bad: Prompt as afterthought
+"Summarize this article"
+
+# Good: Prompt as specification  
+"You are a technical editor. Summarize the following article 
+in exactly 3 bullet points. Each bullet should:
+- Start with a bold key insight
+- Be under 20 words
+- Focus on actionable takeaways, not descriptions
+
+Article: {content}"
+```
+
+Version your prompts. Test your prompts. Review your prompts in PRs.
+
+## Lesson 3: Guardrails > Guidelines
+
+Don't *ask* the model to behave. *Force* it to behave:
+
+- Structured output with JSON schemas
+- Output validation before it reaches the user
+- Fallback responses when confidence is low
+- Rate limiting to prevent abuse
+
+## Lesson 4: Show your work
+
+Users trust AI more when they can see *why* it made a decision. Add:
+
+- Confidence indicators
+- Source citations
+- "Edit this" buttons
+- Clear "AI generated" labels
+
+## The bottom line
+
+AI is a tool, not a product. The product is the *experience* you build around it. Focus on the experience, and the AI will take care of itself.

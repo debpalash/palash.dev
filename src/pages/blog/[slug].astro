@@ -1,0 +1,56 @@
+---
+import FluxLayout from '../../flux/components/FluxLayout.astro';
+import Nav from '../../flux/components/Nav.astro';
+import FluxFooter from '../../flux/components/FluxFooter.astro';
+import Prose from '../../flux/components/Prose.astro';
+import Heading from '../../flux/components/Heading.astro';
+import Divider from '../../flux/components/Divider.astro';
+import Button from '../../flux/components/Button.astro';
+import ThemeToggle from '../../flux/react/ThemeToggle';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog', ({ data }) => !data.draft);
+  return posts.map((post) => ({
+    params: { slug: post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+
+function formatDate(date: Date) {
+  return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+}
+---
+
+<FluxLayout title={post.data.title} description={post.data.description}>
+  <Nav>
+    <ThemeToggle client:load slot="actions" />
+  </Nav>
+
+  <article style="max-width:48rem;margin:0 auto;padding:var(--spacing-16) var(--spacing-6);">
+    <header style="margin-bottom:var(--spacing-10);">
+      <div style="display:flex;gap:var(--spacing-2);margin-bottom:var(--spacing-4);">
+        {post.data.tags.map((tag) => (
+          <a href={`/blog?tag=${tag}`} style="font-family:var(--font-mono);font-size:var(--text-xs);text-transform:uppercase;letter-spacing:0.05em;color:var(--flux-accent);text-decoration:none;">{tag}</a>
+        ))}
+      </div>
+      <Heading level={1}>{post.data.title}</Heading>
+      <time style="display:block;margin-top:var(--spacing-3);font-family:var(--font-mono);font-size:var(--text-sm);color:var(--flux-fg-muted);">{formatDate(post.data.publishDate)}</time>
+    </header>
+
+    <Prose>
+      <Content />
+    </Prose>
+
+    <Divider variant="ascii" />
+
+    <footer style="margin-top:var(--spacing-4);">
+      <Button href="/blog" variant="ghost" size="sm">← all posts</Button>
+    </footer>
+  </article>
+
+  <FluxFooter />
+</FluxLayout>

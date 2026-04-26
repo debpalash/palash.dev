@@ -1,0 +1,28 @@
+---
+import Waveform from '../svg/Waveform.astro';
+
+interface Props {
+  rain?: boolean;
+  grain?: boolean;
+  waveform?: boolean;
+  class?: string;
+  id?: string;
+}
+const { rain = false, grain = false, waveform = false, class: cls = '', id } = Astro.props;
+
+const classes = [
+  'flux-section',
+  rain && 'flux-rain',
+  grain && 'flux-grain',
+  cls,
+].filter(Boolean).join(' ');
+---
+
+<section class={classes} id={id} style="position:relative;padding:var(--spacing-8) var(--spacing-6);max-width:72rem;margin:0 auto;">
+  <slot />
+  {waveform && (
+    <div style="position:absolute;bottom:0;left:0;right:0;z-index:-1;opacity:0.3;">
+      <Waveform />
+    </div>
+  )}
+</section>

@@ -1,0 +1,64 @@
+---
+title: "On Shipping Fast Without Cutting Corners"
+description: "Speed isn't the opposite of quality. Here's how I think about velocity, iteration, and knowing when good enough is good enough."
+publishDate: 2026-04-20
+tags: ["engineering", "velocity", "product"]
+---
+
+# On Shipping Fast Without Cutting Corners
+
+There's a persistent myth in software: you can have it fast, or you can have it right. Pick one.
+
+I disagree. The best engineers I've worked with are both fast *and* precise. The trick isn't choosing between speed and quality — it's understanding which quality dimensions matter *right now*.
+
+## The Velocity Framework
+
+I think about shipping speed across three axes:
+
+### 1. Decision Speed
+
+The fastest code is the code you don't deliberate on forever. Most technical decisions are reversible. The ones that aren't — data models, auth architecture, public APIs — deserve deliberation. Everything else? Make a call and move.
+
+### 2. Iteration Cycles
+
+Short feedback loops compound. If your build takes 30 seconds, you iterate differently than if it takes 5 minutes. Invest in:
+
+- **Hot reload** that actually works
+- **Type safety** that catches errors before runtime
+- **Tests** that run in under a second
+- **Preview deployments** for every PR
+
+### 3. Scope Discipline
+
+The hardest skill in product engineering isn't coding — it's scoping. A feature that ships in 2 days and solves 80% of the problem beats a feature that ships in 2 weeks and solves 95%.
+
+```typescript
+// The 80% solution that ships today
+function formatDate(date: Date): string {
+  return date.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long', 
+    day: 'numeric',
+  });
+}
+
+// vs. The 95% solution that ships... eventually
+// Supports 47 locales, 12 calendar systems,
+// relative time, time zones, and a partridge
+// in a pear tree
+```
+
+## When to slow down
+
+Not everything should be fast. Slow down for:
+
+- **Security decisions** — auth, encryption, access control
+- **Data migrations** — there's no "undo" for production data
+- **API contracts** — your consumers will build on your mistakes
+- **Hiring** — a wrong hire costs more than a delayed hire
+
+## The meta-skill
+
+The real skill isn't being fast. It's knowing your speed. Understanding what you can ship in a day, a week, a sprint — and being honest about it.
+
+Ship more. Ship faster. But ship *intentionally*.

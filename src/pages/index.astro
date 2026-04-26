@@ -1,0 +1,126 @@
+---
+import FluxLayout from '../flux/components/FluxLayout.astro';
+import Nav from '../flux/components/Nav.astro';
+import FluxFooter from '../flux/components/FluxFooter.astro';
+import Section from '../flux/components/Section.astro';
+import Heading from '../flux/components/Heading.astro';
+import Button from '../flux/components/Button.astro';
+import Card from '../flux/components/Card.astro';
+import Badge from '../flux/components/Badge.astro';
+import Grid from '../flux/components/Grid.astro';
+import Divider from '../flux/components/Divider.astro';
+import ThemeToggle from '../flux/react/ThemeToggle';
+import LiquidDrip from '../flux/react/LiquidDrip';
+import { getCollection } from 'astro:content';
+
+const allProducts = (await getCollection('products'))
+  .sort((a, b) => a.data.order - b.data.order);
+
+const statusVariant: Record<string, 'success' | 'info' | 'warning'> = {
+  live: 'success',
+  beta: 'info',
+  'coming-soon': 'warning',
+};
+---
+
+<FluxLayout title="Home">
+  <Nav>
+    <ThemeToggle client:load slot="actions" />
+  </Nav>
+
+  <!-- ═══ HERO ═══ -->
+  <Section rain id="hero">
+
+    <!-- Name — massive display -->
+    <h1 style="font-family:var(--font-display);font-weight:800;line-height:1.05;letter-spacing:-0.04em;margin:0;">
+      <span style="display:block;font-size:clamp(var(--text-2xl),3.5vw,var(--text-3xl));color:var(--flux-fg-muted);font-weight:400;letter-spacing:0.02em;margin-bottom:var(--spacing-1);">Hi, I'm</span>
+      <span style="display:block;font-size:clamp(var(--text-5xl),8vw,7rem);background:linear-gradient(135deg, var(--flux-fg-primary) 0%, var(--flux-accent) 50%, var(--flux-accent-cool) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Palash Debnath</span>
+    </h1>
+
+    <!-- Role line -->
+    <p style="font-family:var(--font-mono);font-size:var(--text-base);color:var(--flux-fg-muted);margin-top:var(--spacing-4);letter-spacing:0.01em;">
+      <span style="color:var(--flux-accent);">▸</span> Engineer · Builder
+    </p>
+
+    <!-- Tagline -->
+    <p style="color:var(--flux-fg-secondary);font-size:var(--text-lg);max-width:38rem;margin-top:var(--spacing-4);line-height:1.65;">
+      I build developer tools, media platforms, and infrastructure at the intersection of <strong style="color:var(--flux-fg-primary);">AI</strong>, <strong style="color:var(--flux-fg-primary);">audio</strong>, and <strong style="color:var(--flux-fg-primary);">low-level systems</strong>.
+    </p>
+
+    <!-- CTAs -->
+    <div style="display:flex;gap:var(--spacing-3);margin-top:var(--spacing-8);flex-wrap:wrap;">
+      <Button href="/projects" size="lg">View Projects</Button>
+      <Button href="/about" variant="secondary" size="lg">About Me</Button>
+    </div>
+
+
+  </Section>
+
+  <Divider variant="dots" />
+
+  <!-- ═══ PROJECTS ═══ -->
+  <Section grain id="projects">
+    <Heading level={2} marker="01">Projects</Heading>
+    <Grid cols={3} gap="var(--spacing-4)">
+      {allProducts.map((p) => (
+        <Card glow href={`/projects/${p.id}`}>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--spacing-3);">
+            <div style="display:flex;align-items:center;gap:var(--spacing-2);">
+              <h3 style="font-family:var(--font-display);font-size:var(--text-md);font-weight:700;color:var(--flux-fg-primary);">{p.data.name}</h3>
+            </div>
+            <Badge variant={statusVariant[p.data.status] || 'default'}>{p.data.status}</Badge>
+          </div>
+          <p style="font-size:var(--text-sm);color:var(--flux-fg-muted);margin-bottom:var(--spacing-3);">{p.data.tagline}</p>
+          <div style="display:flex;flex-wrap:wrap;gap:var(--spacing-1_5);">
+            {p.data.stack.map((t) => (
+              <span style="font-family:var(--font-mono);font-size:var(--text-xs);padding:var(--spacing-0_5) var(--spacing-2);border-radius:var(--radius-md);background:var(--flux-bg-base);color:var(--flux-fg-muted);border:1px solid var(--flux-glass-border);">{t}</span>
+            ))}
+          </div>
+          {p.data.url && (
+            <a href={p.data.url} target="_blank" rel="noopener" style="display:block;margin-top:var(--spacing-3);font-family:var(--font-mono);font-size:var(--text-sm);color:var(--flux-accent);">→ view</a>
+          )}
+        </Card>
+      ))}
+    </Grid>
+  </Section>
+
+  <Divider variant="dots" />
+
+  <!-- ═══ ABOUT ═══ -->
+  <Section id="about">
+    <Heading level={2} marker="02">About</Heading>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--spacing-8);">
+      <div>
+        <p style="color:var(--flux-fg-secondary);font-size:var(--text-base);line-height:1.7;margin-bottom:var(--spacing-4);">
+          Engineer and product builder. I make developer tools, media platforms, and infrastructure that bridge the gap between low-level performance and high-level UX.
+        </p>
+        <div style="display:flex;flex-wrap:wrap;gap:var(--spacing-2);margin-top:var(--spacing-4);">
+          {['TypeScript', 'Rust', 'Zig', 'Python', 'CUDA'].map((t) => (
+            <span style="font-family:var(--font-mono);font-size:var(--text-xs);padding:var(--spacing-1) var(--spacing-3);border-radius:var(--radius-md);background:var(--flux-glass-bg);color:var(--flux-fg-muted);border:1px solid var(--flux-glass-border);">{t}</span>
+          ))}
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:var(--spacing-3);">
+        <LiquidDrip client:visible dripCount={2} dripDistance={22} dripColor="var(--flux-fg-muted)">
+          <a href="https://github.com/debpalash" target="_blank" rel="noopener" class="flux-glass flux-liquid" style="display:block;padding:var(--spacing-3) var(--spacing-4);font-family:var(--font-mono);font-size:var(--text-sm);color:var(--flux-fg-primary);text-decoration:none;">
+            ↗ GitHub
+          </a>
+        </LiquidDrip>
+        <LiquidDrip client:visible dripCount={2} dripDistance={22} dripColor="var(--flux-fg-muted)">
+          <a href="/about" class="flux-glass flux-liquid" style="display:block;padding:var(--spacing-3) var(--spacing-4);font-family:var(--font-mono);font-size:var(--text-sm);color:var(--flux-fg-primary);text-decoration:none;">
+            → Full About
+          </a>
+        </LiquidDrip>
+      </div>
+    </div>
+  </Section>
+
+  <FluxFooter>
+    <LiquidDrip client:visible dripCount={1} dripDistance={14} dripColor="var(--flux-fg-faint)">
+      <a href="https://github.com/debpalash" target="_blank" rel="noopener" style="font-family:var(--font-mono);font-size:var(--text-sm);color:var(--flux-fg-muted);">GitHub</a>
+    </LiquidDrip>
+    <LiquidDrip client:visible dripCount={1} dripDistance={14} dripColor="var(--flux-fg-faint)">
+      <a href="/rss.xml" style="font-family:var(--font-mono);font-size:var(--text-sm);color:var(--flux-fg-muted);">RSS</a>
+    </LiquidDrip>
+  </FluxFooter>
+</FluxLayout>

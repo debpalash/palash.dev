@@ -1,0 +1,14 @@
+---
+interface Props {
+  direction?: 'vertical' | 'horizontal';
+  gap?: string;
+  align?: 'start' | 'center' | 'end' | 'stretch';
+  class?: string;
+}
+const { direction = 'vertical', gap = 'var(--spacing-4)', align = 'stretch', class: cls = '' } = Astro.props;
+const style = `display:flex;flex-direction:${direction === 'vertical' ? 'column' : 'row'};gap:${gap};align-items:${align};`;
+---
+
+<div style={style} class={cls}>
+  <slot />
+</div>

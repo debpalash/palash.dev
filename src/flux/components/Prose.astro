@@ -1,0 +1,10 @@
+---
+interface Props {
+  class?: string;
+}
+const { class: cls = '' } = Astro.props;
+---
+
+<div class={`prose prose-lg max-w-none ${cls}`} style="--tw-prose-body:var(--flux-fg-secondary);--tw-prose-headings:var(--flux-fg-primary);--tw-prose-links:var(--flux-accent);--tw-prose-bold:var(--flux-fg-primary);--tw-prose-code:var(--flux-accent);--tw-prose-pre-bg:var(--flux-bg-base);--tw-prose-pre-code:var(--flux-fg-secondary);--tw-prose-quotes:var(--flux-fg-muted);--tw-prose-quote-borders:var(--flux-accent);--tw-prose-hr:var(--flux-glass-border);--tw-prose-bullets:var(--flux-fg-faint);--tw-prose-counters:var(--flux-fg-muted);">
+  <slot />
+</div>

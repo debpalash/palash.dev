@@ -1,0 +1,10 @@
+---
+interface Props {
+  heavy?: boolean;
+}
+const { heavy = false } = Astro.props;
+---
+
+<div class={`flux-rain ${heavy ? 'flux-rain-heavy' : ''}`} aria-hidden="true">
+  <slot />
+</div>

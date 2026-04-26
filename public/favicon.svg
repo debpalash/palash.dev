@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <pattern id="s" width="14" height="14" patternUnits="userSpaceOnUse" patternTransform="rotate(-45)">
+      <rect width="14" height="14" fill="#181858"/>
+      <rect width="5" height="14" fill="#1c1c6a" opacity="0.4"/>
+    </pattern>
+    <filter id="g">
+      <feGaussianBlur stdDeviation="1.2" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- Tilted card background -->
+  <g transform="translate(256,256) rotate(-5) translate(-256,-256)">
+    <rect x="36" y="36" width="440" height="440" rx="16" fill="#151455"/>
+    <rect x="36" y="36" width="440" height="440" rx="16" fill="url(#s)" opacity="0.5"/>
+    <rect x="36" y="36" width="440" height="440" rx="16" fill="none" stroke="#262878" stroke-width="2.5"/>
+  </g>
+
+  <!--
+    PD Monogram — P and D share ONE vertical bar.
+    
+    The vertical bar is the LEFT spine of both letters.
+    P's bowl: small semicircle at top half, going RIGHT.
+    D's bowl: large curve spanning full height, going RIGHT.
+    P's bowl sits INSIDE D's curve.
+  -->
+  <g filter="url(#g)" fill="none" stroke="#4ad8e0" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round"
+     transform="translate(256,220) rotate(-5) translate(-256,-220)">
+
+    <!-- THE shared vertical bar — one continuous stroke -->
+    <line x1="172" y1="95" x2="172" y2="310"/>
+
+    <!-- P bowl: from vertical bar at top, curves RIGHT, returns to bar at mid-height -->
+    <!-- Starts at top of bar, goes right, curves down, returns to bar at y≈200 -->
+    <path d="M 172,95 L 210,95 C 270,95 270,200 210,200 L 172,200"/>
+
+    <!-- D curve: from top of bar, large sweep RIGHT, returns to bar at bottom -->
+    <!-- The D curve is wider than P, encompasses it -->
+    <path d="M 172,95 L 210,95 C 360,95 360,310 210,310 L 172,310"/>
+  </g>
+
+  <!-- PALASH text in monospace/serif style -->
+  <text x="256" y="385"
+    font-family="'Courier New','Courier',monospace"
+    font-weight="400" font-size="30" fill="#4ad8e0"
+    text-anchor="middle" letter-spacing="6"
+    transform="rotate(-5,256,385)">PALASH</text>
+</svg>

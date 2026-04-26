@@ -1,0 +1,24 @@
+---
+interface Props {
+  amplitude?: number;
+  color?: string;
+  thin?: boolean;
+}
+const { amplitude = 64, color, thin = false } = Astro.props;
+const h = thin ? 24 : 120;
+---
+
+<div class={`flux-waveform ${thin ? 'flux-waveform-thin' : ''}`}>
+  <svg viewBox={`0 0 1080 ${h}`} preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <path
+      class="flux-waveform-path"
+      d={`M0,${amplitude} C120,${amplitude-30} 240,${amplitude+30} 360,${amplitude} C480,${amplitude-20} 600,${amplitude+20} 720,${amplitude} C840,${amplitude-25} 960,${amplitude+15} 1080,${amplitude} L1080,${h} L0,${h} Z`}
+      style={color ? `fill: ${color}` : undefined}
+    />
+    <path
+      class="flux-waveform-path-delay"
+      d={`M0,${amplitude} C120,${amplitude+20} 240,${amplitude-20} 360,${amplitude} C480,${amplitude+30} 600,${amplitude-15} 720,${amplitude} C840,${amplitude+10} 960,${amplitude-25} 1080,${amplitude} L1080,${h} L0,${h} Z`}
+      style={color ? `fill: ${color}` : undefined}
+    />
+  </svg>
+</div>

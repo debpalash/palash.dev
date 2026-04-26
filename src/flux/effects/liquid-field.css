@@ -1,0 +1,19 @@
+/* ============================================================
+   FLUX EFFECT — LIQUID FIELD
+   Per-element water displacement driven by mouse cursor.
+   Elements float, bob, tilt, and push away like objects on water.
+   ============================================================ */
+
+/* Per-element liquid physics wrapper */
+.flux-liquid-element {
+  will-change: transform;
+  /* JS drives transform directly via rAF — no CSS transition */
+}
+
+/* Reduced motion: completely disable liquid physics */
+@media (prefers-reduced-motion: reduce) {
+  .flux-liquid-element {
+    transform: none !important;
+    will-change: auto !important;
+  }
+}
