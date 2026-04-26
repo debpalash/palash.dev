@@ -1,13 +1,13 @@
 ---
-import FluxLayout from '../../flux/components/FluxLayout.astro';
-import Nav from '../../flux/components/Nav.astro';
-import FluxFooter from '../../flux/components/FluxFooter.astro';
-import Section from '../../flux/components/Section.astro';
-import Heading from '../../flux/components/Heading.astro';
-import Badge from '../../flux/components/Badge.astro';
-import Prose from '../../flux/components/Prose.astro';
-import Button from '../../flux/components/Button.astro';
-import ThemeToggle from '../../flux/react/ThemeToggle';
+import FluxLayout from '../flux/components/FluxLayout.astro';
+import Nav from '../flux/components/Nav.astro';
+import FluxFooter from '../flux/components/FluxFooter.astro';
+import Section from '../flux/components/Section.astro';
+import Heading from '../flux/components/Heading.astro';
+import Badge from '../flux/components/Badge.astro';
+import Prose from '../flux/components/Prose.astro';
+import Button from '../flux/components/Button.astro';
+import ThemeToggle from '../flux/react/ThemeToggle';
 import { getCollection } from 'astro:content';
 
 export async function getStaticPaths() {
@@ -86,7 +86,7 @@ const statusVariant: Record<string, 'success' | 'info' | 'warning'> = {
 
   <Section>
     <div style="display:flex;align-items:center;gap:var(--spacing-3);margin-bottom:var(--spacing-2);">
-      <a href="/projects" style="font-family:var(--font-mono);font-size:var(--text-sm);color:var(--flux-fg-muted);text-decoration:none;">← Projects</a>
+      <a href="/" style="font-family:var(--font-mono);font-size:var(--text-sm);color:var(--flux-fg-muted);text-decoration:none;">← Back</a>
     </div>
 
     <div style="display:flex;align-items:center;gap:var(--spacing-4);margin-bottom:var(--spacing-2);">
