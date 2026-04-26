@@ -30,43 +30,42 @@ const statusVariant: Record<string, 'success' | 'info' | 'warning'> = {
 
   <Section id="projects" style="padding-top:var(--spacing-16);padding-bottom:var(--spacing-16);">
     <div style="display:flex;flex-direction:column;gap:var(--spacing-12);">
-      {allProducts.map((p, i) => {
-        const isEven = i % 2 === 0;
+      {allProducts.map((p) => {
         return (
-          <Card glow href={`/projects/${p.id}`} style={`display:flex;flex-direction:${isEven ? 'row' : 'row-reverse'};gap:var(--spacing-8);align-items:center;padding:var(--spacing-8);`}>
+          <a href={`/projects/${p.id}`} class="project-card-premium">
             {/* Logo Side */}
-            <div style="flex:0 0 250px;display:flex;justify-content:center;align-items:center;padding:var(--spacing-8);background:var(--flux-bg-base);border-radius:var(--radius-lg);border:1px solid var(--flux-glass-border);height:250px;">
+            <div class="project-logo-container">
                {p.data.logoUrl ? (
-                 <img src={p.data.logoUrl} alt={p.data.name} style="max-width:120px;max-height:120px;object-fit:contain;filter:drop-shadow(0 4px 12px rgba(0,0,0,0.5));" />
+                 <img src={p.data.logoUrl} alt={p.data.name} class="project-logo-image" style="max-width:140px;max-height:140px;object-fit:contain;" />
                ) : (
-                 <div style="font-size:5rem;">{p.data.icon}</div>
+                 <div class="project-logo-image" style="font-size:6rem;">{p.data.icon}</div>
                )}
             </div>
 
             {/* Content Side */}
-            <div style="flex:1;display:flex;flex-direction:column;gap:var(--spacing-4);">
+            <div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:var(--spacing-5);padding-left:var(--spacing-4);">
               <div style="display:flex;align-items:center;justify-content:space-between;">
-                <h3 style="font-family:var(--font-display);font-size:var(--text-3xl);font-weight:800;color:var(--flux-fg-primary);margin:0;">{p.data.name}</h3>
+                <h3 style="font-family:var(--font-display);font-size:var(--text-4xl);font-weight:800;color:var(--flux-fg-primary);margin:0;letter-spacing:-0.02em;">{p.data.name}</h3>
                 <Badge variant={statusVariant[p.data.status] || 'default'}>{p.data.status}</Badge>
               </div>
               
-              <p style="font-size:var(--text-lg);color:var(--flux-fg-secondary);line-height:1.6;margin:0;">
+              <p style="font-size:var(--text-xl);color:var(--flux-fg-secondary);line-height:1.7;margin:0;max-width:90%;">
                 {p.data.description}
               </p>
               
-              <div style="display:flex;flex-wrap:wrap;gap:var(--spacing-2);margin-top:var(--spacing-2);">
+              <div style="display:flex;flex-wrap:wrap;gap:var(--spacing-3);margin-top:var(--spacing-2);">
                 {p.data.stack.map((t) => (
-                  <span style="font-family:var(--font-mono);font-size:var(--text-xs);padding:var(--spacing-1) var(--spacing-2);border-radius:var(--radius-sm);background:var(--flux-bg-base);color:var(--flux-fg-muted);border:1px solid var(--flux-glass-border);">{t}</span>
+                  <span style="font-family:var(--font-mono);font-size:var(--text-xs);padding:var(--spacing-1) var(--spacing-3);border-radius:99px;background:var(--flux-bg-deep);color:var(--flux-fg-muted);border:1px solid var(--flux-glass-border);letter-spacing:0.05em;text-transform:uppercase;">{t}</span>
                 ))}
               </div>
 
               {p.data.url && (
-                <div style="margin-top:var(--spacing-4);font-family:var(--font-mono);font-size:var(--text-sm);color:var(--flux-accent);">
-                  → View Project
+                <div style="margin-top:var(--spacing-6);font-family:var(--font-mono);font-size:var(--text-sm);color:var(--flux-fg-primary);font-weight:600;display:flex;align-items:center;gap:var(--spacing-2);">
+                  View Project <span class="project-card-arrow">→</span>
                 </div>
               )}
             </div>
-          </Card>
+          </a>
         );
       })}
     </div>
@@ -74,10 +73,75 @@ const statusVariant: Record<string, 'success' | 'info' | 'warning'> = {
 
   <FluxFooter>
     <LiquidDrip client:visible dripCount={1} dripDistance={14} dripColor="var(--flux-fg-faint)">
-      <a href="https://github.com/debpalash" target="_blank" rel="noopener" style="font-family:var(--font-mono);font-size:var(--text-sm);color:var(--flux-fg-muted);">GitHub</a>
-    </LiquidDrip>
-    <LiquidDrip client:visible dripCount={1} dripDistance={14} dripColor="var(--flux-fg-faint)">
-      <a href="/rss.xml" style="font-family:var(--font-mono);font-size:var(--text-sm);color:var(--flux-fg-muted);">RSS</a>
+      <div style="text-align:center;">
+        <span style="font-family:var(--font-mono);font-size:var(--text-xs);color:var(--flux-fg-muted);">palash.dev // {new Date().getFullYear()}</span>
+      </div>
     </LiquidDrip>
   </FluxFooter>
 </FluxLayout>
+
+<style>
+  .project-card-premium {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    gap: var(--spacing-8);
+    align-items: stretch;
+    padding: var(--spacing-6);
+    background: linear-gradient(145deg, var(--flux-bg-surface), var(--flux-bg-base));
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--flux-glass-border);
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s ease;
+    text-decoration: none;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+  }
+  .project-card-premium:hover {
+    transform: translateY(-4px) scale(1.005);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.05);
+    border-color: rgba(255,255,255,0.15);
+  }
+  .project-logo-container {
+    flex: 0 0 320px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: var(--flux-bg-deep);
+    border-radius: var(--radius-lg);
+    box-shadow: inset 0 2px 20px rgba(0,0,0,0.5);
+    position: relative;
+    overflow: hidden;
+    min-height: 280px;
+    border: 1px solid rgba(0,0,0,0.2);
+  }
+  .project-logo-container::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 50% 0%, rgba(255,255,255,0.08) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .project-card-premium:hover .project-logo-image {
+    transform: scale(1.1);
+  }
+  .project-logo-image {
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    filter: drop-shadow(0 15px 25px rgba(0,0,0,0.6));
+  }
+  .project-card-arrow {
+    transition: transform 0.3s ease;
+    display: inline-block;
+  }
+  .project-card-premium:hover .project-card-arrow {
+    transform: translateX(6px);
+  }
+  
+  @media (max-width: 768px) {
+    .project-card-premium {
+      flex-direction: column;
+    }
+    .project-logo-container {
+      flex: 0 0 200px;
+      min-height: 200px;
+    }
+  }
+</style>
