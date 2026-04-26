@@ -55,7 +55,7 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
       })();
     </script>
   </head>
-  <body>
+  <body style="display:flex;flex-direction:column;min-height:100vh;margin:0;">
     <!-- SVG filters (hidden, referenced by CSS) -->
     <svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;overflow:hidden">
       <defs>
@@ -74,7 +74,9 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
     <!-- Liquid physics engine — no DOM output, just runs the wave simulation -->
     <LiquidField client:idle />
 
-    <slot />
+    <main style="flex:1;display:flex;flex-direction:column;">
+      <slot />
+    </main>
 
     <script>
       // Carry theme across Astro view transitions
