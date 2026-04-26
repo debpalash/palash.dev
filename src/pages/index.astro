@@ -23,12 +23,24 @@ const statusVariant: Record<string, 'success' | 'info' | 'warning'> = {
 };
 ---
 
-<FluxLayout title="Home">
+<FluxLayout title="Palash Debnath - Software Engineer & Builder" description="Portfolio and projects of Palash Debnath, a software engineer and maker of things that ship.">
   <Nav>
     <ThemeToggle client:load slot="actions" />
   </Nav>
 
-  <Section id="projects" style="padding-top:var(--spacing-16);padding-bottom:var(--spacing-16);">
+  <!-- Hero Section for SEO & Brand -->
+  <Section style="padding-top:var(--spacing-24);padding-bottom:var(--spacing-12);">
+    <div style="max-width:48rem;">
+      <h1 style="font-family:var(--font-display);font-size:var(--text-5xl);font-weight:800;color:var(--flux-fg-primary);margin:0 0 var(--spacing-4) 0;letter-spacing:-0.03em;line-height:1.1;">
+        Palash Debnath.
+      </h1>
+      <p style="font-size:var(--text-xl);color:var(--flux-fg-secondary);line-height:1.6;margin:0;">
+        Software engineer, builder, and maker of things that ship.
+      </p>
+    </div>
+  </Section>
+
+  <Section id="projects" style="padding-top:var(--spacing-12);padding-bottom:var(--spacing-16);">
     <div style="display:flex;flex-direction:column;gap:var(--spacing-12);">
       {allProducts.map((p) => {
         return (
