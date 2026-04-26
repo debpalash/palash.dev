@@ -11,24 +11,29 @@ interface Props {
 const { glow = false, class: cls = '', href, noLiquid = false } = Astro.props;
 const Tag = href ? 'a' : 'div';
 const classes = `flux-glass flux-liquid flux-wet ${glow ? 'flux-glass-glow' : ''} ${cls}`.trim();
+const cardStyle = "position:relative;display:flex;flex-direction:column;padding:var(--spacing-6);overflow:hidden;height:100%;";
 ---
 
 {noLiquid ? (
   <Tag
     href={href}
     class={classes}
-    style="position:relative;display:block;padding:var(--spacing-6);overflow:hidden;"
+    style={cardStyle}
   >
     <slot />
   </Tag>
 ) : (
-  <LiquidDrip client:visible dripCount={3} dripDistance={35} dripColor="var(--flux-accent)">
+  <LiquidDrip client:visible dripCount={3} dripDistance={35} dripColor="var(--flux-accent)" className="flux-card-wrap">
     <Tag
       href={href}
       class={classes}
-      style="position:relative;display:block;padding:var(--spacing-6);overflow:hidden;"
+      style={cardStyle}
     >
       <slot />
     </Tag>
   </LiquidDrip>
 )}
+
+<style is:global>
+  .flux-card-wrap { height: 100%; }
+</style>
