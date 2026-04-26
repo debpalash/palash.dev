@@ -5,6 +5,14 @@
   "url": "https://github.com/debpalash/OmniVoice-Studio",
   "icon": "🎙️",
   "status": "live",
-  "stack": ["Python", "Tauri", "CUDA", "Docker", "MLX", "Whisper"],
-  "order": 1
+  "stack": [
+    "Python",
+    "Tauri",
+    "CUDA",
+    "Docker",
+    "MLX",
+    "Whisper"
+  ],
+  "order": 1,
+  "logoUrl": "https://raw.githubusercontent.com/debpalash/OmniVoice-Studio/main/docs/logo.png"
 }

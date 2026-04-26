@@ -5,6 +5,12 @@
   "url": "https://github.com/debpalash/fast-mempalace",
   "icon": "🧠",
   "status": "live",
-  "stack": ["Zig", "LLM", "MCP", "AI Memory"],
-  "order": 2
+  "stack": [
+    "Zig",
+    "LLM",
+    "MCP",
+    "AI Memory"
+  ],
+  "order": 2,
+  "logoUrl": "https://raw.githubusercontent.com/debpalash/fast-mempalace/main/assets/logo.svg"
 }

@@ -21,6 +21,7 @@ const products = defineCollection({
     tagline: z.string(),
     description: z.string(),
     url: z.string().url().optional(),
+    logoUrl: z.string().url().optional(),
     icon: z.string().default('🚀'),
     status: z.enum(['live', 'beta', 'coming-soon']).default('live'),
     stack: z.array(z.string()).default([]),

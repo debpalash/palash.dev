@@ -95,8 +95,12 @@ export default function ProjectCard3D({ project, index }: { project: any, index:
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 'var(--spacing-4)', transform: 'translateZ(30px)' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-3)' }}>
-              <div style={{ fontSize: '2rem', background: 'var(--flux-bg-base)', width: '48px', height: '48px', borderRadius: 'var(--radius-md)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid var(--flux-glass-border)' }}>
-                {project.data.icon}
+              <div style={{ fontSize: '2rem', background: 'var(--flux-bg-base)', width: '56px', height: '56px', borderRadius: 'var(--radius-md)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid var(--flux-glass-border)', overflow: 'hidden' }}>
+                {project.data.logoUrl ? (
+                  <img src={project.data.logoUrl} alt={project.data.name} style={{ width: '32px', height: '32px', objectFit: 'contain', filter: 'brightness(1.5)' }} />
+                ) : (
+                  project.data.icon
+                )}
               </div>
               <h3 style={{ fontFamily: 'var(--font-display)', fontSize: 'var(--text-3xl)', fontWeight: 800, margin: 0, color: 'var(--flux-fg-primary)' }}>
                 {project.data.name}
@@ -134,6 +138,12 @@ export default function ProjectCard3D({ project, index }: { project: any, index:
             <Environment preset="city" />
             <PresentationControls global rotation={[0, 0, 0]} polar={[-0.4, 0.2]} azimuth={[-1, 0.75]} config={{ mass: 2, tension: 400 }} snap={{ mass: 4, tension: 400 }}>
               <CoolShape color={shapeColor} />
+              {/* Float the logo inside the 3D space */}
+              {project.data.logoUrl && (
+                <Html transform position={[0, 0, 1.5]} scale={0.6} zIndexRange={[100, 0]} pointerEvents="none">
+                  <img src={project.data.logoUrl} alt={project.data.name} style={{ width: '120px', height: '120px', objectFit: 'contain', filter: 'drop-shadow(0px 10px 20px rgba(0,0,0,0.5))' }} />
+                </Html>
+              )}
             </PresentationControls>
           </Canvas>
           <div style={{ position: 'absolute', bottom: '10px', left: '0', width: '100%', textAlign: 'center', pointerEvents: 'none', color: 'var(--flux-fg-faint)', fontSize: '0.8rem', fontFamily: 'var(--font-mono)' }}>

@@ -5,6 +5,11 @@
   "url": "https://github.com/debpalash/unbird",
   "icon": "🐦",
   "status": "live",
-  "stack": ["TypeScript", "Docker", "Cloudflare Workers"],
-  "order": 3
+  "stack": [
+    "TypeScript",
+    "Docker",
+    "Cloudflare Workers"
+  ],
+  "order": 3,
+  "logoUrl": "https://raw.githubusercontent.com/debpalash/unbird/main/public/logo.svg"
 }
