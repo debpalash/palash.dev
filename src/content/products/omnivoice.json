@@ -14,10 +14,5 @@
     "Whisper"
   ],
   "order": 1,
-  "logoUrl": "https://raw.githubusercontent.com/debpalash/OmniVoice-Studio/main/docs/logo.png",
-  "screenshots": [
-    "https://picsum.photos/seed/omni1/800/600",
-    "https://picsum.photos/seed/omni2/800/600",
-    "https://picsum.photos/seed/omni3/800/600"
-  ]
+  "logoUrl": "https://raw.githubusercontent.com/debpalash/OmniVoice-Studio/main/docs/logo.png"
 }

@@ -11,9 +11,5 @@
     "Cloudflare Workers"
   ],
   "order": 3,
-  "logoUrl": "https://raw.githubusercontent.com/debpalash/unbird/main/public/logo.svg",
-  "screenshots": [
-    "https://picsum.photos/seed/bird1/800/600",
-    "https://picsum.photos/seed/bird2/800/600"
-  ]
+  "logoUrl": "https://raw.githubusercontent.com/debpalash/unbird/main/public/logo.svg"
 }

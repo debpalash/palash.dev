@@ -11,7 +11,6 @@ import Grid from '../flux/components/Grid.astro';
 import Divider from '../flux/components/Divider.astro';
 import ThemeToggle from '../flux/react/ThemeToggle';
 import LiquidDrip from '../flux/react/LiquidDrip';
-import HoverSlider from '../flux/react/HoverSlider';
 import { getCollection } from 'astro:content';
 
 const allProducts = (await getCollection('products'))
@@ -36,13 +35,11 @@ const statusVariant: Record<string, 'success' | 'info' | 'warning'> = {
           <a href={`/${p.id}`} class="project-card-premium">
             {/* Logo Side */}
             <div class="project-logo-container">
-               <HoverSlider 
-                 client:visible
-                 logoUrl={p.data.logoUrl}
-                 icon={p.data.icon}
-                 screenshots={p.data.screenshots}
-                 alt={p.data.name}
-               />
+               {p.data.logoUrl ? (
+                 <img src={p.data.logoUrl} alt={p.data.name} class="project-logo-image" style="max-width:140px;max-height:140px;object-fit:contain;" />
+               ) : (
+                 <div class="project-logo-image" style="font-size:6rem;">{p.data.icon}</div>
+               )}
             </div>
 
             {/* Content Side */}

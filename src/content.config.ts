@@ -22,7 +22,6 @@ const products = defineCollection({
     description: z.string(),
     url: z.string().url().optional(),
     logoUrl: z.string().url().optional(),
-    screenshots: z.array(z.string().url()).default([]),
     icon: z.string().default('🚀'),
     status: z.enum(['live', 'beta', 'coming-soon']).default('live'),
     stack: z.array(z.string()).default([]),
