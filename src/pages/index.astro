@@ -33,7 +33,7 @@ const statusVariant: Record<string, 'success' | 'info' | 'warning'> = {
     <div style="display:flex;flex-direction:column;gap:var(--spacing-12);">
       {allProducts.map((p) => {
         return (
-          <a href={`/projects/${p.id}`} class="project-card-premium">
+          <a href={`/${p.id}`} class="project-card-premium">
             {/* Logo Side */}
             <div class="project-logo-container">
                <HoverSlider 
