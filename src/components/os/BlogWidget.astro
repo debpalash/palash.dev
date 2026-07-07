@@ -1,0 +1,327 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  posts: CollectionEntry<'blog'>[];
+}
+
+const { posts } = Astro.props;
+const recent = posts.slice(0, 3);
+const latest = recent[0];
+---
+
+<aside id="blog-widget" aria-label="Blog widget">
+  <section class="bw-panel" id="bw-panel" hidden>
+    <header class="bw-head">
+      <span>▓▒░ THE LOG</span>
+      <button id="bw-collapse" aria-label="Collapse widget">▾</button>
+    </header>
+    <div class="bw-posts">
+      {recent.map((post) => (
+        <a href={`/blog/${post.id}`} class="bw-post">
+          <span class="bw-date">{post.data.publishDate.toISOString().split('T')[0]}</span>
+          <span class="bw-title">{post.data.title}</span>
+        </a>
+      ))}
+    </div>
+    <footer class="bw-foot">
+      <a href="/blog">all posts →</a>
+      <button data-open="docs">docs/</button>
+      <a href="/rss.xml">rss</a>
+    </footer>
+  </section>
+
+  <div class="bw-row">
+    {latest && (
+      <div class="bw-bubble" id="bw-bubble">
+        <button class="bw-x" id="bw-hush" aria-label="Dismiss">×</button>
+        <p class="bw-quip">
+          It looks like you're exploring <strong>PALASH.OS</strong>. Want to
+          read the latest from THE LOG?
+        </p>
+        <a href={`/blog/${latest.id}`} class="bw-latest">→ {latest.data.title}</a>
+      </div>
+    )}
+    <button class="bw-clippy" id="bw-toggle" aria-expanded="false" aria-controls="bw-panel" title="THE LOG">
+      <svg viewBox="0 0 64 96" width="52" height="78" aria-hidden="true">
+        <path
+          class="wire"
+          d="M32 8 C 45 8, 52 16, 52 28 L52 64 C52 77 44 86 32 86 C20 86 13 77 13 66 L13 32 C13 23 19 17 26 17 C33 17 39 23 39 32 L39 62 C39 68 36 72 32 72 C28 72 25 68 25 63 L25 36"
+          fill="none"
+          stroke-width="5"
+          stroke-linecap="round"
+        />
+        <g class="brows">
+          <path d="M17 12 q6 -5 12 -2" fill="none" stroke-width="3" stroke-linecap="round" />
+          <path d="M36 10 q6 -3 11 2" fill="none" stroke-width="3" stroke-linecap="round" />
+        </g>
+        <g class="eyes">
+          <g class="eye">
+            <ellipse cx="24" cy="26" rx="7.5" ry="9.5" />
+            <circle class="pupil" cx="25.5" cy="28" r="3.2" />
+          </g>
+          <g class="eye">
+            <ellipse cx="42" cy="25" rx="7.5" ry="9.5" />
+            <circle class="pupil" cx="43.5" cy="27" r="3.2" />
+          </g>
+        </g>
+      </svg>
+    </button>
+  </div>
+</aside>
+
+<style>
+  #blog-widget {
+    position: fixed;
+    right: 1rem;
+    bottom: calc(var(--taskbar-h) + 0.75rem);
+    z-index: 7500;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.5rem;
+    max-width: min(21rem, calc(100vw - 2rem));
+  }
+
+  .bw-row {
+    display: flex;
+    align-items: flex-end;
+    gap: 0.6rem;
+  }
+
+  /* --- Clippy --- */
+  .bw-clippy {
+    background: none;
+    border: none;
+    padding: 0;
+    height: auto;
+    min-height: 0;
+    cursor: pointer;
+    flex-shrink: 0;
+    filter: drop-shadow(0 4px 10px rgb(0 0 0 / 0.5));
+    animation: bw-bob 3.4s ease-in-out infinite;
+  }
+  .bw-clippy .wire {
+    stroke: var(--foreground1);
+  }
+  .bw-clippy .brows path {
+    stroke: var(--foreground0);
+  }
+  .bw-clippy .eye ellipse {
+    fill: #fffdf5;
+    stroke: #1c1c1c;
+    stroke-width: 1.5;
+  }
+  .bw-clippy .pupil {
+    fill: #101010;
+    animation: bw-look 7s ease-in-out infinite;
+  }
+  .bw-clippy .eye {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: bw-blink 5.2s infinite;
+  }
+  .bw-clippy:hover {
+    animation: bw-wiggle 0.6s ease-in-out;
+  }
+  .bw-clippy:hover .wire {
+    stroke: var(--foreground0);
+  }
+
+  @keyframes bw-bob {
+    0%, 100% { transform: translateY(0) rotate(-2deg); }
+    50% { transform: translateY(-6px) rotate(2deg); }
+  }
+  @keyframes bw-blink {
+    0%, 90%, 100% { transform: scaleY(1); }
+    94% { transform: scaleY(0.08); }
+  }
+  @keyframes bw-look {
+    0%, 55%, 100% { transform: translate(0, 0); }
+    62%, 75% { transform: translate(-2.5px, 1px); }
+    82%, 90% { transform: translate(1.5px, -1px); }
+  }
+  @keyframes bw-wiggle {
+    0%, 100% { transform: rotate(0); }
+    25% { transform: rotate(-8deg); }
+    75% { transform: rotate(8deg); }
+  }
+
+  /* --- speech bubble --- */
+  .bw-bubble {
+    position: relative;
+    background: color-mix(in srgb, var(--background0) 96%, transparent);
+    border: 1px solid var(--foreground0);
+    box-shadow: var(--glow), 0 8px 30px rgb(0 0 0 / 0.5);
+    padding: 0.6rem 1.6rem 0.6rem 0.8rem;
+    font-size: 0.78rem;
+    color: var(--foreground1);
+  }
+  .bw-bubble::after {
+    content: '';
+    position: absolute;
+    right: -7px;
+    bottom: 14px;
+    width: 12px;
+    height: 12px;
+    background: inherit;
+    border-right: 1px solid var(--foreground0);
+    border-top: 1px solid var(--foreground0);
+    transform: rotate(45deg);
+  }
+  .bw-quip {
+    margin: 0 0 0.3rem;
+  }
+  .bw-quip strong {
+    color: var(--foreground0);
+  }
+  .bw-latest {
+    color: var(--amber);
+    display: block;
+  }
+  .bw-x {
+    position: absolute;
+    top: 0.15rem;
+    right: 0.3rem;
+    background: none;
+    border: none;
+    padding: 0 0.3ch;
+    height: auto;
+    min-height: 0;
+    color: var(--foreground2);
+    font-size: 0.9rem;
+    cursor: pointer;
+  }
+  .bw-x:hover {
+    color: var(--alert);
+  }
+
+  /* --- expanded panel --- */
+  .bw-panel {
+    width: min(21rem, calc(100vw - 2rem));
+    background: color-mix(in srgb, var(--background0) 96%, transparent);
+    border: 1px solid var(--foreground0);
+    box-shadow: var(--glow), 0 12px 40px rgb(0 0 0 / 0.6);
+  }
+  .bw-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.35rem 0.75rem;
+    background: var(--foreground0);
+    color: var(--background0);
+    font-weight: 700;
+    font-size: 0.8rem;
+  }
+  .bw-head button {
+    background: none;
+    border: 1px solid var(--background0);
+    color: var(--background0);
+    width: 1.6rem;
+    height: 1.3rem;
+    min-height: 0;
+    padding: 0;
+    font-size: 0.8rem;
+    line-height: 1;
+    cursor: pointer;
+  }
+  .bw-head button:hover {
+    background: var(--background0);
+    color: var(--foreground0);
+  }
+  .bw-posts {
+    display: flex;
+    flex-direction: column;
+  }
+  .bw-post {
+    display: block;
+    padding: 0.5rem 0.75rem;
+    text-decoration: none;
+    border-bottom: 1px dashed var(--background3);
+  }
+  .bw-post:hover {
+    background: var(--background2);
+    text-shadow: none;
+  }
+  .bw-date {
+    display: block;
+    color: var(--foreground2);
+    font-size: 0.7rem;
+  }
+  .bw-title {
+    color: var(--foreground0);
+    font-size: 0.85rem;
+    font-weight: 500;
+  }
+  .bw-foot {
+    display: flex;
+    gap: 1.5ch;
+    align-items: center;
+    padding: 0.45rem 0.75rem;
+    font-size: 0.78rem;
+  }
+  .bw-foot button {
+    background: none;
+    border: none;
+    padding: 0;
+    height: auto;
+    min-height: 0;
+    color: var(--amber);
+    font: inherit;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    cursor: pointer;
+  }
+  .bw-foot button:hover {
+    color: var(--foreground0);
+  }
+
+  @media (max-width: 768px) {
+    #blog-widget {
+      display: none;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .bw-clippy,
+    .bw-clippy .eye,
+    .bw-clippy .pupil {
+      animation: none;
+    }
+  }
+</style>
+
+<script>
+  const widget = document.getElementById('blog-widget');
+  const panel = document.getElementById('bw-panel');
+  const toggle = document.getElementById('bw-toggle');
+  const collapse = document.getElementById('bw-collapse');
+  const bubble = document.getElementById('bw-bubble');
+  const hush = document.getElementById('bw-hush');
+
+  const load = (k: string) => {
+    try { return localStorage.getItem(k); } catch { return null; }
+  };
+  const save = (k: string, v: string) => {
+    try { localStorage.setItem(k, v); } catch {}
+  };
+
+  function setOpen(open: boolean) {
+    if (!panel || !toggle) return;
+    panel.hidden = !open;
+    toggle.setAttribute('aria-expanded', String(open));
+    if (open && bubble) bubble.hidden = true;
+    save('clippy-open', open ? '1' : '0');
+  }
+
+  if (widget && panel && toggle) {
+    if (load('clippy-open') === '1') setOpen(true);
+    if (load('clippy-hush') === '1' && bubble) bubble.hidden = true;
+
+    toggle.addEventListener('click', () => setOpen(panel.hidden));
+    collapse?.addEventListener('click', () => setOpen(false));
+    hush?.addEventListener('click', () => {
+      if (bubble) bubble.hidden = true;
+      save('clippy-hush', '1');
+    });
+  }
+</script>

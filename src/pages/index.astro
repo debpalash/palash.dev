@@ -4,6 +4,7 @@ import OS from '../layouts/OS.astro';
 import Desktop from '../components/os/Desktop.astro';
 import Icon from '../components/os/Icon.astro';
 import WindowSrc from '../components/os/WindowSrc.astro';
+import BlogWidget from '../components/os/BlogWidget.astro';
 import About from '../components/windows/About.astro';
 import Programs from '../components/windows/Programs.astro';
 import Program from '../components/windows/Program.astro';
@@ -278,6 +279,8 @@ const jsonLd = {
       </WindowSrc>
     </Fragment>
   </Desktop>
+
+  <BlogWidget posts={posts} />
 
   <script type="application/json" id="vfs-data" set:html={JSON.stringify(vfs)} />
 
