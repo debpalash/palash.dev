@@ -1,0 +1,35 @@
+[
+  {
+    "id": "hr-tools",
+    "name": "hr-tools",
+    "description": "Free, 100% offline HR toolkit — 60+ tools: offer letters, payslips, payroll & tax calculators. Local-only AI via Ollama.",
+    "url": "https://github.com/Yupcha/hr-tools",
+    "lang": "TypeScript",
+    "category": "business suite"
+  },
+  {
+    "id": "waitless",
+    "name": "waitless",
+    "description": "Open-source waitlist management platform — collect signups, send emails, track growth. Single binary.",
+    "url": "https://github.com/Yupcha/waitless",
+    "lang": "TypeScript",
+    "category": "saas / oss"
+  },
+  {
+    "id": "creatormaps",
+    "name": "CreatorMaps",
+    "description": "Turn any place, route, or dataset in India into cinematic map reels & HD posters — free, in the browser.",
+    "url": "https://github.com/Yupcha/CreatorMaps",
+    "lang": "Svelte",
+    "category": "creator tools"
+  },
+  {
+    "id": "memxt-org",
+    "name": "memxt",
+    "description": "The fastest benchmarked open-source AI memory system — 100% local, for agents.",
+    "url": "https://github.com/Yupcha/memxt",
+    "lang": "Zig",
+    "category": "ai / dev tools",
+    "open": "prg-memxt"
+  }
+]

@@ -49,4 +49,17 @@ const gallery = defineCollection({
   }),
 });
 
-export const collections = { blog, products, experiments, gallery };
+const company = defineCollection({
+  loader: file('./src/content/company.json'),
+  schema: z.object({
+    name: z.string(),
+    description: z.string(),
+    url: z.string().url(),
+    lang: z.string(),
+    category: z.string(),
+    /** optional window id to open instead of linking out */
+    open: z.string().optional(),
+  }),
+});
+
+export const collections = { blog, products, experiments, gallery, company };

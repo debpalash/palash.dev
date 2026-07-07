@@ -1,11 +1,13 @@
 ---
 import type { CollectionEntry } from 'astro:content';
+import { SITE } from '../../site.config';
 
 interface Props {
   products: CollectionEntry<'products'>[];
+  companyProjects?: CollectionEntry<'company'>[];
 }
 
-const { products } = Astro.props;
+const { products, companyProjects = [] } = Astro.props;
 ---
 
 <p class="dim mb-2">total {products.length} — double-clicking is for boomers, one click launches</p>
@@ -18,6 +20,30 @@ const { products } = Astro.props;
     <span class="fmeta">{p.data.tagline}</span>
   </button>
 ))}
+
+{companyProjects.length > 0 && (
+  <Fragment>
+    <p class="dim mt-5 mb-1">
+      company: <span class="cyan">{SITE.company.name}</span> ·{' '}
+      <a href={SITE.company.url} target="_blank" rel="noopener">yupcha.com ↗</a>
+    </p>
+    {companyProjects.map((c) =>
+      c.data.open ? (
+        <button class="filerow" data-open={c.data.open}>
+          <span class="fname">{c.data.name}</span>
+          <span class="amber">[{c.data.category}]</span>
+          <span class="fmeta">{c.data.description}</span>
+        </button>
+      ) : (
+        <a class="filerow" href={c.data.url} target="_blank" rel="noopener">
+          <span class="fname">{c.data.name} ↗</span>
+          <span class="amber">[{c.data.category}]</span>
+          <span class="fmeta">{c.data.description}</span>
+        </a>
+      ),
+    )}
+  </Fragment>
+)}
 
 <p class="mt-4 dim">
   see also: <a href="https://github.com/debpalash?tab=repositories" target="_blank" rel="noopener">all repositories ↗</a>

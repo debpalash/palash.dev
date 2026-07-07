@@ -607,8 +607,9 @@ body[data-bg='video'] #bg-video {
 .filerow:focus-visible {
   background: var(--background2);
 }
-.filerow .fname { color: var(--foreground0); font-weight: 500; }
+.filerow .fname { color: var(--foreground0); font-weight: 500; white-space: nowrap; }
 .filerow .fmeta { color: var(--foreground2); font-size: 0.85em; }
+.filerow .amber { white-space: nowrap; flex-shrink: 0; }
 .filerow:hover .fname { text-shadow: var(--glow); }
 
 /* ------------------------------------------------------------
@@ -754,6 +755,34 @@ body[data-bg='video'] #bg-video {
 .os-menu button.active::after {
   content: ' ●';
   color: inherit;
+}
+
+/* ------------------------------------------------------------
+   Desktop refresh — `tree /` cascade, windows-terminal style
+   ------------------------------------------------------------ */
+.refresh-overlay {
+  position: fixed;
+  inset: 0 0 var(--taskbar-h) 0;
+  z-index: 8900;
+  background: color-mix(in srgb, var(--background0) 93%, transparent);
+  padding: 1rem 1.5rem;
+  overflow: hidden;
+  font-size: 0.8rem;
+  transition: opacity 0.4s ease;
+}
+.refresh-overlay pre {
+  color: var(--foreground1);
+  line-height: 1.35;
+}
+.refresh-overlay.done {
+  opacity: 0;
+}
+.icons-flash {
+  animation: icons-flash 0.9s ease;
+}
+@keyframes icons-flash {
+  0%, 100% { opacity: 1; }
+  40% { opacity: 0.15; }
 }
 
 /* ------------------------------------------------------------

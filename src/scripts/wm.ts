@@ -390,6 +390,88 @@ function applyBackground(mode: BgMode) {
 
 function hideCtxMenu() {
   $('ctx-menu')?.setAttribute('hidden', '');
+  $('tbar-menu')?.setAttribute('hidden', '');
+}
+
+/* ------------------------------------------------------------ bulk ops + refresh */
+
+function clearAllWindows() {
+  [...wins.keys()].forEach((id) => closeWin(id));
+}
+
+function minimizeAllWindows() {
+  [...wins.keys()].forEach((id) => minimizeWin(id));
+}
+
+function buildTreeLines(): string[] {
+  try {
+    const vfs = JSON.parse($('vfs-data')?.textContent || 'null');
+    if (!vfs?.root) return [];
+    const lines = ['guest@palash.os:/$ tree /', '.'];
+    const walk = (node: { ch: Record<string, any> }, prefix: string) => {
+      const entries = Object.entries(node.ch || {});
+      entries.forEach(([name, ch], i) => {
+        const last = i === entries.length - 1;
+        lines.push(prefix + (last ? '└── ' : '├── ') + name + (ch.t === 'd' ? '/' : ''));
+        if (ch.t === 'd') walk(ch, prefix + (last ? '    ' : '│   '));
+      });
+    };
+    walk(vfs.root, '');
+    lines.push(
+      '',
+      `${lines.length - 2} entries scanned — cache invalidated, vibes refreshed.`,
+      'guest@palash.os:/$ ▉',
+    );
+    return lines;
+  } catch {
+    return [];
+  }
+}
+
+let refreshing = false;
+function refreshDesktop() {
+  if (refreshing) return;
+  refreshing = true;
+  hideCtxMenu();
+
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const overlay = document.createElement('div');
+  overlay.className = 'refresh-overlay';
+  const pre = document.createElement('pre');
+  overlay.appendChild(pre);
+  document.body.appendChild(overlay);
+  $('icons')?.classList.add('icons-flash');
+
+  const lines = buildTreeLines();
+  let i = 0;
+  const finish = () => {
+    setTimeout(() => {
+      overlay.classList.add('done');
+      setTimeout(() => {
+        overlay.remove();
+        $('icons')?.classList.remove('icons-flash');
+        refreshing = false;
+      }, 450);
+    }, 550);
+  };
+  const step = () => {
+    for (let k = 0; k < 3 && i < lines.length; k++) {
+      pre.textContent += lines[i++] + '\n';
+    }
+    overlay.scrollTop = overlay.scrollHeight;
+    if (i < lines.length) {
+      setTimeout(step, 20);
+    } else {
+      finish();
+    }
+  };
+
+  if (reduced || !lines.length) {
+    pre.textContent = lines.join('\n');
+    finish();
+  } else {
+    step();
+  }
 }
 
 function initBackground() {
@@ -413,13 +495,25 @@ function initBackground() {
   });
   $('tray-bg')?.addEventListener('click', cycleBg);
 
-  // right-click menu on the desktop
+  // right-click menus: desktop and taskbar
   const ctx = $('ctx-menu');
+  const tbar = $('tbar-menu');
   document.addEventListener('contextmenu', (e) => {
     const t = e.target as HTMLElement;
+    if (tbar && t.closest('#taskbar')) {
+      e.preventDefault();
+      ctx?.setAttribute('hidden', '');
+      tbar.hidden = false;
+      const r = tbar.getBoundingClientRect();
+      tbar.style.left = `${Math.min(e.clientX, innerWidth - r.width - 8)}px`;
+      tbar.style.top = 'auto';
+      tbar.style.bottom = `calc(var(--taskbar-h) + 0.35rem)`;
+      return;
+    }
     if (!ctx || !t.closest('#desktop')) return;
     if (t.closest('.window')) return; // windows keep the native menu
     e.preventDefault();
+    tbar?.setAttribute('hidden', '');
     ctx.hidden = false;
     const r = ctx.getBoundingClientRect();
     ctx.style.left = `${Math.min(e.clientX, innerWidth - r.width - 8)}px`;
@@ -427,9 +521,20 @@ function initBackground() {
     ctx.style.bottom = 'auto';
   });
   document.addEventListener('click', (e) => {
-    if (ctx && !ctx.hidden && !(e.target as HTMLElement).closest('#ctx-menu')) {
-      hideCtxMenu();
-    }
+    const t = e.target as HTMLElement;
+    if (ctx && !ctx.hidden && !t.closest('#ctx-menu')) ctx.hidden = true;
+    if (tbar && !tbar.hidden && !t.closest('#tbar-menu')) tbar.hidden = true;
+  });
+
+  $('ctx-refresh')?.addEventListener('click', refreshDesktop);
+  $('tbar-refresh')?.addEventListener('click', refreshDesktop);
+  $('tbar-clear')?.addEventListener('click', () => {
+    clearAllWindows();
+    hideCtxMenu();
+  });
+  $('tbar-min')?.addEventListener('click', () => {
+    minimizeAllWindows();
+    hideCtxMenu();
   });
 
   document.addEventListener('click', (e) => {
@@ -575,7 +680,7 @@ export function initWM() {
   // Esc closes the focused window; start menu toggle
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
-      const openMenu = ['ctx-menu', 'start-menu', 'theme-menu']
+      const openMenu = ['ctx-menu', 'tbar-menu', 'start-menu', 'theme-menu']
         .map($)
         .find((m) => m && !m.hidden);
       if (openMenu) {

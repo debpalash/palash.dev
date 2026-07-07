@@ -66,6 +66,7 @@ const { autopen = 'about' } = Astro.props;
 </footer>
 
 <nav id="ctx-menu" class="os-menu" hidden aria-label="Desktop context menu">
+  <button id="ctx-refresh">⟳ refresh</button>
   <div class="menu-head">display</div>
   <button data-bg-set="starfield">background: starfield</button>
   <button data-bg-set="wallpaper">background: wallpaper</button>
@@ -75,6 +76,12 @@ const { autopen = 'about' } = Astro.props;
   <div class="menu-head">shortcuts</div>
   <button data-open="terminal">open terminal</button>
   <button data-open="about">about.txt</button>
+</nav>
+
+<nav id="tbar-menu" class="os-menu" hidden aria-label="Taskbar menu">
+  <button id="tbar-clear">✕ clear all windows</button>
+  <button id="tbar-min">─ minimize all</button>
+  <button id="tbar-refresh">⟳ refresh</button>
 </nav>
 
 <div id="winsrc-store" hidden>

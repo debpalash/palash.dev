@@ -24,6 +24,7 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
 );
 const experiments = await getCollection('experiments');
 const gallery = await getCollection('gallery');
+const company = await getCollection('company');
 
 const renderedPosts = await Promise.all(
   posts.map(async (post) => ({ post, rendered: await render(post) })),
@@ -127,6 +128,16 @@ const vfs = {
         c: `${SITE.company.name} — ${SITE.company.tagline}\n\n${SITE.company.blurb}\n${SITE.company.url}`,
         open: 'company',
       },
+      ...Object.fromEntries(
+        company.map((c) => [
+          `${c.data.name}.url`,
+          {
+            t: 'f',
+            c: `[${c.data.category}] ${c.data.description}\n${c.data.url}`,
+            url: c.data.url,
+          } satisfies VfsFile,
+        ]),
+      ),
     }),
     experiments: dir(
       Object.fromEntries(
@@ -204,8 +215,8 @@ const jsonLd = {
         />
       </WindowSrc>
 
-      <WindowSrc id="programs" title="~/programs" w={620} h={360}>
-        <Programs products={products} />
+      <WindowSrc id="programs" title="~/programs" w={680} h={480}>
+        <Programs products={products} companyProjects={company} />
       </WindowSrc>
 
       {products.map((product) => (
