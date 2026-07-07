@@ -556,6 +556,9 @@ body[data-bg='video'] #bg-video {
   overflow: auto;
   padding: 1rem 1.25rem;
   overscroll-behavior: contain;
+  /* window contents adapt to the window's width, not the viewport */
+  container-type: inline-size;
+  container-name: win;
 }
 
 .resize-grip {
@@ -590,8 +593,9 @@ body[data-bg='video'] #bg-video {
 /* file-listing rows used inside folder windows */
 .filerow {
   display: flex;
+  flex-wrap: wrap;
   align-items: baseline;
-  gap: 1.5ch;
+  gap: 0.1rem 1.5ch;
   width: 100%;
   padding: 0.3rem 0.5rem;
   background: transparent;
@@ -962,12 +966,19 @@ body[data-bg='video'] #bg-video {
   letter-spacing: 0.3em;
 }
 
+/* narrow windows: tighten the manuscript margins */
+@container win (max-width: 520px) {
+  .manuscript {
+    padding: 1.25rem 1rem 1.5rem;
+  }
+}
+
 /* ------------------------------------------------------------
    Gallery
    ------------------------------------------------------------ */
 .gallery-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(180px, 100%), 1fr));
   gap: 0.75rem;
 }
 .gallery-item {

@@ -12,7 +12,7 @@ const { name, tagline, description, url, logoUrl, status, stack } = product.data
 const strip = screenshots.slice(0, 4);
 ---
 
-<div class="flex items-start gap-4 mb-4">
+<div class="flex items-start gap-4 mb-4 flex-wrap">
   {logoUrl && (
     <Image
       src={logoUrl}
@@ -86,13 +86,17 @@ const strip = screenshots.slice(0, 4);
   .prg-table td {
     padding: 0.15rem 2ch 0.15rem 0;
     vertical-align: top;
+    word-break: break-word;
+  }
+  .prg-table td:last-child {
+    padding-right: 0;
   }
   .strip {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 0.5rem;
   }
-  @media (max-width: 520px) {
+  @container win (max-width: 560px) {
     .strip { grid-template-columns: repeat(2, 1fr); }
   }
 </style>

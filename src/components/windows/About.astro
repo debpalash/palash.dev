@@ -80,6 +80,16 @@ const packages = counts
   .nf-logo {
     flex-shrink: 0;
   }
+  .nf-info {
+    flex: 1;
+    min-width: 0; /* allow shrinking inside the flex row */
+  }
+  @container win (max-width: 480px) {
+    .nf {
+      flex-direction: column;
+      gap: 1rem;
+    }
+  }
   .nf-title {
     color: var(--foreground0);
     font-weight: 700;
@@ -88,6 +98,14 @@ const packages = counts
   .nf-table td {
     padding: 0 2ch 0.1rem 0;
     vertical-align: top;
+    word-break: break-word;
+  }
+  .nf-table td:first-child {
+    white-space: nowrap;
+    word-break: normal;
+  }
+  .nf-table td:last-child {
+    padding-right: 0;
   }
   .nf-link {
     background: none;

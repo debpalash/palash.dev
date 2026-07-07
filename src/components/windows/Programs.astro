@@ -89,7 +89,7 @@ const { products, companyProjects = [] } = Astro.props;
 <style>
   .prg-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(19rem, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(19rem, 100%), 1fr));
     gap: 0.75rem;
   }
   .prg-card {
@@ -142,11 +142,13 @@ const { products, companyProjects = [] } = Astro.props;
     color: var(--foreground0);
     font-weight: 700;
     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
   }
   .prg-card-cat {
     color: var(--amber);
     font-size: 0.72rem;
-    white-space: nowrap;
   }
   .prg-card-tag {
     color: var(--foreground2);
