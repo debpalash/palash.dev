@@ -191,6 +191,23 @@
   --img-filter: grayscale(1) brightness(1.05) contrast(1.1) sepia(1) hue-rotate(180deg) saturate(1.5);
 }
 
+:root[data-theme='xmen97'] {
+  --background0: #10122b;
+  --background1: #171a3d;
+  --background2: #202457;
+  --background3: #2c3172;
+  --foreground0: #ffd90f;
+  --foreground1: #d9bb10;
+  --foreground2: #6f74a8;
+  --amber: #e23636;
+  --cyan: #45c8ff;
+  --alert: #ff5f7a;
+  --glow: 0 0 6px rgb(255 217 15 / 0.45);
+  --glow-strong: 0 0 12px rgb(255 217 15 / 0.65);
+  --bg-glow: #1a1d52;
+  --img-filter: grayscale(1) brightness(1.05) contrast(1.15) sepia(1) hue-rotate(5deg) saturate(2.6);
+}
+
 :root[data-theme='omarchy'] {
   --background0: #1a1b26;
   --background1: #1f2335;
@@ -859,7 +876,8 @@ body[data-bg='video'] #bg-video {
   position: absolute;
   top: 0.75rem;
   right: 1rem;
-  z-index: 5;
+  /* above the windows so the dropdown never hides beneath a modal */
+  z-index: 8400;
 }
 #theme-btn {
   background: color-mix(in srgb, var(--background0) 70%, transparent);
@@ -1159,9 +1177,8 @@ body[data-bg='video'] #bg-video {
   margin: 0.4rem 0;
 }
 .nf-shell img {
-  border: 1px solid var(--foreground2);
-  filter: var(--img-filter);
   flex-shrink: 0;
+  filter: drop-shadow(0 4px 10px rgb(0 0 0 / 0.5));
 }
 .nf-shell .nf-body {
   display: flex;

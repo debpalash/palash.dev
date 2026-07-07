@@ -97,7 +97,8 @@ function placeFrame(frame: HTMLElement, w: number, h: number, center = false) {
   frame.style.width = `${width}px`;
   frame.style.height = `${height}px`;
   if (center) {
-    frame.style.left = `${Math.max(16, (deskW - width) / 2)}px`;
+    // biased slightly left so the top-right theme dropdown stays clear
+    frame.style.left = `${Math.max(16, (deskW - width) / 2 - 80)}px`;
     frame.style.top = `${Math.max(16, (deskH - height - 60) / 2)}px`;
     return;
   }
@@ -567,6 +568,7 @@ const THEMES = [
   'snow',
   'tiger',
   'omarchy',
+  'xmen97',
 ];
 
 function applyTheme(theme: string) {
