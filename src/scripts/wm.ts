@@ -634,7 +634,7 @@ function initThemes() {
 function initSysMeter() {
   const meter = $('tray-meter');
   const sys = $('tray-sys');
-  if (!meter || !sys) return;
+  if (!meter) return;
 
   const hist: number[] = [];
   const BARS = '▁▂▃▄▅▆▇█';
@@ -664,7 +664,7 @@ function initSysMeter() {
         .padStart(6, '▁');
     }
 
-    sys!.textContent = used ? `mem ${fmt(used)} · net ${fmt(net)}` : `net ${fmt(net)}`;
+    if (sys) sys.textContent = used ? `mem ${fmt(used)} · net ${fmt(net)}` : `net ${fmt(net)}`;
     meter!.title = `this website, right now — js heap: ${used ? fmt(used) : 'n/a'} · transferred: ${fmt(net)}`;
   }
 

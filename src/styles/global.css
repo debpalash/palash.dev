@@ -906,16 +906,20 @@ body[data-bg='video'] #bg-video {
 /* --- shaktimaan print-spooler gag --- */
 #tray-printer {
   position: relative;
-  font-size: 0.95rem;
+  font-size: 1.45rem;
+  line-height: 1;
+  color: var(--foreground0);
+  padding: 0 0.6ch;
 }
 #tray-printer .prn-dot {
   position: absolute;
-  top: 2px;
-  right: -1px;
-  width: 6px;
-  height: 6px;
+  top: 3px;
+  right: 2px;
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
   background: var(--amber);
+  box-shadow: 0 0 6px var(--amber);
   animation: blink 1.1s steps(1) infinite;
 }
 #tray-printer.read .prn-dot {
