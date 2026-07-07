@@ -1,4 +1,5 @@
 ---
+import { Image } from 'astro:assets';
 import type { CollectionEntry } from 'astro:content';
 import { SITE } from '../../site.config';
 
@@ -10,41 +11,159 @@ interface Props {
 const { products, companyProjects = [] } = Astro.props;
 ---
 
-<p class="dim mb-2">total {products.length} — double-clicking is for boomers, one click launches</p>
+<p class="dim mb-3">
+  {products.length} installed — one click launches · <span class="cyan">▸ = runs in a window</span>
+</p>
 
-{products.map((p) => (
-  <button class="filerow" data-open={`prg-${p.id}`}>
-    <span aria-hidden="true">{p.data.icon}</span>
-    <span class="fname">{p.id}.prg</span>
-    <span class={`dot ${p.data.status}`} title={p.data.status}>●</span>
-    <span class="fmeta">{p.data.tagline}</span>
-  </button>
-))}
+<div class="prg-grid">
+  {products.map((p) => (
+    <button class="prg-card" data-open={`prg-${p.id}`}>
+      {p.data.logoUrl ? (
+        <Image
+          src={p.data.logoUrl}
+          alt={`${p.data.name} logo`}
+          width={48}
+          height={48}
+          layout="fixed"
+          class="prg-card-logo"
+        />
+      ) : (
+        <span class="prg-card-glyph" aria-hidden="true">{p.data.icon}</span>
+      )}
+      <span class="prg-card-body">
+        <span class="prg-card-name">
+          {p.id}.prg <span class={`dot ${p.data.status}`} title={p.data.status}>●</span>
+        </span>
+        <span class="prg-card-tag">{p.data.tagline}</span>
+        <span class="prg-card-run">▸ run</span>
+      </span>
+    </button>
+  ))}
+</div>
 
 {companyProjects.length > 0 && (
   <Fragment>
-    <p class="dim mt-5 mb-1">
-      company: <span class="cyan">{SITE.company.name}</span> ·{' '}
+    <p class="prg-section mt-6 mb-3">
+      <span class="dim">──┤</span> company: <span class="cyan">{SITE.company.name}</span>
+      <span class="dim">·</span>
       <a href={SITE.company.url} target="_blank" rel="noopener">yupcha.com ↗</a>
+      <span class="dim">├──</span>
     </p>
-    {companyProjects.map((c) =>
-      c.data.open ? (
-        <button class="filerow" data-open={c.data.open}>
-          <span class="fname">{c.data.name}</span>
-          <span class="amber">[{c.data.category}]</span>
-          <span class="fmeta">{c.data.description}</span>
-        </button>
-      ) : (
-        <a class="filerow" href={c.data.url} target="_blank" rel="noopener">
-          <span class="fname">{c.data.name} ↗</span>
-          <span class="amber">[{c.data.category}]</span>
-          <span class="fmeta">{c.data.description}</span>
-        </a>
-      ),
-    )}
+    <div class="prg-grid">
+      {companyProjects.map((c) => {
+        const inner = (
+          <Fragment>
+            {c.data.logoUrl ? (
+              <Image
+                src={c.data.logoUrl}
+                alt={`${c.data.name} logo`}
+                width={48}
+                height={48}
+                layout="fixed"
+                class="prg-card-logo"
+              />
+            ) : (
+              <span class="prg-card-glyph" aria-hidden="true">⌂</span>
+            )}
+            <span class="prg-card-body">
+              <span class="prg-card-name">{c.data.name}{!c.data.open && ' ↗'}</span>
+              <span class="prg-card-cat">[{c.data.category}] · {c.data.lang}</span>
+              <span class="prg-card-tag">{c.data.description}</span>
+            </span>
+          </Fragment>
+        );
+        return c.data.open ? (
+          <button class="prg-card" data-open={c.data.open}>{inner}</button>
+        ) : (
+          <a class="prg-card" href={c.data.url} target="_blank" rel="noopener">{inner}</a>
+        );
+      })}
+    </div>
   </Fragment>
 )}
 
-<p class="mt-4 dim">
+<p class="mt-5 dim">
   see also: <a href="https://github.com/debpalash?tab=repositories" target="_blank" rel="noopener">all repositories ↗</a>
 </p>
+
+<style>
+  .prg-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(19rem, 1fr));
+    gap: 0.75rem;
+  }
+  .prg-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.8rem;
+    padding: 0.7rem 0.8rem;
+    background: color-mix(in srgb, var(--background1) 55%, transparent);
+    border: 1px solid var(--background3);
+    color: var(--foreground1);
+    font-family: inherit;
+    font-size: inherit;
+    text-align: left;
+    text-decoration: none;
+    cursor: pointer;
+    height: auto;
+    min-height: 0;
+  }
+  .prg-card:hover,
+  .prg-card:focus-visible {
+    border-color: var(--foreground0);
+    box-shadow: var(--glow);
+    background: var(--background2);
+    text-shadow: none;
+  }
+  .prg-card-logo {
+    border: 1px solid var(--background3);
+    background: var(--background1);
+    flex-shrink: 0;
+    object-fit: contain;
+  }
+  .prg-card-glyph {
+    width: 48px;
+    height: 48px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+    border: 1px solid var(--background3);
+    background: var(--background1);
+    flex-shrink: 0;
+  }
+  .prg-card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    min-width: 0;
+  }
+  .prg-card-name {
+    color: var(--foreground0);
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .prg-card-cat {
+    color: var(--amber);
+    font-size: 0.72rem;
+    white-space: nowrap;
+  }
+  .prg-card-tag {
+    color: var(--foreground2);
+    font-size: 0.78rem;
+    line-height: 1.35;
+  }
+  .prg-card-run {
+    color: var(--cyan);
+    font-size: 0.72rem;
+    margin-top: 0.1rem;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+  }
+  .prg-card:hover .prg-card-run {
+    opacity: 1;
+  }
+  .prg-section {
+    color: var(--foreground1);
+  }
+</style>

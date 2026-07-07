@@ -5,7 +5,8 @@
     "description": "Free, 100% offline HR toolkit — 60+ tools: offer letters, payslips, payroll & tax calculators. Local-only AI via Ollama.",
     "url": "https://github.com/Yupcha/hr-tools",
     "lang": "TypeScript",
-    "category": "business suite"
+    "category": "business suite",
+    "logoUrl": "https://raw.githubusercontent.com/Yupcha/hr-tools/main/src-tauri/icons/128x128.png"
   },
   {
     "id": "waitless",
@@ -13,7 +14,8 @@
     "description": "Open-source waitlist management platform — collect signups, send emails, track growth. Single binary.",
     "url": "https://github.com/Yupcha/waitless",
     "lang": "TypeScript",
-    "category": "saas / oss"
+    "category": "saas / oss",
+    "logoUrl": "https://raw.githubusercontent.com/Yupcha/waitless/main/frontend/public/logo192.png"
   },
   {
     "id": "creatormaps",
@@ -21,7 +23,8 @@
     "description": "Turn any place, route, or dataset in India into cinematic map reels & HD posters — free, in the browser.",
     "url": "https://github.com/Yupcha/CreatorMaps",
     "lang": "Svelte",
-    "category": "creator tools"
+    "category": "creator tools",
+    "logoUrl": "https://raw.githubusercontent.com/Yupcha/CreatorMaps/main/static/logo.svg"
   },
   {
     "id": "memxt-org",
@@ -30,6 +33,7 @@
     "url": "https://github.com/Yupcha/memxt",
     "lang": "Zig",
     "category": "ai / dev tools",
+    "logoUrl": "https://raw.githubusercontent.com/debpalash/memxt/main/assets/logo.svg",
     "open": "prg-memxt"
   }
 ]

@@ -57,6 +57,7 @@ const company = defineCollection({
     url: z.string().url(),
     lang: z.string(),
     category: z.string(),
+    logoUrl: z.string().url().optional(),
     /** optional window id to open instead of linking out */
     open: z.string().optional(),
   }),
