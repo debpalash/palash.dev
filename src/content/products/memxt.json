@@ -1,0 +1,16 @@
+{
+  "name": "memxt",
+  "tagline": "Local-first long-term memory for AI coding agents",
+  "description": "The fastest benchmarked open-source AI memory system — a single static binary that gives coding agents persistent, on-device memory across sessions. No cloud, no Python, nothing leaves your machine.",
+  "url": "https://github.com/debpalash/memxt",
+  "icon": "🧠",
+  "status": "live",
+  "stack": [
+    "Zig",
+    "LLM",
+    "MCP",
+    "AI Memory"
+  ],
+  "order": 2,
+  "logoUrl": "https://raw.githubusercontent.com/debpalash/memxt/main/assets/logo.svg"
+}

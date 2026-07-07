@@ -1,0 +1,15 @@
+{
+  "name": "Opal",
+  "tagline": "Play everything — the evolved media player",
+  "description": "One media player for everything — files, sites, servers, and feeds. Say a title, a file, a magnet, or a vibe, and Opal finds and plays it a moment later. AI-powered discovery built for speed in Zig, running on macOS, Linux, and Windows.",
+  "url": "https://github.com/debpalash/Opal",
+  "icon": "💠",
+  "status": "live",
+  "stack": [
+    "Zig",
+    "AI",
+    "Desktop"
+  ],
+  "order": 3,
+  "logoUrl": "https://raw.githubusercontent.com/debpalash/Opal/main/assets/logo.svg"
+}
