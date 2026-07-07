@@ -32,10 +32,11 @@ scanlines — rendered in green phosphor, driven by content collections, with
 
 ### Theming
 
-Six genre-defying themes ship built-in, switchable from the top-right corner
-(persisted per visitor): **phosphor** (green CRT), **amber**, **ice** (Tron),
-**synthwave** (outrun), **doom** (rip & tear), and **paper** (light e-ink
-heresy). Every color in the OS derives from CSS variables in
+Thirteen genre-defying themes ship built-in, switchable from the top-right
+corner (persisted per visitor) — **shaktimaan** (default: chakra gold on
+crimson), **omarchy**, **x-men '97**, **windows xp**, **paper**, **tiger**,
+**snow leopard**, **ice**, **amber**, **phosphor**, **synthwave**, **doom**,
+and **simba**. Every color in the OS derives from CSS variables in
 `src/styles/global.css`, so adding your own theme is one
 `:root[data-theme='yours'] { … }` block plus a button in `Desktop.astro`.
 

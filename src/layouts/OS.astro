@@ -21,8 +21,16 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
 ---
 
 <!doctype html>
-<html lang="en" data-webtui-theme="dark">
+<html lang="en" data-webtui-theme="dark" data-theme="shaktimaan">
   <head>
+    <script is:inline>
+      // apply the visitor's saved theme before first paint (default: shaktimaan)
+      try {
+        var t = localStorage.getItem('phosphor-ui-theme');
+        if (t === 'phosphor') delete document.documentElement.dataset.theme;
+        else if (t) document.documentElement.dataset.theme = t;
+      } catch (e) {}
+    </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />

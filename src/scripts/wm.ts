@@ -567,23 +567,23 @@ function initBackground() {
 /* ------------------------------------------------------------ themes */
 
 const THEMES = [
-  'phosphor',
-  'amber',
-  'ice',
-  'synthwave',
-  'doom',
-  'paper',
-  'xp',
-  'snow',
-  'tiger',
+  'shaktimaan',
   'omarchy',
   'xmen97',
-  'shaktimaan',
+  'xp',
+  'paper',
+  'tiger',
+  'snow',
+  'ice',
+  'amber',
+  'phosphor',
+  'synthwave',
+  'doom',
   'simba',
 ];
 
 function applyTheme(theme: string) {
-  if (!THEMES.includes(theme)) theme = 'phosphor';
+  if (!THEMES.includes(theme)) theme = 'shaktimaan';
   if (theme === 'phosphor') {
     delete document.documentElement.dataset.theme;
   } else {
@@ -603,7 +603,7 @@ function applyTheme(theme: string) {
 }
 
 function initThemes() {
-  applyTheme(load2('phosphor-ui-theme') || 'phosphor');
+  applyTheme(load2('phosphor-ui-theme') || 'shaktimaan');
 
   const btn = $('theme-btn');
   const menu = $('theme-menu');
