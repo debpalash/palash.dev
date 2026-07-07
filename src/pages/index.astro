@@ -198,6 +198,24 @@ const jsonLd = {
       <Icon open="contact" kind="exec" label="contact.sh" />
     </Fragment>
 
+    <Fragment slot="pins">
+      {products.map((p) => (
+        <button
+          class="pin"
+          data-open={`prg-${p.id}`}
+          data-tip={`${p.data.name} — ${p.data.tagline}`}
+          aria-label={`Open ${p.data.name}`}
+        >
+          {p.data.logoUrl ? (
+            <img src={p.data.logoUrl} alt="" width="29" height="29" loading="lazy" />
+          ) : (
+            <span aria-hidden="true">{p.data.icon}</span>
+          )}
+        </button>
+      ))}
+      <button class="pin pin-more" data-open="programs" data-tip="all programs" aria-label="All programs">…</button>
+    </Fragment>
+
     <Fragment slot="menu">
       <button data-open="about">about.txt</button>
       <button data-open="programs">programs/</button>

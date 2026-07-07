@@ -208,21 +208,23 @@
   --img-filter: grayscale(1) brightness(1.05) contrast(1.15) sepia(1) hue-rotate(5deg) saturate(2.6);
 }
 
+/* shaktimaan: chakra gold on crimson suit-red; energy-blue kundalini
+   accents; kilvish purple for alerts. andhera kaayam rahe. */
 :root[data-theme='shaktimaan'] {
-  --background0: #1a0508;
-  --background1: #260a0e;
-  --background2: #351016;
-  --background3: #47161e;
-  --foreground0: #ffcf40;
-  --foreground1: #ddb02f;
-  --foreground2: #a06a4e;
-  --amber: #ff4d3d;
-  --cyan: #ff9e2c;
-  --alert: #ff8080;
-  --glow: 0 0 6px rgb(255 207 64 / 0.5);
-  --glow-strong: 0 0 12px rgb(255 207 64 / 0.7);
-  --bg-glow: #2e0a10;
-  --img-filter: grayscale(1) brightness(1.05) contrast(1.15) sepia(1) hue-rotate(-15deg) saturate(2.4);
+  --background0: #190407;
+  --background1: #29080d;
+  --background2: #3a0d14;
+  --background3: #4f131c;
+  --foreground0: #ffd24a;
+  --foreground1: #e3b332;
+  --foreground2: #b0763f;
+  --amber: #ff4433;
+  --cyan: #6ec8ff;
+  --alert: #c77dff;
+  --glow: 0 0 6px rgb(255 210 74 / 0.5);
+  --glow-strong: 0 0 14px rgb(255 210 74 / 0.75);
+  --bg-glow: #38090f;
+  --img-filter: grayscale(1) brightness(1.05) contrast(1.15) sepia(1) hue-rotate(-12deg) saturate(2.6);
 }
 
 :root[data-theme='simba'] {
@@ -777,6 +779,85 @@ body[data-bg='video'] #bg-video {
   font-weight: 700;
   color: var(--foreground0);
   text-shadow: var(--glow);
+}
+
+/* pinned programs */
+#pins {
+  display: flex;
+  gap: 0.25rem;
+  align-items: center;
+  padding: 0 0.4rem;
+  border-right: 1px solid var(--background3);
+}
+.pin {
+  position: relative;
+  width: 2.5rem;
+  height: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: 1px solid transparent;
+  padding: 0;
+  min-height: 0;
+  cursor: pointer;
+  color: var(--foreground1);
+  font-family: inherit;
+}
+.pin img {
+  width: 29px;
+  height: 29px;
+  object-fit: contain;
+}
+.pin:hover {
+  border-color: var(--foreground2);
+  background: var(--background2);
+}
+.pin.running::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -1px;
+  width: 14px;
+  height: 2px;
+  transform: translateX(-50%);
+  background: var(--foreground0);
+}
+.pin-more {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--foreground1);
+  line-height: 1;
+}
+.pin-more:hover {
+  color: var(--foreground0);
+}
+/* styled taskbar tooltips */
+.pin[data-tip]::before {
+  content: attr(data-tip);
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  background: color-mix(in srgb, var(--background0) 96%, transparent);
+  border: 1px solid var(--foreground0);
+  color: var(--foreground0);
+  padding: 0.2rem 1ch;
+  font-size: 0.72rem;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.12s ease, transform 0.12s ease;
+  box-shadow: var(--glow), 0 6px 20px rgb(0 0 0 / 0.5);
+  z-index: 8600;
+}
+.pin[data-tip]:hover::before,
+.pin[data-tip]:focus-visible::before {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+@media (max-width: 768px) {
+  #pins { display: none; }
 }
 
 #task-items {

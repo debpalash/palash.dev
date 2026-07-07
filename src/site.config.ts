@@ -8,6 +8,7 @@
  */
 
 export const SITE = {
+  name: 'palash.dev',
   url: 'https://palash.dev',
   title: 'Palash Debnath — Software Engineer & Builder',
   description:

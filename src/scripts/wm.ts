@@ -164,7 +164,15 @@ export function openWindow(id: string) {
   };
   wins.set(id, win);
   focusWin(id);
+  syncPins();
   document.dispatchEvent(new CustomEvent('os:open', { detail: { id } }));
+}
+
+/** running indicator on taskbar-pinned programs */
+function syncPins() {
+  document.querySelectorAll<HTMLElement>('#pins .pin[data-open]').forEach((p) => {
+    p.classList.toggle('running', wins.has(p.dataset.open || ''));
+  });
 }
 
 /** Ephemeral image-viewer window (not backed by a winsrc node). */
@@ -203,6 +211,7 @@ function closeWin(id: string) {
   w.frame.remove();
   w.taskBtn.remove();
   wins.delete(id);
+  syncPins();
   if (focusedId === id) {
     focusedId = null;
     const last = [...wins.values()].filter((x) => !x.minimized).pop();
