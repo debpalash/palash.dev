@@ -1,0 +1,43 @@
+---
+title: "memxt: Your Agent Forgets. Mine Doesn't."
+description: "Local-first long-term memory for AI coding agents — one static binary, sub-millisecond semantic recall, nothing leaves your machine."
+publishDate: 2026-07-08T12:00:00
+tags: ["memxt", "zig", "ai", "agents"]
+---
+
+# memxt: Your Agent Forgets. Mine Doesn't.
+
+Most AI coding sessions start amnesiac.
+
+You re-explain the architecture. You re-state why you chose SQLite over Postgres. The agent cheerfully contradicts a decision it helped make last week.
+
+Context window ends, knowledge dies. Every session is groundhog day.
+
+memxt is my fix: persistent, on-device memory your agent can search and write. Wired into Claude Code through MCP tools and session hooks — the agent wakes up already knowing your codebase and your decisions.
+
+## The numbers
+
+- **One static binary.** ~6 MB, plus a 45 MB embedding model. No Python, no Docker, no vector database to babysit.
+- **Session wake-up in ~10 ms.**
+- **Sub-millisecond vector search** once the model is resident.
+- **100% local.** Embeddings, storage, and search run on-device — llama.cpp + sqlite-vec. No API keys. No network at query time.
+
+The fastest benchmarked open-source AI memory system. The benchmarks are [in the repo](https://github.com/debpalash/memxt) — run them yourself.
+
+## Why local, why Zig
+
+Two rules I refuse to break.
+
+**Memory infrastructure should be invisible.** If recall adds seconds to your loop, you'll turn it off. 10 ms wake-up means it's just *there*, every session, and you stop thinking about it. That's what Zig buys — and it's why memxt started life as a 200× faster port of an existing memory tool.
+
+**Your decisions are your codebase.** The reasoning behind your architecture is some of the most sensitive data you produce. It should not live in someone else's cloud so your agent can remember it. Nothing leaves your machine. That's the whole design.
+
+## Install
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Yupcha/memxt/main/install.sh | bash
+```
+
+Detects your platform, drops the binary and model in `~/.memxt/`, done.
+
+Your agent already works hard. Let it remember.
