@@ -9,17 +9,7 @@ wallhaven wallpapers with slow pan / ambient ISRO mission video), CRT
 scanlines — rendered in green phosphor, driven by content collections, with
 **zero framework runtime** (window manager + shell are vanilla TypeScript).
 
-```text
-┌─ PALASH.OS ─────────────────────────────────┐
-│ [☺] about.txt   [►] programs/   [≡] docs/   │
-│ [▦] gallery/    [⌂] company/    [@] contact │
-│      ┌─ programs/opal.prg ── [─][□][✕] ─┐   │
-│      │ 💠 Opal — Play everything        │   │
-│      └──────────────────────────────────┘   │
-├──────────────────────────────────────────────┤
-│ [⏻ PALASH.OS] │ about.txt │ opal    14:32   │
-└──────────────────────────────────────────────┘
-```
+![PALASH.OS — phosphor desktop with neofetch about window, THE LOG widget, and Clippy](docs/screenshot.png)
 
 ## Stack
 

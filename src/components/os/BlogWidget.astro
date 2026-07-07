@@ -315,7 +315,9 @@ const latest = recent[0];
   }
 
   if (widget && panel && toggle) {
-    if (load('clippy-open') === '1') setOpen(true);
+    // THE LOG panel is open by default; stays closed only if the
+    // visitor collapsed it themselves
+    setOpen(load('clippy-open') !== '0');
     if (load('clippy-hush') === '1' && bubble) bubble.hidden = true;
 
     toggle.addEventListener('click', () => setOpen(panel.hidden));
