@@ -9,7 +9,17 @@ wallhaven wallpapers with slow pan / ambient ISRO mission video), CRT
 scanlines — rendered in green phosphor, driven by content collections, with
 **zero framework runtime** (window manager + shell are vanilla TypeScript).
 
-![PALASH.OS — phosphor desktop with neofetch about window, THE LOG widget, and Clippy](docs/screenshot.png)
+![PALASH.OS in action — theme switching, then the printer incident](docs/demo.gif)
+
+<p align="center"><em>theme hopping → percussive maintenance → ⚡ short circuit → shaktimaan.pdf prints anyway</em><br/>
+🎬 <a href="docs/demo.mp4">full 45s tour (mp4)</a> — boot → live shell → programs → manuscripts → themes → the printer incident</p>
+
+<details>
+<summary>📸 still: the desktop at rest</summary>
+
+![PALASH.OS — desktop with neofetch about window, THE LOG widget, and Clippy](docs/screenshot.png)
+
+</details>
 
 ## Stack
 
