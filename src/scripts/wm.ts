@@ -723,12 +723,16 @@ export function initWM() {
   tick();
   setInterval(tick, 15000);
 
-  // boot, then open deep-linked or default window
+  // boot, then open deep-linked window; autopen only on the first visit
   runBoot(() => {
     const hashId = location.hash.slice(1);
     if (hashId && $(`winsrc-${hashId}`)) {
       openWindow(hashId);
-    } else {
+      return;
+    }
+    const firstVisit = load2('phosphor-visited') !== '1';
+    store2('phosphor-visited', '1');
+    if (firstVisit) {
       const auto = ($('desktop')?.dataset.autopen || '').split(',').filter(Boolean);
       auto.forEach((id, idx) => setTimeout(() => openWindow(id.trim()), idx * 160));
     }

@@ -17,25 +17,25 @@ const date = post.data.publishDate.toISOString().split('T')[0];
 
 <OS title={post.data.title} description={post.data.description} mode="page">
   <div class="page-frame">
-    <p class="dim">
-      <a href={`/#doc-${post.id}`}>← open in PALASH.OS</a> · <a href="/blog">all docs</a>
+    <p class="dim flex justify-between flex-wrap gap-2">
+      <a href={`/#doc-${post.id}`}>← open in PALASH.OS</a>
+      <span><a href="/blog">the log</a> · <a href="/rss.xml">rss</a></span>
     </p>
 
-    <article box-="double" class="mt-6 p-6">
-      <header class="mb-4">
-        <p class="dim">
-          {date} · {post.data.tags.map((t) => `#${t}`).join(' ')}
-        </p>
-      </header>
+    <article class="manuscript page-manuscript mt-6">
+      <p class="manu-meta">
+        {date} · {post.data.tags.map((t) => `#${t}`).join(' ')}
+      </p>
 
       <div class="prose">
         <Content />
       </div>
 
-      <footer class="mt-8 dim">
-        <hr style="border:none;border-top:1px dashed var(--foreground2);margin-bottom:1rem;" />
-        EOF · <a href="/blog">← all posts</a>
-      </footer>
+      <footer class="manu-end">— EOF —</footer>
     </article>
+
+    <p class="mt-6 dim" style="text-align:center;">
+      <a href="/blog">← all posts</a> · written by <a href="/">Palash Debnath</a>
+    </p>
   </div>
 </OS>

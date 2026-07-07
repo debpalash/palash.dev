@@ -973,6 +973,50 @@ body[data-bg='video'] #bg-video {
   }
 }
 
+/* standalone article pages: the manuscript as a full reading sheet */
+.page-manuscript {
+  max-width: 76ch;
+  margin-inline: auto;
+  padding: 2.5rem clamp(1.25rem, 5vw, 3.5rem) 3rem;
+  border: 1px solid var(--background3);
+  box-shadow: 0 12px 48px rgb(0 0 0 / 0.45);
+}
+.page-manuscript .prose {
+  max-width: 100%;
+  font-size: 1.02rem;
+  line-height: 1.75;
+}
+.page-manuscript .prose p {
+  margin: 0.95em 0;
+}
+.page-manuscript .prose h1 {
+  font-size: 1.55rem;
+  line-height: 1.25;
+  margin-bottom: 0.8em;
+}
+.page-manuscript .prose h2 {
+  font-size: 1.2rem;
+  margin-top: 1.8em;
+}
+.page-manuscript .prose blockquote {
+  padding-block: 0.25rem;
+  font-style: italic;
+}
+.page-manuscript .prose :is(ul, ol) {
+  margin: 0.9em 0;
+}
+.page-manuscript .prose li {
+  margin: 0.4em 0;
+}
+
+/* in-window manuscripts get slightly roomier prose too */
+.manuscript .prose {
+  line-height: 1.65;
+}
+.manuscript .prose p {
+  margin: 0.85em 0;
+}
+
 /* ------------------------------------------------------------
    Gallery
    ------------------------------------------------------------ */
@@ -1042,6 +1086,51 @@ body[data-bg='video'] #bg-video {
 .term-out .t-img { color: var(--cyan); }
 .term-out .t-err { color: var(--alert); }
 .term-out .t-dim { color: var(--foreground2); }
+/* terminal neofetch card (first variation: logo + identity table) */
+.term-out .nf-shell {
+  display: flex;
+  gap: 1.2rem;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  white-space: normal;
+  margin: 0.4rem 0;
+}
+.nf-shell img {
+  border: 1px solid var(--foreground2);
+  filter: var(--img-filter);
+  flex-shrink: 0;
+}
+.nf-shell .nf-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  min-width: 0;
+}
+.nf-shell .nf-title {
+  text-shadow: var(--glow);
+}
+.nf-shell .nf-rows {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.05rem 2ch;
+}
+.nf-shell .nf-rows .k {
+  color: var(--foreground2);
+  white-space: nowrap;
+}
+.nf-shell .nf-rows strong {
+  color: var(--foreground0);
+}
+.nf-shell .nf-pal {
+  display: flex;
+  gap: 2px;
+  margin-top: 0.4rem;
+}
+.nf-shell .nf-pal span {
+  width: 2ch;
+  height: 0.8rem;
+}
+
 .term-line {
   position: relative;
   display: flex;

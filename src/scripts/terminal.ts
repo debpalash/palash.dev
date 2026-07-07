@@ -31,6 +31,14 @@ interface Vfs {
     user: string;
     host: string;
     author: string;
+    logo?: string;
+    role?: string;
+    os?: string;
+    site?: string;
+    company?: string;
+    companyUrl?: string;
+    github?: string;
+    motto?: string;
     stack: string[];
     counts: Record<string, number>;
   };
@@ -195,18 +203,32 @@ function createShell(rootEl: HTMLElement, vfs: Vfs, opts: ShellOpts = {}) {
       const m = vfs.meta;
       const counts = Object.entries(m.counts)
         .map(([k, v]) => `${v} ${k}`)
-        .join(', ');
+        .join(' · ');
+      const row = (k: string, v: string) =>
+        `<span class="k">${esc(k)}</span><span>${v}</span>`;
+      const pal = ['--foreground0', '--foreground1', '--foreground2', '--amber', '--cyan', '--alert', '--background3']
+        .map((c) => `<span style="background:var(${c})"></span>`)
+        .join('');
       print(
-        [
-          `<span class="t-exec">        ▄▄▄▄▄▄        </span>  <span class="t-dir">${esc(m.user)}@${esc(m.host)}</span>`,
-          `<span class="t-exec">      ▄█▀▀▀▀▀▀█▄      </span>  ──────────────`,
-          `<span class="t-exec">     ██  ▓▓▓▓  ██     </span>  OS:       PHOSPHOR OS (Astro 7)`,
-          `<span class="t-exec">     ██  ▓▓▓▓  ██     </span>  Host:     ${esc(m.author)}`,
-          `<span class="t-exec">      ▀█▄▄▄▄▄▄█▀      </span>  Shell:    phosh 0.1`,
-          `<span class="t-exec">        ▀▀▀▀▀▀        </span>  Theme:    green phosphor [CRT]`,
-          `                          Packages: ${esc(counts)}`,
-          `                          Uptime:   since boot, obviously`,
-        ].join('\n'),
+        `<div class="nf-shell">` +
+          (m.logo ? `<img src="${m.logo}" width="96" height="96" alt="" loading="lazy" />` : '') +
+          `<div class="nf-body">` +
+          `<span class="t-dir nf-title">${esc(m.user)}@${esc(m.host)}</span>` +
+          `<span class="t-dim">─────────────────</span>` +
+          `<div class="nf-rows">` +
+          row('Name', `<strong>${esc(m.author)}</strong>`) +
+          (m.role ? row('Role', esc(m.role)) : '') +
+          (m.os ? row('OS', esc(m.os)) : '') +
+          (m.site ? row('Host', `<a href="https://${esc(m.site)}">${esc(m.site)}</a>`) : '') +
+          (m.company ? row('Company', `<a href="${esc(m.companyUrl || '#')}" target="_blank" rel="noopener">${esc(m.company)} ↗</a>`) : '') +
+          (m.github ? row('GitHub', `<a href="https://${esc(m.github)}" target="_blank" rel="noopener">${esc(m.github)}</a>`) : '') +
+          row('Packages', esc(counts)) +
+          row('Shell', 'phosh 0.1') +
+          (m.motto ? row('Motto', esc(m.motto)) : '') +
+          row('Uptime', 'since boot, obviously') +
+          `</div>` +
+          `<div class="nf-pal">${pal}</div>` +
+          `</div></div>`,
       );
     },
     exit() {
