@@ -903,6 +903,110 @@ body[data-bg='video'] #bg-video {
   cursor: default;
 }
 
+/* --- shaktimaan print-spooler gag --- */
+#tray-printer {
+  position: relative;
+  font-size: 0.95rem;
+}
+#tray-printer .prn-dot {
+  position: absolute;
+  top: 2px;
+  right: -1px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--amber);
+  animation: blink 1.1s steps(1) infinite;
+}
+#tray-printer.read .prn-dot {
+  display: none;
+}
+#printer-pop {
+  right: 0.5rem;
+  bottom: calc(var(--taskbar-h) + 0.35rem);
+  min-width: 30ch;
+}
+.prn-body {
+  padding: 0.5rem 1rem 0.9rem;
+  font-size: 0.8rem;
+  color: var(--foreground1);
+}
+.prn-body strong {
+  color: var(--foreground0);
+}
+#prn-retry {
+  margin-top: 0.5rem;
+  background: none;
+  border: 1px solid var(--amber);
+  color: var(--amber);
+  padding: 0.15rem 1ch;
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 700;
+  height: auto;
+  min-height: 0;
+  cursor: pointer;
+}
+#prn-retry:hover {
+  background: var(--amber);
+  color: var(--background0);
+}
+#prn-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 0.6rem;
+}
+.prn-svg {
+  position: relative;
+  z-index: 2;
+}
+#prn-stage.printing .prn-svg {
+  animation: prn-shake 0.16s linear 32;
+}
+#prn-stage.printing .prn-led {
+  animation: blink 0.3s steps(1) 18;
+}
+.prn-paper {
+  width: 152px;
+  max-height: 0;
+  overflow: hidden;
+  margin-top: -13px;
+  border: 1px solid var(--background3);
+  background: #fff;
+  z-index: 1;
+}
+.prn-paper img {
+  display: block;
+  width: 150px;
+  height: auto;
+}
+#prn-stage.printing .prn-paper {
+  animation: prn-feed 5s steps(45) forwards;
+}
+.prn-done {
+  color: var(--foreground0);
+  margin-top: 0.5rem;
+}
+.prn-done em {
+  color: var(--amber);
+  font-style: normal;
+}
+@keyframes prn-feed {
+  from { max-height: 0; }
+  to { max-height: 220px; }
+}
+@keyframes prn-shake {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(1.6px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  #prn-stage.printing .prn-paper { animation-duration: 0.5s; }
+  #prn-stage.printing .prn-svg,
+  #prn-stage.printing .prn-led,
+  #tray-printer .prn-dot { animation: none; }
+}
+
 .os-menu {
   position: fixed;
   z-index: 8500;
