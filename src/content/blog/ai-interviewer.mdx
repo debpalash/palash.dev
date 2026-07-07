@@ -1,0 +1,53 @@
+---
+title: "We Built an AI Interviewer. It's Not Here to Replace HR."
+description: "First-round interviews are a grind of repeated questions and manual notes. Here's what we built at Yupcha instead — and what building it taught us."
+publishDate: 2026-07-05
+tags: ["ai", "product", "yupcha", "hiring"]
+---
+
+# We Built an AI Interviewer. It's Not Here to Replace HR.
+
+"Recruiters just post jobs."
+
+That's one of the biggest misconceptions about hiring. Behind every successful hire are hundreds of resumes, interview scheduling, candidate follow-ups, hiring manager coordination, offer negotiations — and sometimes starting all over again.
+
+And the worst grind of all: first-round interviews. The same questions, asked the same way, to dozens of candidates, evaluated by hand, week after week.
+
+Recruiters don't need more work. They need less *repetitive* work.
+
+That's exactly why we built the Yupcha AI Interviewer.
+
+## What it actually does
+
+Not magic. Structure.
+
+- **Structured interview templates** — build them yourself or let AI generate them from the role. Every candidate gets the same fair, deliberate interview.
+- **AI-conducted first rounds, in real time** — video interviews that run themselves, at whatever hour suits the candidate. Finish dozens of interviews before your day starts.
+- **One place for the pipeline** — candidates, statuses, and follow-ups without the spreadsheet archaeology.
+- **Structured assessment reports** — not a raw transcript to wade through. Clear, comparable evaluations against the template you defined.
+
+The human makes the hiring decision. The machine compresses everything before the decision.
+
+## The part I care most about: language
+
+Hiring in India doesn't happen in English alone — but interviews mostly do, and that quietly filters for English fluency instead of actual ability.
+
+So we wired indic language support deep into the interviewer, built on Sarvam's TTS and language models. A candidate interviewing in their own language performs like themselves. That's not a feature checkbox; for hiring across India, it's the whole point.
+
+(It's also our small bet on sovereign AI — routing real production traffic to Indian labs. I wrote more about that separately.)
+
+## What building it taught us
+
+**Structure beats vibes.** The template is the product. An AI interviewer without structured templates is just a chatbot with opinions; with them, every candidate gets measured against the same bar, and the reports become comparable.
+
+**Reports beat transcripts.** Nobody reads forty transcripts. Everyone reads forty one-page assessments. Most of our iteration went into what comes *out* of the interview, not what happens in it.
+
+**Trust is earned in the failure cases.** What happens when the candidate's connection drops, when they misunderstand a question, when the model mishears? Boring reliability work — and it's where an HR tool lives or dies.
+
+**Replacing people is the wrong product.** Every time we framed a feature as "so HR doesn't have to be there," it got worse. Every time we framed it as "so HR walks into the final round already informed," it got better. Support, not substitution. The funnel gets compressed; the judgment stays human.
+
+## Where it stands
+
+The AI Interviewer is live at [yupcha.com](https://yupcha.com), running structured first-round interviews for teams that would rather spend their hours on final rounds and offers than on repetition.
+
+Hiring doesn't have to be slow, repetitive, or exhausting. It just has to be structured — and honest about which parts deserve a human.
