@@ -245,6 +245,45 @@ kbd {
   font-size: 0.85em;
 }
 
+/* WebTUI action buttons ([ SOURCE ], [ MANUAL PAGE ], [ VISIT ] …):
+   our unlayered `a { color: amber }` beats WebTUI's layered colors, so
+   pin explicit inverse-video colors that hold up in every theme. */
+a[is-~='button'],
+button[is-~='button'],
+span[is-~='button'] {
+  background: var(--foreground0);
+  color: var(--background0);
+  text-decoration: none;
+  text-shadow: none;
+  font-weight: 700;
+  padding: 0.1rem 1ch;
+  height: auto;
+  min-height: 0;
+  border: 1px solid transparent;
+}
+a[is-~='button']:hover,
+button[is-~='button']:hover,
+a[is-~='button']:focus-visible,
+button[is-~='button']:focus-visible {
+  background: var(--amber);
+  color: var(--background0);
+  text-shadow: none;
+  text-decoration: none;
+}
+a[is-~='button']:active,
+button[is-~='button']:active {
+  background: var(--background0);
+  color: var(--foreground0);
+  border-color: var(--foreground0);
+}
+/* paper & light themes: --background0 is light, so "inverse" text is
+   already right; nothing special needed — but keep buttons readable
+   inside manuscripts where the surface is always paper */
+.manuscript [is-~='button'] {
+  background: var(--m-accent, #8a3b2e);
+  color: #f6eed9;
+}
+
 /* WebTUI gives every bare <button> height: 3lh — opt our OS chrome out.
    Buttons that WANT the TUI look use is-="button" explicitly. */
 .icon,
@@ -351,7 +390,9 @@ body[data-bg='video'] #bg-video {
 .crt {
   position: fixed;
   inset: 0;
-  z-index: 9000;
+  /* below the windows: desktop/background keeps full CRT treatment,
+     each window carries its own (dimmable) scanline layer */
+  z-index: 5;
   pointer-events: none;
   background:
     repeating-linear-gradient(
@@ -503,6 +544,28 @@ body[data-bg='video'] #bg-video {
 }
 .window.minimized {
   display: none;
+}
+
+/* per-window scanlines (the global .crt sits below the windows) */
+.window::after,
+#taskbar::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 99;
+  background: repeating-linear-gradient(
+    0deg,
+    rgb(0 0 0 / var(--scanline-a)) 0px,
+    rgb(0 0 0 / var(--scanline-a)) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  mix-blend-mode: multiply;
+}
+/* manuscripts: much fainter lines — easier on the eyes while reading */
+.window:has(.manuscript)::after {
+  opacity: 0.25;
 }
 
 .titlebar {
