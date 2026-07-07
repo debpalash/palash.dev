@@ -55,7 +55,12 @@ const { autopen = 'about' } = Astro.props;
   </nav>
   <div id="task-items"></div>
   <div id="tray">
-    <span class="dim">▓▒░</span>
+    <button class="tray-chip" id="tray-theme" title="Cycle theme">◐ …</button>
+    <button class="tray-chip" id="tray-bg" title="Cycle background">▩ …</button>
+    <span class="tray-sep">│</span>
+    <span id="tray-meter" title="all systems nominal">▂▄▆█</span>
+    <span class="tray-sep">│</span>
+    <span id="tray-date"></span>
     <span id="clock"></span>
   </div>
 </footer>

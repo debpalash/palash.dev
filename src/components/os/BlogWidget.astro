@@ -26,7 +26,7 @@ const latest = recent[0];
     </div>
     <footer class="bw-foot">
       <a href="/blog">all posts →</a>
-      <button data-open="docs">docs/</button>
+      <button data-open="docs">articles/</button>
       <a href="/rss.xml">rss</a>
     </footer>
   </section>
@@ -98,7 +98,8 @@ const latest = recent[0];
     min-height: 0;
     cursor: pointer;
     flex-shrink: 0;
-    filter: drop-shadow(0 4px 10px rgb(0 0 0 / 0.5));
+    /* halo keeps the wire visible over photo/video in every theme */
+    filter: drop-shadow(0 0 5px var(--background0)) drop-shadow(0 4px 10px rgb(0 0 0 / 0.5));
     animation: bw-bob 3.4s ease-in-out infinite;
   }
   .bw-clippy .wire {

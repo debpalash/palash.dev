@@ -141,7 +141,7 @@
   --background3: #bcb490;
   --foreground0: #0c2e8a;
   --foreground1: #2b57c4;
-  --foreground2: #6b7aa8;
+  --foreground2: #5d6d9e;
   --amber: #e8731a;
   --cyan: #3c8b3c;
   --alert: #cc3333;
@@ -160,7 +160,7 @@
   --background3: #a6a6a6;
   --foreground0: #2b2b2b;
   --foreground1: #4a4a4a;
-  --foreground2: #8a8a8a;
+  --foreground2: #6e6e6e;
   --amber: #144fd7;
   --cyan: #6a3cb5;
   --alert: #e5493a;
@@ -179,7 +179,7 @@
   --background3: #afc0d8;
   --foreground0: #103c78;
   --foreground1: #2c65b0;
-  --foreground2: #7a90b8;
+  --foreground2: #5c76a6;
   --amber: #0d68ce;
   --cyan: #2f9e44;
   --alert: #d64541;
@@ -451,6 +451,12 @@ body[data-bg='video'] #bg-video {
   font-size: 0.8rem;
   cursor: pointer;
 }
+/* label chip keeps icon text readable over photo/video backgrounds
+   in light themes */
+.icon > span:not(.glyph) {
+  background: color-mix(in srgb, var(--background0) 72%, transparent);
+  padding: 0 0.5ch;
+}
 .icon .glyph {
   font-size: 1.6rem;
   line-height: 1;
@@ -665,12 +671,37 @@ body[data-bg='video'] #bg-video {
 #tray {
   display: flex;
   align-items: center;
-  gap: 1.5ch;
+  gap: 1ch;
   color: var(--foreground2);
   font-size: 0.8rem;
   padding-right: 0.5ch;
 }
 #clock { color: var(--foreground1); }
+#tray-date { color: var(--foreground2); }
+.tray-sep {
+  color: var(--background3);
+  user-select: none;
+}
+.tray-chip {
+  background: none;
+  border: none;
+  padding: 0 0.5ch;
+  height: auto;
+  min-height: 0;
+  color: var(--foreground2);
+  font-family: inherit;
+  font-size: 0.75rem;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.tray-chip:hover {
+  color: var(--foreground0);
+  background: var(--background2);
+}
+#tray-meter {
+  letter-spacing: -1px;
+  cursor: default;
+}
 
 .os-menu {
   position: fixed;
@@ -797,8 +828,11 @@ body[data-bg='video'] #bg-video {
   padding: 0 0.5ch;
   font-size: 0.9em;
 }
+/* shiki tokens are the github-dark palette — keep code blocks on a dark
+   surface in every theme (incl. light ones) so they always read */
 .prose pre {
-  background: var(--background1) !important;
+  background: #0d1117 !important;
+  color: #c9d1d9;
   border: 1px solid var(--background3);
   padding: 0.75rem 1rem;
   margin: 0.9em 0;
@@ -810,6 +844,94 @@ body[data-bg='video'] #bg-video {
 .prose img { max-width: 100%; border: 1px solid var(--background3); }
 .prose table { border-collapse: collapse; margin: 0.9em 0; }
 .prose :is(th, td) { border: 1px solid var(--foreground2); padding: 0.25rem 1ch; }
+
+/* ------------------------------------------------------------
+   Manuscript — articles open on a fixed paper surface, readable
+   in every theme (the OS around it keeps the active scheme)
+   ------------------------------------------------------------ */
+.manuscript {
+  --paper: #f6eed9;
+  --ink: #2b2317;
+  --ink-dim: #7a6a4d;
+  --m-accent: #8a3b2e;
+  min-height: 100%;
+  background:
+    radial-gradient(ellipse at center, transparent 55%, rgb(120 90 40 / 0.16) 100%),
+    var(--paper);
+  color: var(--ink);
+  padding: 2rem 2.4rem 2.5rem;
+  font-family: 'Courier New', var(--font-family);
+}
+.winbody:has(> .winsrc .manuscript) {
+  padding: 0;
+  scrollbar-color: var(--ink-dim) var(--paper);
+}
+.manuscript ::selection {
+  background: var(--ink);
+  color: var(--paper);
+}
+.manuscript .manu-meta {
+  color: var(--ink-dim);
+  font-size: 0.8rem;
+  border-bottom: 1px solid rgb(43 35 23 / 0.25);
+  padding-bottom: 0.5rem;
+  margin-bottom: 1.2rem;
+}
+.manuscript .manu-meta a,
+.manuscript .prose a {
+  color: var(--m-accent);
+}
+.manuscript .manu-meta a:hover,
+.manuscript .prose a:hover {
+  color: var(--ink);
+  text-shadow: none;
+}
+.manuscript .prose {
+  color: var(--ink);
+  max-width: 62ch;
+  line-height: 1.6;
+}
+/* WebTUI colors p/li/blockquote directly — override inside the manuscript */
+.manuscript :is(p, blockquote, li) {
+  color: inherit;
+}
+.manuscript .prose :is(h1, h2, h3, h4) {
+  color: var(--m-accent);
+  text-shadow: none;
+}
+.manuscript .prose :is(h2, h3)::before {
+  color: var(--ink-dim);
+}
+.manuscript .prose strong {
+  color: var(--ink);
+}
+.manuscript .prose em {
+  color: var(--m-accent);
+}
+.manuscript .prose li::marker {
+  color: var(--ink-dim);
+}
+.manuscript .prose blockquote {
+  border-left-color: var(--ink-dim);
+  color: var(--ink-dim);
+}
+.manuscript .prose code {
+  background: rgb(43 35 23 / 0.09);
+  color: #5a3e2a;
+}
+.manuscript .prose hr {
+  border-top-color: var(--ink-dim);
+}
+.manuscript .prose :is(th, td) {
+  border-color: var(--ink-dim);
+}
+.manuscript .manu-end {
+  margin-top: 2rem;
+  text-align: center;
+  color: var(--ink-dim);
+  font-size: 0.8rem;
+  letter-spacing: 0.3em;
+}
 
 /* ------------------------------------------------------------
    Gallery

@@ -380,6 +380,8 @@ function applyBackground(mode: BgMode) {
 
   const btn = $('bg-cycle');
   if (btn) btn.textContent = `display: ${mode} ▸`;
+  const chip = $('tray-bg');
+  if (chip) chip.textContent = `▩ ${mode}`;
   // mark the active mode in the context menu
   document.querySelectorAll<HTMLElement>('[data-bg-set]').forEach((b) => {
     b.classList.toggle('active', b.dataset.bgSet === mode);
@@ -400,12 +402,16 @@ function initBackground() {
   setWallpaper(wallIdx);
   applyBackground(mode);
 
-  $('bg-cycle')?.addEventListener('click', (e) => {
-    e.stopPropagation();
+  const cycleBg = () => {
     const current = (document.body.dataset.bg || 'starfield') as BgMode;
     const next = BG_MODES[(BG_MODES.indexOf(current) + 1) % BG_MODES.length];
     applyBackground(next);
+  };
+  $('bg-cycle')?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    cycleBg();
   });
+  $('tray-bg')?.addEventListener('click', cycleBg);
 
   // right-click menu on the desktop
   const ctx = $('ctx-menu');
@@ -468,6 +474,8 @@ function applyTheme(theme: string) {
   store2('phosphor-ui-theme', theme);
   const btn = $('theme-btn');
   if (btn) btn.textContent = `◐ ${theme}`;
+  const chip = $('tray-theme');
+  if (chip) chip.textContent = `◐ ${theme}`;
   document.querySelectorAll<HTMLElement>('[data-theme-set]').forEach((b) => {
     b.classList.toggle('active', b.dataset.themeSet === theme);
   });
@@ -490,6 +498,11 @@ function initThemes() {
       return;
     }
     if (menu && !menu.hidden && !t.closest('#theme-corner')) menu.hidden = true;
+  });
+
+  $('tray-theme')?.addEventListener('click', () => {
+    const current = document.documentElement.dataset.theme || 'phosphor';
+    applyTheme(THEMES[(THEMES.indexOf(current) + 1) % THEMES.length]);
   });
 }
 
@@ -588,12 +601,19 @@ export function initWM() {
   initBackground();
   initThemes();
 
-  // clock
+  // clock + date
   const clock = $('clock');
+  const trayDate = $('tray-date');
   function tick() {
-    if (!clock) return;
     const d = new Date();
-    clock.textContent = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    if (clock) {
+      clock.textContent = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    }
+    if (trayDate) {
+      trayDate.textContent = d
+        .toLocaleDateString([], { weekday: 'short', day: '2-digit', month: 'short' })
+        .toUpperCase();
+    }
   }
   tick();
   setInterval(tick, 15000);

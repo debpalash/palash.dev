@@ -72,7 +72,7 @@ const vfs = {
     stack: SITE.stack,
     counts: {
       programs: products.length,
-      docs: posts.length,
+      articles: posts.length,
       captures: gallery.length,
       experiments: experiments.length,
     },
@@ -98,7 +98,7 @@ const vfs = {
         ]),
       ),
     ),
-    docs: dir(
+    articles: dir(
       Object.fromEntries(
         posts.map((p) => [
           `${p.id}.md`,
@@ -168,20 +168,20 @@ const jsonLd = {
 
   <Desktop autopen="about">
     <Fragment slot="icons">
-      <Icon open="about" glyph="☺" label="about.txt" />
-      <Icon open="programs" glyph="►" label="programs/" />
-      <Icon open="docs" glyph="≡" label="docs/" />
-      <Icon open="gallery" glyph="▦" label="gallery/" />
-      <Icon open="company" glyph="⌂" label="company/" />
-      <Icon open="experiments" glyph="λ" label="experiments/" />
-      <Icon open="terminal" glyph=">_" label="terminal" />
-      <Icon open="contact" glyph="@" label="contact.sh" />
+      <Icon open="about" kind="file" label="about.txt" />
+      <Icon open="programs" kind="folder" label="programs/" />
+      <Icon open="docs" kind="folder" label="articles/" />
+      <Icon open="gallery" kind="folder" label="gallery/" />
+      <Icon open="company" kind="folder" label="company/" />
+      <Icon open="experiments" kind="folder" label="experiments/" />
+      <Icon open="terminal" kind="terminal" label="terminal" />
+      <Icon open="contact" kind="exec" label="contact.sh" />
     </Fragment>
 
     <Fragment slot="menu">
       <button data-open="about">about.txt</button>
       <button data-open="programs">programs/</button>
-      <button data-open="docs">docs/</button>
+      <button data-open="docs">articles/</button>
       <button data-open="gallery">gallery/</button>
       <button data-open="company">company/</button>
       <button data-open="experiments">experiments/</button>
@@ -222,25 +222,28 @@ const jsonLd = {
         </WindowSrc>
       ))}
 
-      <WindowSrc id="docs" title="~/docs" w={680} h={380}>
+      <WindowSrc id="docs" title="~/articles" w={680} h={380}>
         <Docs posts={posts} />
       </WindowSrc>
 
       {renderedPosts.map(({ post, rendered }) => (
         <WindowSrc
           id={`doc-${post.id}`}
-          title={`docs/${post.id}.md`}
-          w={760}
-          h={560}
+          title={`articles/${post.id}.md — manuscript`}
+          w={720}
+          h={600}
         >
-          <div class="prose">
-            <p class="dim">
+          <article class="manuscript">
+            <p class="manu-meta">
               {post.data.publishDate.toISOString().split('T')[0]} ·{' '}
               {post.data.tags.map((t) => `#${t}`).join(' ')} ·{' '}
               <a href={`/blog/${post.id}`}>permalink</a>
             </p>
-            <rendered.Content />
-          </div>
+            <div class="prose">
+              <rendered.Content />
+            </div>
+            <p class="manu-end">— EOF —</p>
+          </article>
         </WindowSrc>
       ))}
 
