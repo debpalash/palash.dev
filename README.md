@@ -14,22 +14,16 @@ scanlines — rendered in green phosphor, driven by content collections, with
 <p align="center"><em>theme hopping → percussive maintenance → ⚡ short circuit → shaktimaan.pdf prints anyway</em><br/>
 🎬 <a href="docs/demo.mp4">full 45s tour (mp4)</a> — boot → live shell → programs → manuscripts → themes → the printer incident</p>
 
-<details>
-<summary>📸 still: the desktop at rest</summary>
+**📸 still: the desktop at rest**
 
 ![PALASH.OS — desktop with neofetch about window, THE LOG widget, and Clippy](docs/screenshot.png)
 
-</details>
-
-<details>
-<summary>🎨 all 13 themes, side by side</summary>
+**🎨 all 13 themes, side by side**
 
 ![All 13 PALASH.OS themes — shaktimaan, omarchy, x-men '97, windows xp, paper, tiger, snow leopard, ice, amber, phosphor, synthwave, doom, simba](docs/themes-grid.png)
 
 Same components, same content, thirteen coats of paint — every color comes
 from CSS variables (see [Theming](#theming) below).
-
-</details>
 
 ## Stack
 
