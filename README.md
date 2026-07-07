@@ -21,6 +21,16 @@ scanlines — rendered in green phosphor, driven by content collections, with
 
 </details>
 
+<details>
+<summary>🎨 all 13 themes, side by side</summary>
+
+![All 13 PALASH.OS themes — shaktimaan, omarchy, x-men '97, windows xp, paper, tiger, snow leopard, ice, amber, phosphor, synthwave, doom, simba](docs/themes-grid.png)
+
+Same components, same content, thirteen coats of paint — every color comes
+from CSS variables (see [Theming](#theming) below).
+
+</details>
+
 ## Stack
 
 - [Astro 7](https://astro.build/blog/astro-7/) (Vite 8 + Rolldown, static output)
