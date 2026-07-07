@@ -208,6 +208,40 @@
   --img-filter: grayscale(1) brightness(1.05) contrast(1.15) sepia(1) hue-rotate(5deg) saturate(2.6);
 }
 
+:root[data-theme='shaktimaan'] {
+  --background0: #1a0508;
+  --background1: #260a0e;
+  --background2: #351016;
+  --background3: #47161e;
+  --foreground0: #ffcf40;
+  --foreground1: #ddb02f;
+  --foreground2: #a06a4e;
+  --amber: #ff4d3d;
+  --cyan: #ff9e2c;
+  --alert: #ff8080;
+  --glow: 0 0 6px rgb(255 207 64 / 0.5);
+  --glow-strong: 0 0 12px rgb(255 207 64 / 0.7);
+  --bg-glow: #2e0a10;
+  --img-filter: grayscale(1) brightness(1.05) contrast(1.15) sepia(1) hue-rotate(-15deg) saturate(2.4);
+}
+
+:root[data-theme='simba'] {
+  --background0: #191006;
+  --background1: #24180a;
+  --background2: #32210e;
+  --background3: #422d14;
+  --foreground0: #ffb347;
+  --foreground1: #de9a35;
+  --foreground2: #8a6a3a;
+  --amber: #f4845f;
+  --cyan: #8fd14f;
+  --alert: #ff5f56;
+  --glow: 0 0 6px rgb(255 179 71 / 0.45);
+  --glow-strong: 0 0 12px rgb(255 179 71 / 0.65);
+  --bg-glow: #33200a;
+  --img-filter: grayscale(1) brightness(1.05) contrast(1.1) sepia(1) hue-rotate(-8deg) saturate(2.2);
+}
+
 :root[data-theme='omarchy'] {
   --background0: #1a1b26;
   --background1: #1f2335;

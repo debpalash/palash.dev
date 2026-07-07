@@ -30,6 +30,7 @@ interface Vfs {
   meta: {
     user: string;
     host: string;
+    email?: string;
     author: string;
     logo?: string;
     role?: string;
@@ -213,7 +214,7 @@ function createShell(rootEl: HTMLElement, vfs: Vfs, opts: ShellOpts = {}) {
         `<div class="nf-shell">` +
           (m.logo ? `<img src="${m.logo}" width="96" height="96" alt="" loading="lazy" />` : '') +
           `<div class="nf-body">` +
-          `<span class="t-dir nf-title">${esc(m.user)}@${esc(m.host)}</span>` +
+          `<span class="t-dir nf-title">${esc(m.email || `${m.user}@${m.host}`)}</span>` +
           `<span class="t-dim">─────────────────</span>` +
           `<div class="nf-rows">` +
           row('Name', `<strong>${esc(m.author)}</strong>`) +

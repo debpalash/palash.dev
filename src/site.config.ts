@@ -38,8 +38,10 @@ export const SITE = {
   },
 
   github: 'https://github.com/debpalash',
+  email: 'hi@palash.dev',
 
   links: [
+    { label: 'hi@palash.dev', href: 'mailto:hi@palash.dev' },
     { label: 'github.com/debpalash', href: 'https://github.com/debpalash' },
     { label: 'palash.dev', href: 'https://palash.dev' },
     { label: 'rss feed', href: '/rss.xml' },

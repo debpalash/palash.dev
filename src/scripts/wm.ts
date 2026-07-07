@@ -408,7 +408,7 @@ function buildTreeLines(): string[] {
   try {
     const vfs = JSON.parse($('vfs-data')?.textContent || 'null');
     if (!vfs?.root) return [];
-    const lines = ['guest@palash.os:/$ tree /', '.'];
+    const lines = ['guest@palash.dev:/$ tree /', '.'];
     const walk = (node: { ch: Record<string, any> }, prefix: string) => {
       const entries = Object.entries(node.ch || {});
       entries.forEach(([name, ch], i) => {
@@ -421,7 +421,7 @@ function buildTreeLines(): string[] {
     lines.push(
       '',
       `${lines.length - 2} entries scanned — cache invalidated, vibes refreshed.`,
-      'guest@palash.os:/$ ▉',
+      'guest@palash.dev:/$ ▉',
     );
     return lines;
   } catch {
@@ -569,6 +569,8 @@ const THEMES = [
   'tiger',
   'omarchy',
   'xmen97',
+  'shaktimaan',
+  'simba',
 ];
 
 function applyTheme(theme: string) {
@@ -611,6 +613,51 @@ function initThemes() {
     const current = document.documentElement.dataset.theme || 'phosphor';
     applyTheme(THEMES[(THEMES.indexOf(current) + 1) % THEMES.length]);
   });
+}
+
+/* ------------------------------------------------------------ sys meter */
+
+/** Live "what is this website consuming" readout: JS heap (Chromium) and
+ *  bytes transferred, with a heap sparkline. */
+function initSysMeter() {
+  const meter = $('tray-meter');
+  const sys = $('tray-sys');
+  if (!meter || !sys) return;
+
+  const hist: number[] = [];
+  const BARS = '▁▂▃▄▅▆▇█';
+  const fmt = (b: number) =>
+    b < 1024 * 1024 ? `${Math.round(b / 1024)}K` : `${(b / (1024 * 1024)).toFixed(1)}M`;
+
+  function sample() {
+    const mem = (performance as unknown as { memory?: { usedJSHeapSize: number } }).memory;
+    const used = mem?.usedJSHeapSize ?? 0;
+
+    let net = 0;
+    for (const e of performance.getEntriesByType('resource')) {
+      net += (e as PerformanceResourceTiming).transferSize || 0;
+    }
+    const nav = performance.getEntriesByType('navigation')[0] as
+      | PerformanceNavigationTiming
+      | undefined;
+    net += nav?.transferSize || 0;
+
+    if (used) {
+      hist.push(used);
+      if (hist.length > 6) hist.shift();
+      const peak = Math.max(...hist);
+      meter!.textContent = hist
+        .map((v) => BARS[Math.min(7, Math.round((v / peak) * 7))])
+        .join('')
+        .padStart(6, '▁');
+    }
+
+    sys!.textContent = used ? `mem ${fmt(used)} · net ${fmt(net)}` : `net ${fmt(net)}`;
+    meter!.title = `this website, right now — js heap: ${used ? fmt(used) : 'n/a'} · transferred: ${fmt(net)}`;
+  }
+
+  sample();
+  setInterval(sample, 2000);
 }
 
 /* ------------------------------------------------------------ boot */
@@ -707,6 +754,8 @@ export function initWM() {
 
   initBackground();
   initThemes();
+
+  initSysMeter();
 
   // clock + date
   const clock = $('clock');

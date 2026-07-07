@@ -68,7 +68,8 @@ const aboutText = [
 const vfs = {
   meta: {
     user: 'guest',
-    host: 'palash.os',
+    host: 'palash.dev',
+    email: SITE.email,
     author: SITE.author,
     logo: '/logo.svg',
     role: 'Software Engineer · Product Builder',
@@ -292,7 +293,7 @@ const jsonLd = {
         <Experiments items={experiments} />
       </WindowSrc>
 
-      <WindowSrc id="terminal" title="guest@palash.os: ~" w={720} h={440}>
+      <WindowSrc id="terminal" title="guest@palash.dev: ~" w={720} h={440}>
         <div id="terminal-root"></div>
       </WindowSrc>
 
