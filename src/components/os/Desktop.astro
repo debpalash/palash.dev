@@ -86,32 +86,6 @@ const { autopen = 'about' } = Astro.props;
   <button data-open="about">about.txt</button>
 </nav>
 
-<div id="printer-pop" class="os-menu" hidden aria-label="Print queue">
-  <div class="menu-head">lpd — print spooler</div>
-  <div class="prn-body">
-    <p id="prn-msg">⚠ <strong>shaktimaan.pdf</strong> is stuck in the queue.</p>
-    <button id="prn-retry">[ CLICK TO RETRY ]</button>
-    <div id="prn-stage" hidden>
-      <svg class="prn-svg" viewBox="0 0 160 78" width="184" aria-hidden="true">
-        <rect x="30" y="6" width="100" height="16" rx="3" fill="var(--background3)" stroke="var(--foreground2)" stroke-width="2"/>
-        <rect x="10" y="18" width="140" height="40" rx="6" fill="var(--background2)" stroke="var(--foreground1)" stroke-width="3"/>
-        <rect x="22" y="28" width="34" height="9" rx="2" fill="var(--background3)"/>
-        <circle class="prn-led" cx="134" cy="38" r="4.5" fill="var(--amber)"/>
-        <rect x="24" y="52" width="112" height="7" rx="3" fill="var(--background0)" stroke="var(--foreground2)" stroke-width="2"/>
-      </svg>
-      <div class="prn-paper">
-        <img
-          src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/96/Shaktimaan_Returns_Audio_Series.jpg/500px-Shaktimaan_Returns_Audio_Series.jpg"
-          alt="Shaktimaan Returns"
-          width="150"
-          loading="lazy"
-        />
-      </div>
-      <p class="prn-done" hidden>✓ printed. andhera kaayam <em>nahi</em> raha.</p>
-    </div>
-  </div>
-</div>
-
 <nav id="tbar-menu" class="os-menu" hidden aria-label="Taskbar menu">
   <button id="tbar-clear">✕ clear all windows</button>
   <button id="tbar-min">─ minimize all</button>
@@ -126,9 +100,11 @@ const { autopen = 'about' } = Astro.props;
   import { initStarfield } from '../../scripts/starfield';
   import { initWM } from '../../scripts/wm';
   import { initTerminal } from '../../scripts/terminal';
+  import { initPrinter } from '../../scripts/printer';
 
   const canvas = document.getElementById('starfield') as HTMLCanvasElement | null;
   if (canvas) initStarfield(canvas);
   initWM();
   initTerminal();
+  initPrinter();
 </script>

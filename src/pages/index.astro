@@ -318,6 +318,46 @@ const jsonLd = {
       <WindowSrc id="contact" title="contact.sh" w={480} h={400}>
         <Contact />
       </WindowSrc>
+
+      <WindowSrc id="printer" title="lpd — print spooler" w={470} h={620} center>
+        <div id="prn-root" data-state="stuck">
+          <p class="prn-msg" id="prn-msg">
+            ⚠ <strong>shaktimaan.pdf</strong> is stuck in the queue.
+          </p>
+
+          <div class="prn-stage">
+            <div class="prn-wrap" id="prn-wrap" title="the printer">
+              <div class="prn-smoke" aria-hidden="true"><i></i><i></i><i></i></div>
+              <svg class="prn-svg" viewBox="0 0 160 78" width="250" aria-hidden="true">
+                <rect x="30" y="6" width="100" height="16" rx="3" fill="var(--background3)" stroke="var(--foreground2)" stroke-width="2"/>
+                <rect x="10" y="18" width="140" height="40" rx="6" fill="var(--background2)" stroke="var(--foreground1)" stroke-width="3"/>
+                <rect x="22" y="28" width="34" height="9" rx="2" fill="var(--background3)"/>
+                <circle class="prn-led" cx="134" cy="38" r="4.5" fill="var(--amber)"/>
+                <rect x="24" y="52" width="112" height="7" rx="3" fill="var(--background0)" stroke="var(--foreground2)" stroke-width="2"/>
+                <g class="prn-sparks" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                  <path class="bolt" d="M14 48 l7 -9 l-5 -3 l8 -10"/>
+                  <path class="bolt b2" d="M148 30 l-7 8 l5 3 l-9 10"/>
+                </g>
+              </svg>
+              <div class="prn-paper">
+                <img
+                  src="https://i.pinimg.com/736x/b1/18/2b/b1182b161f1ea918ef33b1fd7809d29a.jpg"
+                  alt="Shaktimaan"
+                  width="220"
+                  loading="lazy"
+                />
+              </div>
+              <div class="prn-flash" aria-hidden="true"></div>
+            </div>
+          </div>
+
+          <div class="prn-actions">
+            <button id="prn-retry">[ CLICK TO RETRY ]</button>
+          </div>
+
+          <p class="prn-done" hidden>✓ printed. andhera kaayam <em>nahi</em> raha.</p>
+        </div>
+      </WindowSrc>
     </Fragment>
   </Desktop>
 

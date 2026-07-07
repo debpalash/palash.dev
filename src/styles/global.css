@@ -921,27 +921,60 @@ body[data-bg='video'] #bg-video {
 #tray-printer.read .prn-dot {
   display: none;
 }
-#printer-pop {
-  right: 0.5rem;
-  bottom: calc(var(--taskbar-h) + 0.35rem);
-  min-width: 30ch;
+
+/* --- spooler window: staged theatre --- */
+#prn-root {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.6rem;
+  min-height: 100%;
 }
-.prn-body {
-  padding: 0.5rem 1rem 0.9rem;
-  font-size: 0.8rem;
+.prn-msg {
+  font-size: 0.85rem;
   color: var(--foreground1);
+  min-height: 2.6em;
 }
-.prn-body strong {
+.prn-msg strong {
   color: var(--foreground0);
 }
+.prn-stage {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+.prn-wrap {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.prn-svg {
+  position: relative;
+  z-index: 2;
+}
+.prn-paper {
+  width: 222px;
+  max-height: 0;
+  overflow: hidden;
+  margin-top: -17px;
+  border: 1px solid var(--background3);
+  background: #fff;
+  z-index: 1;
+}
+.prn-paper img {
+  display: block;
+  width: 220px;
+  height: auto;
+}
 #prn-retry {
-  margin-top: 0.5rem;
   background: none;
   border: 1px solid var(--amber);
   color: var(--amber);
-  padding: 0.15rem 1ch;
+  padding: 0.2rem 1.5ch;
   font: inherit;
-  font-size: 0.78rem;
+  font-size: 0.8rem;
   font-weight: 700;
   height: auto;
   min-height: 0;
@@ -951,60 +984,147 @@ body[data-bg='video'] #bg-video {
   background: var(--amber);
   color: var(--background0);
 }
-#prn-stage {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: 0.6rem;
-}
-.prn-svg {
-  position: relative;
-  z-index: 2;
-}
-#prn-stage.printing .prn-svg {
-  animation: prn-shake 0.16s linear 32;
-}
-#prn-stage.printing .prn-led {
-  animation: blink 0.3s steps(1) 18;
-}
-.prn-paper {
-  width: 152px;
-  max-height: 0;
-  overflow: hidden;
-  margin-top: -13px;
-  border: 1px solid var(--background3);
-  background: #fff;
-  z-index: 1;
-}
-.prn-paper img {
-  display: block;
-  width: 150px;
-  height: auto;
-}
-#prn-stage.printing .prn-paper {
-  animation: prn-feed 5s steps(45) forwards;
-}
 .prn-done {
   color: var(--foreground0);
-  margin-top: 0.5rem;
+  font-size: 0.85rem;
 }
 .prn-done em {
   color: var(--amber);
   font-style: normal;
 }
+
+/* smoke — a little, from behind, tasteful */
+.prn-smoke {
+  position: absolute;
+  top: -4px;
+  right: 42px;
+  z-index: 1;
+  pointer-events: none;
+}
+.prn-smoke i {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgb(190 190 190 / 0.35) 0%, transparent 70%);
+  filter: blur(3px);
+  opacity: 0;
+}
+[data-state='shorting'] .prn-smoke i,
+[data-state='printing'] .prn-smoke i {
+  animation: prn-rise 2.6s ease-out infinite;
+}
+.prn-smoke i:nth-child(2) { animation-delay: 0.9s; left: -10px; }
+.prn-smoke i:nth-child(3) { animation-delay: 1.7s; left: 8px; }
+@keyframes prn-rise {
+  0% { opacity: 0; transform: translate(0, 0) scale(0.6); }
+  20% { opacity: 0.4; }
+  100% { opacity: 0; transform: translate(-8px, -52px) scale(1.7); }
+}
+
+/* sparks + screen flash for the short circuit */
+.prn-sparks {
+  opacity: 0;
+}
+.prn-sparks .bolt {
+  stroke: var(--cyan);
+  stroke-width: 2.5;
+  filter: drop-shadow(0 0 4px var(--cyan));
+}
+.prn-sparks .b2 {
+  stroke: #ffffff;
+  stroke-width: 1.8;
+}
+[data-state='shorting'] .prn-sparks {
+  animation: prn-flicker 0.14s steps(2) 11;
+}
+.prn-flash {
+  position: absolute;
+  inset: -20px;
+  background: #fff;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 3;
+}
+[data-state='shorting'] .prn-flash {
+  animation: prn-flashes 0.55s ease-out 2;
+}
+@keyframes prn-flicker {
+  from { opacity: 1; }
+  to { opacity: 0.15; }
+}
+@keyframes prn-flashes {
+  0% { opacity: 0.5; }
+  100% { opacity: 0; }
+}
+
+/* state choreography */
+[data-state='actingup'] .prn-svg {
+  animation: prn-err 0.1s linear infinite;
+}
+[data-state='actingup'] .prn-led,
+[data-state='shorting'] .prn-led {
+  fill: var(--alert);
+  animation: blink 0.25s steps(1) infinite;
+}
+[data-state='shakeme'] .prn-wrap {
+  cursor: pointer;
+  animation: prn-beg 1.6s ease-in-out infinite;
+}
+[data-state='shakeme'] .prn-svg rect:nth-child(2) {
+  stroke: var(--foreground0);
+}
+.prn-wrap.thunk {
+  animation: prn-thunk 0.32s ease-out !important;
+}
+[data-state='printing'] .prn-svg {
+  animation: prn-shake 0.3s linear infinite;
+}
+[data-state='printing'] .prn-led {
+  animation: blink 0.6s steps(1) infinite;
+}
+[data-state='printing'] .prn-paper {
+  animation: prn-feed 8.4s steps(70) forwards;
+}
+[data-state='done'] .prn-paper {
+  max-height: 340px;
+}
+[data-state='done'] .prn-led {
+  fill: var(--cyan);
+}
+
 @keyframes prn-feed {
   from { max-height: 0; }
-  to { max-height: 220px; }
+  to { max-height: 340px; }
 }
 @keyframes prn-shake {
   0%, 100% { transform: translateX(0); }
-  50% { transform: translateX(1.6px); }
+  50% { transform: translateX(1.4px); }
+}
+@keyframes prn-err {
+  0%, 100% { transform: translate(0, 0); }
+  25% { transform: translate(-2px, 1px) rotate(-0.6deg); }
+  75% { transform: translate(2px, -1px) rotate(0.6deg); }
+}
+@keyframes prn-beg {
+  0%, 100% { transform: rotate(0); }
+  50% { transform: rotate(1.4deg) translateY(-2px); }
+}
+@keyframes prn-thunk {
+  0% { transform: rotate(0); }
+  30% { transform: rotate(-4deg) translateX(-4px); }
+  65% { transform: rotate(3deg) translateX(3px); }
+  100% { transform: rotate(0); }
 }
 @media (prefers-reduced-motion: reduce) {
-  #prn-stage.printing .prn-paper { animation-duration: 0.5s; }
-  #prn-stage.printing .prn-svg,
-  #prn-stage.printing .prn-led,
-  #tray-printer .prn-dot { animation: none; }
+  [data-state='printing'] .prn-paper { animation-duration: 0.6s; }
+  [data-state='actingup'] .prn-svg,
+  [data-state='shakeme'] .prn-wrap,
+  [data-state='printing'] .prn-svg,
+  .prn-smoke i,
+  #tray-printer .prn-dot { animation: none !important; }
 }
 
 .os-menu {

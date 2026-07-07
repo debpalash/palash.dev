@@ -592,7 +592,7 @@ function applyTheme(theme: string) {
   store2('phosphor-ui-theme', theme);
   // the print spooler only haunts shaktimaan mode
   $('tray-printer')?.toggleAttribute('hidden', theme !== 'shaktimaan');
-  if (theme !== 'shaktimaan') $('printer-pop')?.setAttribute('hidden', '');
+  if (theme !== 'shaktimaan' && wins.has('printer')) closeWin('printer');
   const btn = $('theme-btn');
   if (btn) btn.textContent = `◐ ${theme}`;
   const chip = $('tray-theme');
@@ -624,44 +624,6 @@ function initThemes() {
   $('tray-theme')?.addEventListener('click', () => {
     const current = document.documentElement.dataset.theme || 'phosphor';
     applyTheme(THEMES[(THEMES.indexOf(current) + 1) % THEMES.length]);
-  });
-}
-
-/* ------------------------------------------------------------ printer gag */
-
-function initPrinterGag() {
-  const chip = $('tray-printer');
-  const pop = $('printer-pop');
-  const retry = $('prn-retry');
-  const stage = $('prn-stage');
-  const msg = $('prn-msg');
-  const done = pop?.querySelector<HTMLElement>('.prn-done');
-  if (!chip || !pop) return;
-
-  chip.addEventListener('click', (e) => {
-    e.stopPropagation();
-    chip.classList.add('read');
-    pop.hidden = !pop.hidden;
-  });
-
-  retry?.addEventListener('click', () => {
-    if (!stage || !msg) return;
-    retry.hidden = true;
-    msg.innerHTML = 'spooling <strong>shaktimaan.pdf</strong> — 300 baud, hold tight…';
-    stage.hidden = false;
-    stage.classList.remove('printing');
-    void stage.offsetWidth; // restart animation
-    stage.classList.add('printing');
-    setTimeout(() => {
-      if (done) done.hidden = false;
-      msg.innerHTML = '✓ job complete — <strong>shaktimaan.pdf</strong>';
-    }, 5300);
-  });
-
-  document.addEventListener('click', (e) => {
-    if (!pop.hidden && !(e.target as HTMLElement).closest('#printer-pop, #tray-printer')) {
-      pop.hidden = true;
-    }
   });
 }
 
@@ -779,7 +741,7 @@ export function initWM() {
   // Esc closes the focused window; start menu toggle
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
-      const openMenu = ['ctx-menu', 'tbar-menu', 'start-menu', 'theme-menu', 'printer-pop']
+      const openMenu = ['ctx-menu', 'tbar-menu', 'start-menu', 'theme-menu']
         .map($)
         .find((m) => m && !m.hidden);
       if (openMenu) {
@@ -806,7 +768,6 @@ export function initWM() {
   initThemes();
 
   initSysMeter();
-  initPrinterGag();
 
   // clock + date
   const clock = $('clock');
