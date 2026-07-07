@@ -1,0 +1,144 @@
+---
+import { SITE } from '../../site.config';
+
+interface Props {
+  counts?: { programs: number; docs: number; captures: number; experiments: number };
+}
+
+const { counts } = Astro.props;
+const packages = counts
+  ? `${counts.programs} programs · ${counts.docs} docs · ${counts.captures} captures · ${counts.experiments} experiments`
+  : null;
+---
+
+<div class="about">
+  <p class="dim mb-2">$ neofetch --about</p>
+
+  <div class="nf">
+    <img
+      src="/avatar-original.png"
+      alt={`${SITE.author} logo`}
+      width="140"
+      height="140"
+      class="phosphor-img nf-logo"
+      loading="eager"
+    />
+    <div class="nf-info">
+      <p class="nf-title">{SITE.handle}@{SITE.osName.toLowerCase()}</p>
+      <p class="dim">─────────────────────</p>
+      <table class="nf-table" divide-="none">
+        <tbody>
+          <tr><td class="dim">Name</td><td><strong>{SITE.author}</strong></td></tr>
+          <tr><td class="dim">Role</td><td>Software Engineer · Product Builder</td></tr>
+          <tr><td class="dim">OS</td><td>{SITE.osName} v7.0 (CRT edition)</td></tr>
+          <tr><td class="dim">Host</td><td><a href={SITE.url}>palash.dev</a></td></tr>
+          <tr><td class="dim">Company</td><td><button class="nf-link" data-open="company">{SITE.company.name} ↗</button></td></tr>
+          <tr><td class="dim">GitHub</td><td><a href={SITE.github} target="_blank" rel="noopener">github.com/{SITE.handle}</a></td></tr>
+          {packages && <tr><td class="dim">Packages</td><td>{packages}</td></tr>}
+          <tr><td class="dim">Motto</td><td>things that ship.</td></tr>
+        </tbody>
+      </table>
+      <p class="nf-palette" aria-hidden="true">
+        <span style="background:var(--foreground0)"></span>
+        <span style="background:var(--foreground1)"></span>
+        <span style="background:var(--foreground2)"></span>
+        <span style="background:var(--amber)"></span>
+        <span style="background:var(--cyan)"></span>
+        <span style="background:var(--alert)"></span>
+        <span style="background:var(--background3)"></span>
+      </p>
+    </div>
+  </div>
+
+  <p class="mt-4"><span class="dim">$</span> cat stack.txt</p>
+  <p>
+    {SITE.stack.map((s, i) => (
+      <Fragment>{i > 0 && <span class="dim"> · </span>}<span class="cyan">{s}</span></Fragment>
+    ))}
+  </p>
+
+  <p class="mt-4"><span class="dim">$</span> ls ~/</p>
+  <div class="ls-row">
+    <button data-open="programs">programs/</button>
+    <button data-open="docs">docs/</button>
+    <button data-open="gallery">gallery/</button>
+    <button data-open="company">company/</button>
+    <button data-open="experiments">experiments/</button>
+    <button data-open="contact">contact.sh</button>
+  </div>
+
+  <div class="mini-term"></div>
+</div>
+
+<style>
+  .nf {
+    display: flex;
+    gap: 1.5rem;
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+  .nf-logo {
+    flex-shrink: 0;
+  }
+  .nf-title {
+    color: var(--foreground0);
+    font-weight: 700;
+    text-shadow: var(--glow);
+  }
+  .nf-table td {
+    padding: 0 2ch 0.1rem 0;
+    vertical-align: top;
+  }
+  .nf-link {
+    background: none;
+    border: none;
+    padding: 0;
+    height: auto;
+    min-height: 0;
+    color: var(--amber);
+    font: inherit;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    cursor: pointer;
+  }
+  .nf-link:hover {
+    color: var(--foreground0);
+    text-shadow: var(--glow);
+  }
+  .nf-palette {
+    display: flex;
+    gap: 2px;
+    margin-top: 0.6rem;
+  }
+  .nf-palette span {
+    width: 2ch;
+    height: 0.9rem;
+    display: inline-block;
+  }
+  .ls-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.25rem 3ch;
+    margin-top: 0.25rem;
+  }
+  .ls-row button {
+    display: inline-block;
+    background: none;
+    border: none;
+    padding: 0 0.5ch;
+    height: auto;
+    min-height: 0;
+    line-height: inherit;
+    color: var(--foreground0);
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .ls-row button:hover,
+  .ls-row button:focus-visible {
+    background: var(--foreground0);
+    color: var(--background0);
+  }
+</style>

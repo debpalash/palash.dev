@@ -1,0 +1,14 @@
+---
+interface Props {
+  open: string;
+  glyph: string;
+  label: string;
+}
+
+const { open, glyph, label } = Astro.props;
+---
+
+<button class="icon" data-open={open} aria-label={`Open ${label}`}>
+  <span class="glyph" aria-hidden="true">{glyph}</span>
+  <span>{label}</span>
+</button>

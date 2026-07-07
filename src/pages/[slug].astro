@@ -1,129 +1,101 @@
 ---
-import FluxLayout from '../flux/components/FluxLayout.astro';
-import Nav from '../flux/components/Nav.astro';
-import FluxFooter from '../flux/components/FluxFooter.astro';
-import Section from '../flux/components/Section.astro';
-import Heading from '../flux/components/Heading.astro';
-import Badge from '../flux/components/Badge.astro';
-import Prose from '../flux/components/Prose.astro';
-import Button from '../flux/components/Button.astro';
-import ThemeToggle from '../flux/react/ThemeToggle';
 import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
+import OS from '../layouts/OS.astro';
 
 export async function getStaticPaths() {
   const products = await getCollection('products');
+  const gallery = await getCollection('gallery');
   return products.map((product) => ({
     params: { slug: product.id },
-    props: { product },
+    props: {
+      product,
+      screenshots: gallery.filter((g) => g.data.group === product.id),
+    },
   }));
 }
 
-const { product } = Astro.props;
-const { name, tagline, description, url, status, stack } = product.data;
-
-import { unified } from 'unified';
-import remarkParse from 'remark-parse';
-import remarkGfm from 'remark-gfm';
-import remarkRehype from 'remark-rehype';
-import rehypeRaw from 'rehype-raw';
-import rehypeStringify from 'rehype-stringify';
-
-let readmeHtml = '';
-let readmeError = '';
-
-if (url && url.includes('github.com')) {
-  const repoPath = url.replace('https://github.com/', '');
-  const rawUrl = `https://raw.githubusercontent.com/${repoPath}/main/README.md`;
-
-  try {
-    let res = await fetch(rawUrl);
-    if (!res.ok) {
-      const masterUrl = `https://raw.githubusercontent.com/${repoPath}/master/README.md`;
-      res = await fetch(masterUrl);
-    }
-
-    if (res.ok) {
-      const md = await res.text();
-
-      // Parse markdown locally
-      const processor = unified()
-        .use(remarkParse)
-        .use(remarkGfm)
-        .use(remarkRehype, { allowDangerousHtml: true })
-        .use(rehypeRaw)
-        .use(rehypeStringify);
-
-      const vfile = await processor.process(md);
-      readmeHtml = String(vfile);
-
-      // Rewrite relative image src to absolute GitHub raw URLs
-      const rawBase = `https://raw.githubusercontent.com/${repoPath}/main/`;
-      const ghBase = `https://github.com/${repoPath}/blob/main/`;
-      readmeHtml = readmeHtml
-        // Fix relative src="path/to/img.png"
-        .replace(/src="(?!https?:\/\/|\/\/|data:)([^"]+)"/g, `src="${rawBase}$1"`)
-        // Fix relative href="path/to/file" (non-anchor, non-absolute)
-        .replace(/href="(?!https?:\/\/|\/\/|#|mailto:)([^"]+)"/g, `href="${ghBase}$1"`);
-    } else {
-      readmeError = 'README not found in repository.';
-    }
-  } catch (e) {
-    readmeError = `Failed to fetch README: ${e}`;
-  }
-}
-
-const statusVariant: Record<string, 'success' | 'info' | 'warning'> = {
-  live: 'success',
-  beta: 'info',
-  'coming-soon': 'warning',
-};
+const { product, screenshots } = Astro.props;
+const { name, tagline, description, url, logoUrl, status, stack } = product.data;
 ---
 
-<FluxLayout title={name}>
-  <Nav>
-    <ThemeToggle client:load slot="actions" />
-  </Nav>
+<OS title={`${name} — ${tagline}`} description={description} mode="page">
+  <div class="page-frame">
+    <p class="dim">
+      <a href={`/#prg-${product.id}`}>← run in PALASH.OS</a>
+    </p>
 
-  <Section>
-    <div style="display:flex;align-items:center;gap:var(--spacing-3);margin-bottom:var(--spacing-2);">
-      <a href="/" style="font-family:var(--font-mono);font-size:var(--text-sm);color:var(--flux-fg-muted);text-decoration:none;">← Back</a>
-    </div>
-
-    <div style="display:flex;align-items:center;gap:var(--spacing-4);margin-bottom:var(--spacing-2);">
-      <Heading level={1} marker="▸">{name}</Heading>
-      <Badge variant={statusVariant[status] || 'default'}>{status}</Badge>
-    </div>
-
-    <p style="color:var(--flux-fg-secondary);font-size:var(--text-lg);max-width:42rem;margin-bottom:var(--spacing-4);">{tagline}</p>
-
-    <div style="display:flex;flex-wrap:wrap;gap:var(--spacing-2);margin-bottom:var(--spacing-6);">
-      {stack.map((t) => (
-        <span style="font-family:var(--font-mono);font-size:var(--text-xs);padding:var(--spacing-1) var(--spacing-3);border-radius:var(--radius-md);background:var(--flux-glass-bg);color:var(--flux-fg-muted);border:1px solid var(--flux-glass-border);">{t}</span>
-      ))}
-    </div>
-
-    {url && (
-      <div style="margin-bottom:var(--spacing-8);">
-        <Button href={url} size="sm">View on GitHub ↗</Button>
+    <article box-="double" class="mt-6 p-6">
+      <div class="flex items-start gap-4 mb-4 flex-wrap">
+        {logoUrl && (
+          <Image
+            src={logoUrl}
+            alt={`${name} logo`}
+            width={80}
+            height={80}
+            layout="fixed"
+            style="border:1px solid var(--foreground2);background:var(--background1);"
+          />
+        )}
+        <div>
+          <h1 style="color:var(--foreground0);text-shadow:var(--glow);font-size:1.4rem;">
+            {name}
+          </h1>
+          <p class="dim">{tagline}</p>
+        </div>
       </div>
-    )}
-  </Section>
 
-  {readmeHtml && (
-    <Section>
-      <div style="border-top:1px solid var(--flux-glass-border);padding-top:var(--spacing-8);">
-        <Prose>
-          <Fragment set:html={readmeHtml} />
-        </Prose>
-      </div>
-    </Section>
-  )}
+      <table divide-="none">
+        <tbody>
+          <tr>
+            <td class="dim" style="padding-right:2ch;">STATUS</td>
+            <td><span class={`dot ${status}`}>●</span> {status}</td>
+          </tr>
+          <tr>
+            <td class="dim" style="padding-right:2ch;">STACK</td>
+            <td>{stack.join(' · ')}</td>
+          </tr>
+          {url && (
+            <tr>
+              <td class="dim" style="padding-right:2ch;">SOURCE</td>
+              <td><a href={url} target="_blank" rel="noopener">{url.replace('https://', '')} ↗</a></td>
+            </tr>
+          )}
+        </tbody>
+      </table>
 
-  {readmeError && (
-    <Section>
-      <p style="color:var(--flux-fg-muted);font-family:var(--font-mono);font-size:var(--text-sm);">{readmeError}</p>
-    </Section>
-  )}
+      <p class="mt-4">{description}</p>
 
-  <FluxFooter />
-</FluxLayout>
+      {screenshots.length > 0 && (
+        <div class="mt-6">
+          <p class="dim mb-2">CAPTURES ({screenshots.length})</p>
+          <div class="gallery-grid">
+            {screenshots.map((s) => (
+              <a
+                class="gallery-item"
+                href={s.data.src}
+                target="_blank"
+                rel="noopener"
+                aria-label={`View ${s.data.title}`}
+              >
+                <Image
+                  src={s.data.src}
+                  alt={s.data.title}
+                  width={360}
+                  height={225}
+                  layout="constrained"
+                />
+                <span class="cap">{s.data.caption}</span>
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <p class="mt-6 flex gap-3 flex-wrap">
+        {url && <a is-="button" href={url} target="_blank" rel="noopener">[ SOURCE ]</a>}
+        <a is-="button" href="/">[ BACK TO OS ]</a>
+      </p>
+    </article>
+  </div>
+</OS>

@@ -1,0 +1,28 @@
+---
+/**
+ * Server-rendered window content. Lives hidden in the DOM until the
+ * window manager adopts it into a window frame.
+ */
+interface Props {
+  id: string;
+  title: string;
+  w?: number;
+  h?: number;
+  /** Always open centered instead of cascading. */
+  center?: boolean;
+}
+
+const { id, title, w = 560, h = 420, center = false } = Astro.props;
+---
+
+<section
+  class="winsrc"
+  id={`winsrc-${id}`}
+  data-title={title}
+  data-w={w}
+  data-h={h}
+  data-center={center ? '' : undefined}
+  hidden
+>
+  <slot />
+</section>

@@ -1,13 +1,6 @@
 ---
-import FluxLayout from '../../flux/components/FluxLayout.astro';
-import Nav from '../../flux/components/Nav.astro';
-import FluxFooter from '../../flux/components/FluxFooter.astro';
-import Prose from '../../flux/components/Prose.astro';
-import Heading from '../../flux/components/Heading.astro';
-import Divider from '../../flux/components/Divider.astro';
-import Button from '../../flux/components/Button.astro';
-import ThemeToggle from '../../flux/react/ThemeToggle';
 import { getCollection, render } from 'astro:content';
+import OS from '../../layouts/OS.astro';
 
 export async function getStaticPaths() {
   const posts = await getCollection('blog', ({ data }) => !data.draft);
@@ -19,38 +12,30 @@ export async function getStaticPaths() {
 
 const { post } = Astro.props;
 const { Content } = await render(post);
-
-function formatDate(date: Date) {
-  return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-}
+const date = post.data.publishDate.toISOString().split('T')[0];
 ---
 
-<FluxLayout title={post.data.title} description={post.data.description}>
-  <Nav>
-    <ThemeToggle client:load slot="actions" />
-  </Nav>
+<OS title={post.data.title} description={post.data.description} mode="page">
+  <div class="page-frame">
+    <p class="dim">
+      <a href={`/#doc-${post.id}`}>← open in PALASH.OS</a> · <a href="/blog">all docs</a>
+    </p>
 
-  <article style="max-width:48rem;margin:0 auto;padding:var(--spacing-16) var(--spacing-6);">
-    <header style="margin-bottom:var(--spacing-10);">
-      <div style="display:flex;gap:var(--spacing-2);margin-bottom:var(--spacing-4);">
-        {post.data.tags.map((tag) => (
-          <a href={`/blog?tag=${tag}`} style="font-family:var(--font-mono);font-size:var(--text-xs);text-transform:uppercase;letter-spacing:0.05em;color:var(--flux-accent);text-decoration:none;">{tag}</a>
-        ))}
+    <article box-="double" class="mt-6 p-6">
+      <header class="mb-4">
+        <p class="dim">
+          {date} · {post.data.tags.map((t) => `#${t}`).join(' ')}
+        </p>
+      </header>
+
+      <div class="prose">
+        <Content />
       </div>
-      <Heading level={1}>{post.data.title}</Heading>
-      <time style="display:block;margin-top:var(--spacing-3);font-family:var(--font-mono);font-size:var(--text-sm);color:var(--flux-fg-muted);">{formatDate(post.data.publishDate)}</time>
-    </header>
 
-    <Prose>
-      <Content />
-    </Prose>
-
-    <Divider variant="ascii" />
-
-    <footer style="margin-top:var(--spacing-4);">
-      <Button href="/blog" variant="ghost" size="sm">← all posts</Button>
-    </footer>
-  </article>
-
-  <FluxFooter />
-</FluxLayout>
+      <footer class="mt-8 dim">
+        <hr style="border:none;border-top:1px dashed var(--foreground2);margin-bottom:1rem;" />
+        EOF · <a href="/blog">← all posts</a>
+      </footer>
+    </article>
+  </div>
+</OS>

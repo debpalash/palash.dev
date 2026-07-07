@@ -1,0 +1,24 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  products: CollectionEntry<'products'>[];
+}
+
+const { products } = Astro.props;
+---
+
+<p class="dim mb-2">total {products.length} — double-clicking is for boomers, one click launches</p>
+
+{products.map((p) => (
+  <button class="filerow" data-open={`prg-${p.id}`}>
+    <span aria-hidden="true">{p.data.icon}</span>
+    <span class="fname">{p.id}.prg</span>
+    <span class={`dot ${p.data.status}`} title={p.data.status}>●</span>
+    <span class="fmeta">{p.data.tagline}</span>
+  </button>
+))}
+
+<p class="mt-4 dim">
+  see also: <a href="https://github.com/debpalash?tab=repositories" target="_blank" rel="noopener">all repositories ↗</a>
+</p>

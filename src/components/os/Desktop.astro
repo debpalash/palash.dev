@@ -1,0 +1,88 @@
+---
+import { SITE } from '../../site.config';
+
+interface Props {
+  /** Comma-separated window ids to auto-open after boot. */
+  autopen?: string;
+}
+
+const { autopen = 'about' } = Astro.props;
+---
+
+<canvas id="starfield" aria-hidden="true"></canvas>
+<div
+  id="bg-wallpaper"
+  aria-hidden="true"
+  data-srcs={JSON.stringify(SITE.background.wallpapers)}
+>
+</div>
+<div id="bg-video" aria-hidden="true" data-ids={JSON.stringify(SITE.background.youtubeIds)}></div>
+<div class="crt" aria-hidden="true"></div>
+
+<div id="boot" data-lines={JSON.stringify(SITE.bootLines)} aria-hidden="true"></div>
+
+<main id="desktop" data-autopen={autopen} data-bg={SITE.background.mode}>
+  <div id="icons">
+    <slot name="icons" />
+  </div>
+
+  <div id="theme-corner">
+    <button id="theme-btn" class="taskbtn" aria-haspopup="menu">◐ phosphor</button>
+    <nav id="theme-menu" class="os-menu" hidden aria-label="Themes">
+      <div class="menu-head">genre-defying themes</div>
+      <button data-theme-set="phosphor"><span class="sw" style="--a:#33ff66;--b:#050805"></span>phosphor <span class="dim">// green CRT</span></button>
+      <button data-theme-set="amber"><span class="sw" style="--a:#ffb000;--b:#0a0603"></span>amber <span class="dim">// warm terminal</span></button>
+      <button data-theme-set="ice"><span class="sw" style="--a:#6df0ff;--b:#020810"></span>ice <span class="dim">// off the grid</span></button>
+      <button data-theme-set="synthwave"><span class="sw" style="--a:#ff2ea6;--b:#0d0221"></span>synthwave <span class="dim">// outrun</span></button>
+      <button data-theme-set="doom"><span class="sw" style="--a:#ff3b30;--b:#0a0202"></span>doom <span class="dim">// rip &amp; tear</span></button>
+      <button data-theme-set="paper"><span class="sw" style="--a:#2b2418;--b:#f2ead8"></span>paper <span class="dim">// e-ink heresy</span></button>
+      <button data-theme-set="xp"><span class="sw" style="--a:#0c2e8a;--b:#ece9d8"></span>windows xp <span class="dim">// bliss</span></button>
+      <button data-theme-set="snow"><span class="sw" style="--a:#2b2b2b;--b:#d8d8d8"></span>snow leopard <span class="dim">// 10.6 aluminum</span></button>
+      <button data-theme-set="tiger"><span class="sw" style="--a:#103c78;--b:#eef1f6"></span>tiger <span class="dim">// 10.4 aqua</span></button>
+      <button data-theme-set="omarchy"><span class="sw" style="--a:#7aa2f7;--b:#1a1b26"></span>omarchy <span class="dim">// tokyo night, btw</span></button>
+    </nav>
+  </div>
+
+  <div id="windows"></div>
+</main>
+
+<footer id="taskbar">
+  <button class="taskbtn" id="start-btn">⏻ {SITE.osName}</button>
+  <nav id="start-menu" class="os-menu" hidden aria-label="Start menu">
+    <div class="menu-head">{SITE.osName} — {SITE.author}</div>
+    <slot name="menu" />
+    <button id="bg-cycle" title="Cycle desktop background">display: …</button>
+  </nav>
+  <div id="task-items"></div>
+  <div id="tray">
+    <span class="dim">▓▒░</span>
+    <span id="clock"></span>
+  </div>
+</footer>
+
+<nav id="ctx-menu" class="os-menu" hidden aria-label="Desktop context menu">
+  <div class="menu-head">display</div>
+  <button data-bg-set="starfield">background: starfield</button>
+  <button data-bg-set="wallpaper">background: wallpaper</button>
+  <button data-bg-set="video">background: video · ISRO</button>
+  <button id="ctx-next-wall">next wallpaper ▸</button>
+  <button id="ctx-next-video">next video ▸</button>
+  <div class="menu-head">shortcuts</div>
+  <button data-open="terminal">open terminal</button>
+  <button data-open="about">about.txt</button>
+</nav>
+
+<div id="winsrc-store" hidden>
+  <slot name="windows" />
+</div>
+
+<script>
+  import { initStarfield } from '../../scripts/starfield';
+  import { initWM } from '../../scripts/wm';
+  import { initTerminal } from '../../scripts/terminal';
+
+  const canvas = document.getElementById('starfield') as HTMLCanvasElement | null;
+  if (canvas) initStarfield(canvas);
+  initWM();
+  initTerminal();
+</script>

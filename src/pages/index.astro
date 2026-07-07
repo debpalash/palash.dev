@@ -1,159 +1,296 @@
 ---
-import FluxLayout from '../flux/components/FluxLayout.astro';
-import Nav from '../flux/components/Nav.astro';
-import FluxFooter from '../flux/components/FluxFooter.astro';
-import Section from '../flux/components/Section.astro';
-import Heading from '../flux/components/Heading.astro';
-import Button from '../flux/components/Button.astro';
-import Card from '../flux/components/Card.astro';
-import Badge from '../flux/components/Badge.astro';
-import Grid from '../flux/components/Grid.astro';
-import Divider from '../flux/components/Divider.astro';
-import ThemeToggle from '../flux/react/ThemeToggle';
-import LiquidDrip from '../flux/react/LiquidDrip';
-import { getCollection } from 'astro:content';
+import { getCollection, render } from 'astro:content';
+import OS from '../layouts/OS.astro';
+import Desktop from '../components/os/Desktop.astro';
+import Icon from '../components/os/Icon.astro';
+import WindowSrc from '../components/os/WindowSrc.astro';
+import About from '../components/windows/About.astro';
+import Programs from '../components/windows/Programs.astro';
+import Program from '../components/windows/Program.astro';
+import Docs from '../components/windows/Docs.astro';
+import Gallery from '../components/windows/Gallery.astro';
+import GalleryGrid from '../components/windows/GalleryGrid.astro';
+import Company from '../components/windows/Company.astro';
+import Experiments from '../components/windows/Experiments.astro';
+import Contact from '../components/windows/Contact.astro';
+import { SITE } from '../site.config';
 
-const allProducts = (await getCollection('products'))
-  .sort((a, b) => a.data.order - b.data.order);
+const products = (await getCollection('products')).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf(),
+);
+const experiments = await getCollection('experiments');
+const gallery = await getCollection('gallery');
 
-const statusVariant: Record<string, 'success' | 'info' | 'warning'> = {
-  live: 'success',
-  beta: 'info',
-  'coming-soon': 'warning',
+const renderedPosts = await Promise.all(
+  posts.map(async (post) => ({ post, rendered: await render(post) })),
+);
+
+// group gallery items per project, ordered like the products list
+const galleryByGroup = new Map<string, typeof gallery>();
+for (const item of gallery) {
+  const list = galleryByGroup.get(item.data.group) ?? [];
+  list.push(item);
+  galleryByGroup.set(item.data.group, list);
+}
+const galleryGroups = [...galleryByGroup.entries()]
+  .sort(([a], [b]) => {
+    const ia = products.findIndex((p) => p.id === a);
+    const ib = products.findIndex((p) => p.id === b);
+    return (ia === -1 ? 99 : ia) - (ib === -1 ? 99 : ib);
+  })
+  .map(([group, items]) => ({
+    group,
+    label: products.find((p) => p.id === group)?.data.name ?? group,
+    items,
+  }));
+
+// ------------------------------------------------------------------
+// virtual filesystem for the terminal window
+// ------------------------------------------------------------------
+type VfsFile = { t: 'f'; c?: string; open?: string; view?: string; url?: string; x?: boolean };
+type VfsDir = { t: 'd'; ch: Record<string, VfsFile | VfsDir> };
+
+const dir = (ch: Record<string, VfsFile | VfsDir>): VfsDir => ({ t: 'd', ch });
+
+const aboutText = [
+  `${SITE.author} — engineer, product builder, and systems thinker.`,
+  'I make developer tools, media platforms, and infrastructure that',
+  'bridge low-level performance and high-level UX. Things that ship.',
+  '',
+  `stack: ${SITE.stack.join(', ')}`,
+].join('\n');
+
+const vfs = {
+  meta: {
+    user: 'guest',
+    host: 'palash.os',
+    author: SITE.author,
+    stack: SITE.stack,
+    counts: {
+      programs: products.length,
+      docs: posts.length,
+      captures: gallery.length,
+      experiments: experiments.length,
+    },
+  },
+  root: dir({
+    'about.txt': { t: 'f', c: aboutText, open: 'about' },
+    'contact.sh': {
+      t: 'f',
+      c: SITE.links.map((l) => `${l.label}: ${l.href}`).join('\n'),
+      open: 'contact',
+      x: true,
+    },
+    programs: dir(
+      Object.fromEntries(
+        products.map((p) => [
+          `${p.id}.prg`,
+          {
+            t: 'f',
+            c: `${p.data.name} — ${p.data.tagline}\nstatus: ${p.data.status}\nstack: ${p.data.stack.join(', ')}\n${p.data.url ?? ''}`,
+            open: `prg-${p.id}`,
+            x: true,
+          } satisfies VfsFile,
+        ]),
+      ),
+    ),
+    docs: dir(
+      Object.fromEntries(
+        posts.map((p) => [
+          `${p.id}.md`,
+          { t: 'f', c: p.body ?? p.data.description, open: `doc-${p.id}` } satisfies VfsFile,
+        ]),
+      ),
+    ),
+    gallery: dir(
+      Object.fromEntries(
+        galleryGroups.map(({ group, items }) => [
+          group,
+          dir(
+            Object.fromEntries(
+              items.map((i) => [
+                i.data.caption,
+                { t: 'f', c: `[image] ${i.data.title}\n${i.data.src}`, view: i.data.src } satisfies VfsFile,
+              ]),
+            ),
+          ),
+        ]),
+      ),
+    ),
+    company: dir({
+      'yupcha.txt': {
+        t: 'f',
+        c: `${SITE.company.name} — ${SITE.company.tagline}\n\n${SITE.company.blurb}\n${SITE.company.url}`,
+        open: 'company',
+      },
+    }),
+    experiments: dir(
+      Object.fromEntries(
+        experiments.map((x) => [
+          `${x.data.name}.url`,
+          { t: 'f', c: `${x.data.description}\n${x.data.url}`, url: x.data.url } satisfies VfsFile,
+        ]),
+      ),
+    ),
+  }),
+};
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Person',
+      '@id': `${SITE.url}/#person`,
+      name: SITE.author,
+      url: SITE.url,
+      jobTitle: 'Software Engineer',
+      description: SITE.description,
+      sameAs: [SITE.github],
+      knowsAbout: SITE.stack,
+    },
+    {
+      '@type': 'WebSite',
+      '@id': `${SITE.url}/#website`,
+      url: SITE.url,
+      name: 'palash.dev',
+      publisher: { '@id': `${SITE.url}/#person` },
+    },
+  ],
 };
 ---
 
-<FluxLayout title="Palash Debnath - Software Engineer & Builder" description="Portfolio and projects of Palash Debnath, a software engineer and maker of things that ship.">
-  <Nav>
-    <ThemeToggle client:load slot="actions" />
-  </Nav>
+<OS title={SITE.title} mode="os">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} slot="head" />
 
-  <!-- Hero Section for SEO & Brand -->
-  <Section style="padding-top:var(--spacing-24);padding-bottom:var(--spacing-12);">
-    <div style="max-width:48rem;">
-      <h1 style="font-family:var(--font-display);font-size:var(--text-5xl);font-weight:800;color:var(--flux-fg-primary);margin:0 0 var(--spacing-4) 0;letter-spacing:-0.03em;line-height:1.1;">
-        Palash Debnath.
-      </h1>
-      <p style="font-size:var(--text-xl);color:var(--flux-fg-secondary);line-height:1.6;margin:0;">
-        Software engineer, builder, and maker of things that ship.
+  <Desktop autopen="about">
+    <Fragment slot="icons">
+      <Icon open="about" glyph="☺" label="about.txt" />
+      <Icon open="programs" glyph="►" label="programs/" />
+      <Icon open="docs" glyph="≡" label="docs/" />
+      <Icon open="gallery" glyph="▦" label="gallery/" />
+      <Icon open="company" glyph="⌂" label="company/" />
+      <Icon open="experiments" glyph="λ" label="experiments/" />
+      <Icon open="terminal" glyph=">_" label="terminal" />
+      <Icon open="contact" glyph="@" label="contact.sh" />
+    </Fragment>
+
+    <Fragment slot="menu">
+      <button data-open="about">about.txt</button>
+      <button data-open="programs">programs/</button>
+      <button data-open="docs">docs/</button>
+      <button data-open="gallery">gallery/</button>
+      <button data-open="company">company/</button>
+      <button data-open="experiments">experiments/</button>
+      <button data-open="terminal">terminal</button>
+      <button data-open="contact">contact.sh</button>
+      <a href="/blog">blog archive →</a>
+      <a href={SITE.github} target="_blank" rel="noopener">github ↗</a>
+      <a href="/rss.xml">rss.xml</a>
+    </Fragment>
+
+    <Fragment slot="windows">
+      <WindowSrc id="about" title="about.txt" w={860} h={560} center>
+        <About
+          counts={{
+            programs: products.length,
+            docs: posts.length,
+            captures: gallery.length,
+            experiments: experiments.length,
+          }}
+        />
+      </WindowSrc>
+
+      <WindowSrc id="programs" title="~/programs" w={620} h={360}>
+        <Programs products={products} />
+      </WindowSrc>
+
+      {products.map((product) => (
+        <WindowSrc
+          id={`prg-${product.id}`}
+          title={`programs/${product.id}.prg`}
+          w={640}
+          h={560}
+        >
+          <Program
+            product={product}
+            screenshots={galleryByGroup.get(product.id) ?? []}
+          />
+        </WindowSrc>
+      ))}
+
+      <WindowSrc id="docs" title="~/docs" w={680} h={380}>
+        <Docs posts={posts} />
+      </WindowSrc>
+
+      {renderedPosts.map(({ post, rendered }) => (
+        <WindowSrc
+          id={`doc-${post.id}`}
+          title={`docs/${post.id}.md`}
+          w={760}
+          h={560}
+        >
+          <div class="prose">
+            <p class="dim">
+              {post.data.publishDate.toISOString().split('T')[0]} ·{' '}
+              {post.data.tags.map((t) => `#${t}`).join(' ')} ·{' '}
+              <a href={`/blog/${post.id}`}>permalink</a>
+            </p>
+            <rendered.Content />
+          </div>
+        </WindowSrc>
+      ))}
+
+      <WindowSrc id="gallery" title="~/gallery" w={560} h={340}>
+        <Gallery groups={galleryGroups} />
+      </WindowSrc>
+
+      {galleryGroups.map(({ group, label, items }) => (
+        <WindowSrc
+          id={`gal-${group}`}
+          title={`gallery/${group} — ${label}`}
+          w={780}
+          h={560}
+        >
+          <p class="dim mb-3">
+            {items.length} captures · <button class="amber" style="background:none;border:none;cursor:pointer;font:inherit;" data-open={`prg-${group}`}>run {group}.prg →</button>
+          </p>
+          <GalleryGrid items={items} />
+        </WindowSrc>
+      ))}
+
+      <WindowSrc id="company" title="~/company — YUPCHA" w={560} h={460}>
+        <Company />
+      </WindowSrc>
+
+      <WindowSrc id="experiments" title="~/experiments" w={700} h={400}>
+        <Experiments items={experiments} />
+      </WindowSrc>
+
+      <WindowSrc id="terminal" title="guest@palash.os: ~" w={720} h={440}>
+        <div id="terminal-root"></div>
+      </WindowSrc>
+
+      <WindowSrc id="contact" title="contact.sh" w={480} h={400}>
+        <Contact />
+      </WindowSrc>
+    </Fragment>
+  </Desktop>
+
+  <script type="application/json" id="vfs-data" set:html={JSON.stringify(vfs)} />
+
+  <noscript>
+    <div style="position:fixed;inset:0;z-index:9999;background:var(--background0);padding:2rem;overflow:auto;">
+      <h1>{SITE.author}</h1>
+      <p>{SITE.description}</p>
+      <p>
+        This site is an interactive retro OS and needs JavaScript. The content
+        is also available at <a href="/blog">/blog</a>,
+        {products.map((p) => <Fragment><a href={`/${p.id}`}>/{p.id}</a>{' '}</Fragment>)}
+        and <a href={SITE.github}>GitHub</a>.
       </p>
     </div>
-  </Section>
-
-  <Section id="projects" style="padding-top:var(--spacing-12);padding-bottom:var(--spacing-16);">
-    <div style="display:flex;flex-direction:column;gap:var(--spacing-12);">
-      {allProducts.map((p) => {
-        return (
-          <a href={`/${p.id}`} class="project-card-premium">
-            {/* Logo Side */}
-            <div class="project-logo-container">
-               {p.data.logoUrl ? (
-                 <img src={p.data.logoUrl} alt={p.data.name} class="project-logo-image" style="max-width:140px;max-height:140px;object-fit:contain;" />
-               ) : (
-                 <div class="project-logo-image" style="font-size:6rem;">{p.data.icon}</div>
-               )}
-            </div>
-
-            {/* Content Side */}
-            <div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:var(--spacing-5);padding-left:var(--spacing-4);">
-              <div style="display:flex;align-items:center;justify-content:space-between;">
-                <h3 style="font-family:var(--font-display);font-size:var(--text-4xl);font-weight:800;color:var(--flux-fg-primary);margin:0;letter-spacing:-0.02em;">{p.data.name}</h3>
-                <Badge variant={statusVariant[p.data.status] || 'default'}>{p.data.status}</Badge>
-              </div>
-              
-              <p style="font-size:var(--text-xl);color:var(--flux-fg-secondary);line-height:1.7;margin:0;max-width:90%;">
-                {p.data.description}
-              </p>
-              
-              <div style="display:flex;flex-wrap:wrap;gap:var(--spacing-3);margin-top:var(--spacing-2);">
-                {p.data.stack.map((t) => (
-                  <span style="font-family:var(--font-mono);font-size:var(--text-xs);padding:var(--spacing-1) var(--spacing-3);border-radius:99px;background:var(--flux-bg-deep);color:var(--flux-fg-muted);border:1px solid var(--flux-glass-border);letter-spacing:0.05em;text-transform:uppercase;">{t}</span>
-                ))}
-              </div>
-
-              {p.data.url && (
-                <div style="margin-top:var(--spacing-6);font-family:var(--font-mono);font-size:var(--text-sm);color:var(--flux-fg-primary);font-weight:600;display:flex;align-items:center;gap:var(--spacing-2);">
-                  View Project <span class="project-card-arrow">→</span>
-                </div>
-              )}
-            </div>
-          </a>
-        );
-      })}
-    </div>
-  </Section>
-
-  <FluxFooter>
-    <LiquidDrip client:visible dripCount={1} dripDistance={14} dripColor="var(--flux-fg-faint)">
-      <div style="text-align:center;">
-        <span style="font-family:var(--font-mono);font-size:var(--text-xs);color:var(--flux-fg-muted);">palash.dev // {new Date().getFullYear()}</span>
-      </div>
-    </LiquidDrip>
-  </FluxFooter>
-</FluxLayout>
-
-<style>
-  .project-card-premium {
-    position: relative;
-    display: flex;
-    flex-direction: row;
-    gap: var(--spacing-8);
-    align-items: stretch;
-    padding: var(--spacing-6);
-    background: linear-gradient(145deg, var(--flux-bg-surface), var(--flux-bg-base));
-    border-radius: var(--radius-xl);
-    border: 1px solid var(--flux-glass-border);
-    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s ease;
-    text-decoration: none;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-  }
-  .project-card-premium:hover {
-    transform: translateY(-4px) scale(1.005);
-    box-shadow: 0 20px 40px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.05);
-    border-color: rgba(255,255,255,0.15);
-  }
-  .project-logo-container {
-    flex: 0 0 320px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: var(--flux-bg-deep);
-    border-radius: var(--radius-lg);
-    box-shadow: inset 0 2px 20px rgba(0,0,0,0.5);
-    position: relative;
-    overflow: hidden;
-    min-height: 280px;
-    border: 1px solid rgba(0,0,0,0.2);
-  }
-  .project-logo-container::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(circle at 50% 0%, rgba(255,255,255,0.08) 0%, transparent 60%);
-    pointer-events: none;
-  }
-  :global(.project-card-premium:hover .project-logo-image) {
-    transform: scale(1.1);
-  }
-  :global(.project-logo-image) {
-    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-    filter: drop-shadow(0 15px 25px rgba(0,0,0,0.6));
-  }
-  .project-card-arrow {
-    transition: transform 0.3s ease;
-    display: inline-block;
-  }
-  .project-card-premium:hover .project-card-arrow {
-    transform: translateX(6px);
-  }
-  
-  @media (max-width: 768px) {
-    .project-card-premium {
-      flex-direction: column;
-    }
-    .project-logo-container {
-      flex: 0 0 200px;
-      min-height: 200px;
-    }
-  }
-</style>
+  </noscript>
+</OS>

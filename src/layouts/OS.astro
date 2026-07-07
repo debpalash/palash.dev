@@ -1,0 +1,58 @@
+---
+import '../styles/global.css';
+import { SITE } from '../site.config';
+
+interface Props {
+  title: string;
+  description?: string;
+  ogImage?: string;
+  /** 'os' = fullscreen desktop, 'page' = scrolling standalone page */
+  mode?: 'os' | 'page';
+}
+
+const {
+  title,
+  description = SITE.description,
+  ogImage = '/og-default.png',
+  mode = 'page',
+} = Astro.props;
+
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
+---
+
+<!doctype html>
+<html lang="en" data-webtui-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title={`${SITE.author} RSS Feed`}
+      href="/rss.xml"
+    />
+
+    <title>{title} | palash.dev</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalUrl} />
+    <meta name="author" content={SITE.author} />
+    <meta name="theme-color" content="#050805" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:title" content={`${title} | palash.dev`} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={new URL(ogImage, Astro.site)} />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={`${title} | palash.dev`} />
+    <meta name="twitter:description" content={description} />
+
+    <slot name="head" />
+  </head>
+  <body class={mode}>
+    <slot />
+  </body>
+</html>

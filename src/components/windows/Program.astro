@@ -1,0 +1,98 @@
+---
+import { Image } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  product: CollectionEntry<'products'>;
+  screenshots?: CollectionEntry<'gallery'>[];
+}
+
+const { product, screenshots = [] } = Astro.props;
+const { name, tagline, description, url, logoUrl, status, stack } = product.data;
+const strip = screenshots.slice(0, 4);
+---
+
+<div class="flex items-start gap-4 mb-4">
+  {logoUrl && (
+    <Image
+      src={logoUrl}
+      alt={`${name} logo`}
+      width={72}
+      height={72}
+      layout="fixed"
+      class="prg-logo"
+    />
+  )}
+  <div>
+    <h2 class="prg-name">{name}</h2>
+    <p class="dim">{tagline}</p>
+  </div>
+</div>
+
+<table class="prg-table" divide-="none">
+  <tbody>
+    <tr><td class="dim">STATUS</td><td><span class={`dot ${status}`}>●</span> {status}</td></tr>
+    <tr><td class="dim">STACK</td><td>{stack.join(' · ')}</td></tr>
+    {url && (
+      <tr><td class="dim">SOURCE</td><td><a href={url} target="_blank" rel="noopener">{url.replace('https://', '')} ↗</a></td></tr>
+    )}
+    {screenshots.length > 0 && (
+      <tr><td class="dim">MEDIA</td><td>{screenshots.length} captures</td></tr>
+    )}
+  </tbody>
+</table>
+
+<p class="mt-4">{description}</p>
+
+{strip.length > 0 && (
+  <div class="strip mt-4">
+    {strip.map((s) => (
+      <button
+        class="gallery-item"
+        data-view={s.data.src}
+        data-cap={s.data.caption}
+        aria-label={`View ${s.data.title}`}
+      >
+        <Image
+          src={s.data.src}
+          alt={s.data.title}
+          width={200}
+          height={125}
+          layout="constrained"
+        />
+      </button>
+    ))}
+  </div>
+)}
+
+<p class="mt-4 flex gap-3 flex-wrap">
+  {url && <a is-="button" href={url} target="_blank" rel="noopener">[ SOURCE ]</a>}
+  <a is-="button" href={`/${product.id}`}>[ MANUAL PAGE ]</a>
+  {screenshots.length > 0 && (
+    <button is-="button" data-open={`gal-${product.id}`}>[ ALL {screenshots.length} CAPTURES ]</button>
+  )}
+</p>
+
+<style>
+  .prg-logo {
+    border: 1px solid var(--foreground2);
+    background: var(--background1);
+  }
+  .prg-name {
+    color: var(--foreground0);
+    text-shadow: var(--glow);
+    font-size: 1.2rem;
+  }
+  .prg-table td {
+    padding: 0.15rem 2ch 0.15rem 0;
+    vertical-align: top;
+  }
+  .strip {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.5rem;
+  }
+  @media (max-width: 520px) {
+    .strip { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>

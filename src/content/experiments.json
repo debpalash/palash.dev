@@ -1,0 +1,44 @@
+[
+  {
+    "id": "sshbox",
+    "name": "sshbox",
+    "description": "Sandboxed SSH environments, written in Go.",
+    "url": "https://github.com/debpalash/sshbox",
+    "lang": "Go"
+  },
+  {
+    "id": "omnivoice-gallery",
+    "name": "omnivoice-gallery",
+    "description": "Voice sample gallery companion for OmniVoice Studio.",
+    "url": "https://github.com/debpalash/omnivoice-gallery",
+    "lang": "Python"
+  },
+  {
+    "id": "tauri-webgpu-test",
+    "name": "tauri-webgpu-test",
+    "description": "WebGPU rendering experiments inside a Tauri shell.",
+    "url": "https://github.com/debpalash/tauri-webgpu-test",
+    "lang": "TypeScript"
+  },
+  {
+    "id": "opal-plugins",
+    "name": "opal-plugins",
+    "description": "Source endpoints powering Opal's plugin system.",
+    "url": "https://github.com/debpalash/opal-plugins",
+    "lang": "JSON"
+  },
+  {
+    "id": "wxt-solid-tailwindv4-webext",
+    "name": "wxt-solid-tailwindv4-webext",
+    "description": "Web extension starter — WXT, Bun, SolidJS, Tailwind v4.",
+    "url": "https://github.com/debpalash/wxt-solid-tailwindv4-webext",
+    "lang": "TypeScript"
+  },
+  {
+    "id": "wxt-transformerjs",
+    "name": "wxt-transformerjs",
+    "description": "Running transformers.js models inside a web extension.",
+    "url": "https://github.com/debpalash/wxt-transformerjs",
+    "lang": "TypeScript"
+  }
+]

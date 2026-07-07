@@ -1,5 +1,5 @@
 import { defineCollection, z } from 'astro:content';
-import { glob } from 'astro/loaders';
+import { glob, file } from 'astro/loaders';
 
 const blog = defineCollection({
   loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/blog' }),
@@ -22,11 +22,31 @@ const products = defineCollection({
     description: z.string(),
     url: z.string().url().optional(),
     logoUrl: z.string().url().optional(),
-    icon: z.string().default('🚀'),
+    icon: z.string().default('►'),
     status: z.enum(['live', 'beta', 'coming-soon']).default('live'),
     stack: z.array(z.string()).default([]),
     order: z.number().default(0),
   }),
 });
 
-export const collections = { blog, products };
+const experiments = defineCollection({
+  loader: file('./src/content/experiments.json'),
+  schema: z.object({
+    name: z.string(),
+    description: z.string(),
+    url: z.string().url(),
+    lang: z.string(),
+  }),
+});
+
+const gallery = defineCollection({
+  loader: file('./src/content/gallery.json'),
+  schema: z.object({
+    title: z.string(),
+    caption: z.string(),
+    src: z.string().url(),
+    group: z.string(),
+  }),
+});
+
+export const collections = { blog, products, experiments, gallery };
