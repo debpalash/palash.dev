@@ -1,6 +1,7 @@
 ---
 import { getCollection, render } from 'astro:content';
 import OS from '../../layouts/OS.astro';
+import { SITE } from '../../site.config';
 
 export async function getStaticPaths() {
   const posts = await getCollection('blog', ({ data }) => !data.draft);
@@ -13,9 +14,50 @@ export async function getStaticPaths() {
 const { post } = Astro.props;
 const { Content } = await render(post);
 const date = post.data.publishDate.toISOString().split('T')[0];
+
+const postUrl = `${SITE.url}/blog/${post.id}`;
+const personId = `${SITE.url}/#person`;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'BlogPosting',
+      '@id': `${postUrl}#post`,
+      headline: post.data.title,
+      description: post.data.description,
+      url: postUrl,
+      mainEntityOfPage: postUrl,
+      datePublished: post.data.publishDate.toISOString(),
+      dateModified: (post.data.updatedDate ?? post.data.publishDate).toISOString(),
+      keywords: post.data.tags.join(', '),
+      image: new URL(post.data.heroImage ?? `/og/blog-${post.id}.png`, SITE.url).href,
+      author: { '@id': personId, '@type': 'Person', name: SITE.author, url: SITE.url },
+      publisher: { '@id': personId },
+    },
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: SITE.author, item: SITE.url },
+        { '@type': 'ListItem', position: 2, name: 'The Log', item: `${SITE.url}/blog` },
+        { '@type': 'ListItem', position: 3, name: post.data.title, item: postUrl },
+      ],
+    },
+  ],
+};
 ---
 
-<OS title={post.data.title} description={post.data.description} mode="page">
+<OS
+  title={post.data.title}
+  description={post.data.description}
+  ogImage={`/og/blog-${post.id}.png`}
+  mode="page"
+  ogType="article"
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)}></script>
+  </Fragment>
+
   <div class="page-frame">
     <p class="dim flex justify-between flex-wrap gap-2">
       <a href={`/#doc-${post.id}`}>← open in PALASH.OS</a>

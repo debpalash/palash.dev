@@ -12,5 +12,16 @@
     "AI Memory"
   ],
   "order": 2,
-  "logoUrl": "https://raw.githubusercontent.com/debpalash/memxt/main/assets/logo.svg"
+  "logoUrl": "https://raw.githubusercontent.com/debpalash/memxt/main/assets/logo.svg",
+  "category": "DeveloperApplication",
+  "os": "macOS, Linux, Windows",
+  "keywords": [
+    "memxt",
+    "memxt agent memory",
+    "AI agent memory",
+    "long-term memory for AI agents",
+    "MCP memory server",
+    "local-first AI memory",
+    "Palash Debnath"
+  ]
 }

@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import { Image } from 'astro:assets';
 import OS from '../layouts/OS.astro';
+import { SITE } from '../site.config';
 
 export async function getStaticPaths() {
   const products = await getCollection('products');
@@ -16,10 +17,53 @@ export async function getStaticPaths() {
 }
 
 const { product, screenshots } = Astro.props;
-const { name, tagline, description, url, logoUrl, status, stack } = product.data;
+const { name, tagline, description, url, logoUrl, status, stack, category, os, keywords } =
+  product.data;
+
+const pageUrl = `${SITE.url}/${product.id}`;
+const personId = `${SITE.url}/#person`;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'SoftwareApplication',
+      '@id': `${pageUrl}#app`,
+      name,
+      ...(keywords.length ? { alternateName: keywords.slice(0, 3) } : {}),
+      description,
+      applicationCategory: category,
+      operatingSystem: os,
+      url: pageUrl,
+      ...(logoUrl ? { image: logoUrl } : {}),
+      ...(url ? { codeRepository: url, downloadUrl: url } : {}),
+      author: { '@id': personId, '@type': 'Person', name: SITE.author, url: SITE.url },
+      publisher: { '@type': 'Organization', name: SITE.company.name, url: SITE.company.url },
+      offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+      ...(keywords.length ? { keywords: keywords.join(', ') } : {}),
+    },
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: SITE.author, item: SITE.url },
+        { '@type': 'ListItem', position: 2, name, item: pageUrl },
+      ],
+    },
+  ],
+};
 ---
 
-<OS title={`${name} — ${tagline}`} description={description} mode="page">
+<OS
+  title={`${name} — ${tagline}`}
+  description={description}
+  ogImage={`/og/${product.id}.png`}
+  mode="page"
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)}></script>
+    {keywords.length > 0 && <meta name="keywords" content={keywords.join(', ')} />}
+  </Fragment>
+
   <div class="page-frame">
     <p class="dim">
       <a href={`/#prg-${product.id}`}>← run in PALASH.OS</a>

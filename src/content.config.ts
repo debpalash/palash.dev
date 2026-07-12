@@ -26,6 +26,12 @@ const products = defineCollection({
     status: z.enum(['live', 'beta', 'coming-soon']).default('live'),
     stack: z.array(z.string()).default([]),
     order: z.number().default(0),
+    /** SEO: schema.org SoftwareApplication category, e.g. DeveloperApplication */
+    category: z.string().default('DeveloperApplication'),
+    /** SEO: supported operating systems, e.g. "macOS, Linux, Windows" */
+    os: z.string().default('macOS, Linux, Windows'),
+    /** SEO: search phrasings people use for this project */
+    keywords: z.array(z.string()).default([]),
   }),
 });
 

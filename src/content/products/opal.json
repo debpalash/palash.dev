@@ -11,5 +11,16 @@
     "Desktop"
   ],
   "order": 3,
-  "logoUrl": "https://raw.githubusercontent.com/debpalash/Opal/main/assets/logo.svg"
+  "logoUrl": "https://raw.githubusercontent.com/debpalash/Opal/main/assets/logo.svg",
+  "category": "MultimediaApplication",
+  "os": "macOS, Linux, Windows",
+  "keywords": [
+    "Opal",
+    "Opal media player",
+    "AI media player",
+    "play everything media player",
+    "universal media player",
+    "Zig media player",
+    "Palash Debnath"
+  ]
 }

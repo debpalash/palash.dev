@@ -159,32 +159,76 @@ const vfs = {
   }),
 };
 
+const personId = `${SITE.url}/#person`;
+const orgId = `${SITE.url}/#yupcha`;
+
 const jsonLd = {
   '@context': 'https://schema.org',
   '@graph': [
     {
       '@type': 'Person',
-      '@id': `${SITE.url}/#person`,
+      '@id': personId,
       name: SITE.author,
+      alternateName: [SITE.alternateName, 'Palash'],
       url: SITE.url,
-      jobTitle: 'Software Engineer',
+      image: new URL(SITE.avatar, SITE.url).href,
+      jobTitle: 'Software Engineer & Product Builder',
       description: SITE.description,
       sameAs: [SITE.github],
       knowsAbout: SITE.stack,
+      worksFor: { '@id': orgId },
+    },
+    {
+      '@type': 'Organization',
+      '@id': orgId,
+      name: SITE.company.name,
+      url: SITE.company.url,
+      description: SITE.company.tagline,
+      founder: { '@id': personId },
     },
     {
       '@type': 'WebSite',
       '@id': `${SITE.url}/#website`,
       url: SITE.url,
       name: 'palash.dev',
-      publisher: { '@id': `${SITE.url}/#person` },
+      alternateName: [SITE.author, SITE.alternateName],
+      publisher: { '@id': personId },
     },
+    ...products.map((p) => ({
+      '@type': 'SoftwareApplication',
+      '@id': `${SITE.url}/${p.id}#app`,
+      name: p.data.name,
+      ...(p.data.keywords.length ? { alternateName: p.data.keywords.slice(0, 3) } : {}),
+      description: p.data.description,
+      applicationCategory: p.data.category,
+      operatingSystem: p.data.os,
+      url: `${SITE.url}/${p.id}`,
+      ...(p.data.url ? { codeRepository: p.data.url } : {}),
+      author: { '@id': personId },
+      offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+      ...(p.data.keywords.length ? { keywords: p.data.keywords.join(', ') } : {}),
+    })),
   ],
 };
+
+// brand + product terms people search for
+const homeKeywords = [
+  SITE.author,
+  SITE.alternateName,
+  'Palash Debnath engineer',
+  `github.com/${SITE.handle}`,
+  ...products.flatMap((p) => [p.data.name, ...p.data.keywords.slice(0, 2)]),
+  SITE.company.name,
+]
+  .filter((v, i, a) => v && a.indexOf(v) === i)
+  .join(', ');
 ---
 
 <OS title={SITE.title} mode="os">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} slot="head" />
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)}></script>
+    <meta name="keywords" content={homeKeywords} />
+  </Fragment>
 
   <Desktop autopen="about">
     <Fragment slot="icons">

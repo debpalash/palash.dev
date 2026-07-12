@@ -14,5 +14,16 @@
     "Whisper"
   ],
   "order": 1,
-  "logoUrl": "https://raw.githubusercontent.com/debpalash/OmniVoice-Studio/main/docs/logo.png"
+  "logoUrl": "https://raw.githubusercontent.com/debpalash/OmniVoice-Studio/main/docs/logo.png",
+  "category": "MultimediaApplication",
+  "os": "macOS, Linux, Windows",
+  "keywords": [
+    "OmniVoice Studio",
+    "OmniVoice",
+    "AI voice cloning",
+    "AI dubbing software",
+    "voice generation studio",
+    "self-hosted ElevenLabs alternative",
+    "Palash Debnath"
+  ]
 }
