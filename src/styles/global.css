@@ -419,13 +419,15 @@ body[data-bg='wallpaper'] #bg-wallpaper {
 body[data-bg='video'] #bg-video {
   opacity: 1;
 }
-/* cover the viewport at 16:9 regardless of window shape */
+/* cover the viewport at 16:9 regardless of window shape, oversized ~34% so
+   YouTube's title band (top) and control/watermark band (bottom) crop off
+   every edge instead of bleeding into the desktop */
 #bg-video iframe {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: max(100vw, 177.78vh);
-  height: max(100vh, 56.25vw);
+  width: calc(max(100vw, 177.78vh) * 1.34);
+  height: calc(max(100vh, 56.25vw) * 1.34);
   transform: translate(-50%, -50%);
   border: 0;
   pointer-events: none;
@@ -584,6 +586,16 @@ body[data-bg='video'] #bg-video {
   backdrop-filter: blur(3px);
   border: 1px solid var(--foreground2);
   box-shadow: 0 0 0 1px rgb(0 0 0 / 0.6), 0 8px 40px rgb(0 0 0 / 0.7);
+  animation: win-open 0.17s ease-out both;
+  transform-origin: center 40%;
+}
+/* CRT-style materialize when a window opens */
+@keyframes win-open {
+  from { opacity: 0; transform: translateY(6px) scale(0.982); }
+  to   { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .window { animation: none; }
 }
 .window.focused {
   border-color: var(--foreground0);
