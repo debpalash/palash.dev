@@ -151,9 +151,12 @@ for (const file of (await readdir(prodDir)).filter((f) => f.endsWith('.json'))) 
 
 // ---- blog posts ----
 const blogDir = path.join(root, 'src/content/blog');
-for (const file of (await readdir(blogDir)).filter((f) => /\.mdx?$/.test(f))) {
+const posts = (await readdir(blogDir)).filter((f) => /\.mdx?$/.test(f));
+let live = 0;
+for (const file of posts) {
   const fm = frontmatter(await readFile(path.join(blogDir, file), 'utf8'));
   if (!fm || fm.draft === 'true') continue;
+  live++;
   const slug = file.replace(/\.mdx?$/, '');
   const date = (fm.publishDate || '').split('T')[0];
   await render(
@@ -170,5 +173,19 @@ for (const file of (await readdir(blogDir)).filter((f) => /\.mdx?$/.test(f))) {
     fonts,
   );
 }
+
+// ---- the log (blog index) ----
+await render(
+  'blog',
+  card({
+    chrome: '~/articles',
+    kicker: '$ tail -f /dev/thoughts',
+    title: 'THE LOG',
+    subtitle: 'Notes on engineering, shipping, and building in public.',
+    metaLeft: `${live} articles · rss`,
+    metaRight: 'palash.dev · Palash Debnath',
+  }),
+  fonts,
+);
 
 console.log('done.');
