@@ -10,6 +10,8 @@
  * image viewer window.
  */
 
+import { SITE } from '../site.config';
+
 interface Win {
   id: string;
   frame: HTMLElement;
@@ -342,24 +344,41 @@ const load2 = (k: string) => {
   }
 };
 
+// theme + background are rolled randomly on each load; an explicit pick is
+// remembered only for the tab session (sessionStorage), so a fresh visit
+// rolls again.
+const sstore = (k: string, v: string) => {
+  try {
+    sessionStorage.setItem(k, v);
+  } catch {}
+};
+const sload = (k: string) => {
+  try {
+    return sessionStorage.getItem(k);
+  } catch {
+    return null;
+  }
+};
+const rand = (n: number) => Math.floor(Math.random() * Math.max(1, n));
+
 let wallIdx = 0;
 let vidIdx = 0;
 
-function setWallpaper(i: number) {
+function setWallpaper(i: number, persist = true) {
   const el = $('bg-wallpaper');
   const list = bgList('bg-wallpaper', 'srcs');
   if (!el || !list.length) return;
   wallIdx = ((i % list.length) + list.length) % list.length;
   el.style.backgroundImage = `url('${list[wallIdx]}')`;
-  store2('phosphor-wall', String(wallIdx));
+  if (persist) sstore('phosphor-wall', String(wallIdx));
 }
 
-function setVideo(i: number) {
+function setVideo(i: number, persist = true) {
   const holder = $('bg-video');
   const list = bgList('bg-video', 'ids');
   if (!holder || !list.length) return;
   vidIdx = ((i % list.length) + list.length) % list.length;
-  store2('phosphor-vid', String(vidIdx));
+  if (persist) sstore('phosphor-vid', String(vidIdx));
   holder.innerHTML = '';
   if (document.body.dataset.bg === 'video') injectVideo();
 }
@@ -380,12 +399,12 @@ function injectVideo() {
   holder.appendChild(iframe);
 }
 
-function applyBackground(mode: BgMode) {
+function applyBackground(mode: BgMode, persist = true) {
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (mode === 'video' && reduced) mode = 'wallpaper';
 
   document.body.dataset.bg = mode;
-  store2('phosphor-bg', mode);
+  if (persist) sstore('phosphor-bg', mode);
   if (mode === 'video') injectVideo();
 
   const btn = $('bg-cycle');
@@ -485,14 +504,23 @@ function refreshDesktop() {
 }
 
 function initBackground() {
-  const fallback = ($('desktop')?.dataset.bg || 'starfield') as BgMode;
-  let mode = fallback;
-  const saved = load2('phosphor-bg') as BgMode | null;
-  if (saved && BG_MODES.includes(saved)) mode = saved;
-  wallIdx = parseInt(load2('phosphor-wall') || '0', 10) || 0;
-  vidIdx = parseInt(load2('phosphor-vid') || '0', 10) || 0;
-  setWallpaper(wallIdx);
-  applyBackground(mode);
+  const picked = sload('phosphor-bg') as BgMode | null;
+  const isPicked = !!picked && BG_MODES.includes(picked);
+
+  let mode: BgMode;
+  if (isPicked) {
+    // an explicit choice this session sticks across reloads
+    mode = picked as BgMode;
+    wallIdx = parseInt(sload('phosphor-wall') || '0', 10) || 0;
+    vidIdx = parseInt(sload('phosphor-vid') || '0', 10) || 0;
+  } else {
+    // fresh session: roll a random background on every reload
+    mode = BG_MODES[rand(BG_MODES.length)];
+    wallIdx = rand(bgList('bg-wallpaper', 'srcs').length);
+    vidIdx = rand(bgList('bg-video', 'ids').length);
+  }
+  setWallpaper(wallIdx, false);
+  applyBackground(mode, isPicked);
 
   const cycleBg = () => {
     const current = (document.body.dataset.bg || 'starfield') as BgMode;
@@ -566,30 +594,17 @@ function initBackground() {
 
 /* ------------------------------------------------------------ themes */
 
-const THEMES = [
-  'shaktimaan',
-  'omarchy',
-  'xmen97',
-  'xp',
-  'paper',
-  'tiger',
-  'snow',
-  'ice',
-  'amber',
-  'phosphor',
-  'synthwave',
-  'doom',
-  'simba',
-];
+const THEMES: string[] = [...SITE.themes];
 
-function applyTheme(theme: string) {
+function applyTheme(theme: string, persist = false) {
   if (!THEMES.includes(theme)) theme = 'shaktimaan';
   if (theme === 'phosphor') {
     delete document.documentElement.dataset.theme;
   } else {
     document.documentElement.dataset.theme = theme;
   }
-  store2('phosphor-ui-theme', theme);
+  // only an explicit pick sticks (for the session); random rolls don't persist
+  if (persist) sstore('phosphor-theme', theme);
   // the print spooler only haunts shaktimaan mode
   $('tray-printer')?.toggleAttribute('hidden', theme !== 'shaktimaan');
   if (theme !== 'shaktimaan' && wins.has('printer')) closeWin('printer');
@@ -603,7 +618,9 @@ function applyTheme(theme: string) {
 }
 
 function initThemes() {
-  applyTheme(load2('phosphor-ui-theme') || 'shaktimaan');
+  // the pre-paint inline script already rolled/restored the theme onto <html>;
+  // sync the UI (labels, printer, active state) to it without re-rolling
+  applyTheme(document.documentElement.dataset.theme || 'phosphor');
 
   const btn = $('theme-btn');
   const menu = $('theme-menu');
@@ -615,7 +632,7 @@ function initThemes() {
     const t = e.target as HTMLElement;
     const pick = t.closest<HTMLElement>('[data-theme-set]');
     if (pick) {
-      applyTheme(pick.dataset.themeSet!);
+      applyTheme(pick.dataset.themeSet!, true);
       return;
     }
     if (menu && !menu.hidden && !t.closest('#theme-corner')) menu.hidden = true;
@@ -623,7 +640,7 @@ function initThemes() {
 
   $('tray-theme')?.addEventListener('click', () => {
     const current = document.documentElement.dataset.theme || 'phosphor';
-    applyTheme(THEMES[(THEMES.indexOf(current) + 1) % THEMES.length]);
+    applyTheme(THEMES[(THEMES.indexOf(current) + 1) % THEMES.length], true);
   });
 }
 

@@ -8,6 +8,8 @@ interface Props {
   ogImage?: string;
   /** 'os' = fullscreen desktop, 'page' = scrolling standalone page */
   mode?: 'os' | 'page';
+  /** Open Graph type — 'website' for most pages, 'article' for blog posts */
+  ogType?: string;
 }
 
 const {
@@ -15,6 +17,7 @@ const {
   description = SITE.description,
   ogImage = '/og-default.png',
   mode = 'page',
+  ogType = 'website',
 } = Astro.props;
 
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
@@ -23,14 +26,10 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
 <!doctype html>
 <html lang="en" data-webtui-theme="dark" data-theme="shaktimaan">
   <head>
-    <script is:inline>
-      // apply the visitor's saved theme before first paint (default: shaktimaan)
-      try {
-        var t = localStorage.getItem('phosphor-ui-theme');
-        if (t === 'phosphor') delete document.documentElement.dataset.theme;
-        else if (t) document.documentElement.dataset.theme = t;
-      } catch (e) {}
-    </script>
+    <script
+      is:inline
+      set:html={`(function(){try{var T=${JSON.stringify(SITE.themes)};var t=sessionStorage.getItem('phosphor-theme');if(!t)t=T[Math.floor(Math.random()*T.length)];if(t==='phosphor')delete document.documentElement.dataset.theme;else document.documentElement.dataset.theme=t;}catch(e){}})();`}
+    />
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -50,16 +49,21 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
     <meta name="author" content={SITE.author} />
     <meta name="theme-color" content="#050805" />
 
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={ogType} />
     <meta property="og:url" content={canonicalUrl} />
     <meta property="og:title" content={`${title} | palash.dev`} />
     <meta property="og:description" content={description} />
     <meta property="og:image" content={new URL(ogImage, Astro.site)} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={title} />
+    <meta property="og:site_name" content="palash.dev" />
 
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={`${title} | palash.dev`} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={new URL(ogImage, Astro.site)} />
+    <meta name="twitter:image:alt" content={title} />
 
     <slot name="head" />
   </head>

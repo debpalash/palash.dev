@@ -14,10 +14,25 @@ export const SITE = {
   description:
     'Portfolio of Palash Debnath — engineer and product builder making tools at the intersection of AI, audio, and infrastructure.',
   author: 'Palash Debnath',
+  /** username / alternate name people also search for */
   handle: 'debpalash',
+  alternateName: 'debpalash',
+  /** image used for the Person entity in structured data */
+  avatar: '/avatar-original.png',
 
   /** Name shown on the boot screen, start button and title bars. */
   osName: 'PALASH.OS',
+
+  /**
+   * Theme ids (see the `[data-theme]` blocks in src/styles/global.css and the
+   * theme menu in Desktop.astro). One is rolled at random on every page load;
+   * an explicit pick from the menu sticks for the tab session. Keep this list
+   * in sync with those two places.
+   */
+  themes: [
+    'shaktimaan', 'omarchy', 'xmen97', 'xp', 'paper', 'tiger', 'snow',
+    'ice', 'amber', 'phosphor', 'synthwave', 'doom', 'simba',
+  ],
 
   /**
    * Desktop background layers. `mode` is the default; visitors switch layers
