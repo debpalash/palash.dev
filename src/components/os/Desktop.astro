@@ -61,6 +61,8 @@ const { autopen = 'about' } = Astro.props;
   </div>
   <div id="task-items"></div>
   <div id="tray">
+    <a href="/" class="tray-chip tray-exit" title="Switch to the simple version of this site">⏏ simple</a>
+    <span class="tray-sep">│</span>
     <span id="tray-meter" title="all systems nominal">▁▁▁▁▁▁</span>
     <span class="tray-sep">│</span>
     <button class="tray-chip" id="tray-printer" hidden aria-label="Print queue">⎙<span class="prn-dot" aria-hidden="true"></span></button>

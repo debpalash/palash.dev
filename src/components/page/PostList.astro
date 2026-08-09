@@ -1,0 +1,31 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  posts: CollectionEntry<'blog'>[];
+  /** show the description line — on by default, off for dense listings */
+  showDesc?: boolean;
+}
+
+const { posts, showDesc = true } = Astro.props;
+
+const fmt = (d: Date) =>
+  d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: '2-digit' });
+---
+
+<div class="rows">
+  {posts.map((post) => (
+    <a class="row" href={`/blog/${post.id}`}>
+      <time class="row-date" datetime={post.data.publishDate.toISOString()}>
+        {fmt(post.data.publishDate)}
+      </time>
+
+      <div class="row-body">
+        <div class="row-title">{post.data.title}</div>
+        {showDesc && <p class="row-desc">{post.data.description}</p>}
+      </div>
+
+      <span class="row-arrow" aria-hidden="true">→</span>
+    </a>
+  ))}
+</div>

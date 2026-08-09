@@ -1,0 +1,65 @@
+---
+/**
+ * Shared document head for both shells — the retro desktop (OS.astro) and
+ * the plain reading pages (Page.astro). Kept in one place so the two modes
+ * can't drift apart on canonical URLs, OG tags or feed discovery.
+ */
+import { SITE } from '../site.config';
+
+interface Props {
+  title: string;
+  description?: string;
+  ogImage?: string;
+  /** Open Graph type — 'website' for most pages, 'article' for blog posts */
+  ogType?: string;
+  /** theme-color meta; the desktop overrides it with its own dark value */
+  themeColor?: string;
+}
+
+const {
+  title,
+  description = SITE.description,
+  ogImage = '/og-default.png',
+  ogType = 'website',
+  themeColor = '#ffffff',
+} = Astro.props;
+
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
+const fullTitle = `${title} | palash.dev`;
+const ogImageUrl = new URL(ogImage, Astro.site);
+---
+
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="icon" type="image/png" sizes="128x128" href="/favicon.png" />
+<link rel="apple-touch-icon" href="/favicon.png" />
+<link rel="sitemap" href="/sitemap-index.xml" />
+<link
+  rel="alternate"
+  type="application/rss+xml"
+  title={`${SITE.author} RSS Feed`}
+  href="/rss.xml"
+/>
+
+<title>{fullTitle}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonicalUrl} />
+<meta name="author" content={SITE.author} />
+<meta name="theme-color" content={themeColor} />
+
+<meta property="og:type" content={ogType} />
+<meta property="og:url" content={canonicalUrl} />
+<meta property="og:title" content={fullTitle} />
+<meta property="og:description" content={description} />
+<meta property="og:image" content={ogImageUrl} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content={title} />
+<meta property="og:site_name" content="palash.dev" />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={fullTitle} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={ogImageUrl} />
+<meta name="twitter:image:alt" content={title} />

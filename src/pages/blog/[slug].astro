@@ -1,6 +1,6 @@
 ---
 import { getCollection, render } from 'astro:content';
-import OS from '../../layouts/OS.astro';
+import Page from '../../layouts/Page.astro';
 import { SITE } from '../../site.config';
 
 export async function getStaticPaths() {
@@ -13,7 +13,11 @@ export async function getStaticPaths() {
 
 const { post } = Astro.props;
 const { Content } = await render(post);
-const date = post.data.publishDate.toISOString().split('T')[0];
+const date = post.data.publishDate.toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
 
 const postUrl = `${SITE.url}/blog/${post.id}`;
 const personId = `${SITE.url}/#person`;
@@ -47,37 +51,39 @@ const jsonLd = {
 };
 ---
 
-<OS
+<Page
   title={post.data.title}
   description={post.data.description}
   ogImage={`/og/blog-${post.id}.png`}
-  mode="page"
   ogType="article"
+  narrow
 >
   <Fragment slot="head">
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)}></script>
   </Fragment>
 
-  <div class="page-frame">
-    <p class="dim flex justify-between flex-wrap gap-2">
-      <a href={`/#doc-${post.id}`}>← open in PALASH.OS</a>
-      <span><a href="/blog">the log</a> · <a href="/rss.xml">rss</a></span>
-    </p>
+  <p style="margin-bottom:2rem;font-size:0.875rem;">
+    <a href="/blog" class="muted">← the log</a>
+  </p>
 
-    <article class="manuscript page-manuscript mt-6">
-      <p class="manu-meta">
-        {date} · {post.data.tags.map((t) => `#${t}`).join(' ')}
-      </p>
-
-      <div class="prose">
-        <Content />
+  <article>
+    <header class="article-head">
+      <h1>{post.data.title}</h1>
+      <p class="article-desc">{post.data.description}</p>
+      <div class="article-meta">
+        <time datetime={post.data.publishDate.toISOString()}>{date}</time>
+        {post.data.tags.map((t) => <span class="tag">{t}</span>)}
       </div>
+    </header>
 
-      <footer class="manu-end">— EOF —</footer>
-    </article>
+    <div class="prose">
+      <Content />
+    </div>
+  </article>
 
-    <p class="mt-6 dim" style="text-align:center;">
-      <a href="/blog">← all posts</a> · written by <a href="/">Palash Debnath</a>
-    </p>
-  </div>
-</OS>
+  <p style="margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--border);font-size:0.9rem;">
+    <a href="/blog">← all posts</a>
+    <span class="muted"> · or </span>
+    <a href={`/os#doc-${post.id}`}>read it in {SITE.osName} ↗</a>
+  </p>
+</Page>

@@ -1,38 +1,19 @@
 ---
-import OS from '../layouts/OS.astro';
+import Page from '../layouts/Page.astro';
 ---
 
-<OS title="404 — file not found" mode="page">
-  <div class="page-frame" style="text-align:center;padding-top:8vh;">
-    <p class="dim" style="text-align:left;max-width:44ch;margin:0 auto;">
-      <span class="dim">guest@palash.dev:/$</span> cat {'{requested path}'}<br />
-      <span style="color:var(--alert);">cat: no such file or directory</span>
+<Page title="404 — page not found" description="That page doesn't exist.">
+  <div class="notfound">
+    <p class="notfound-code" aria-label="404">404</p>
+    <h1 style="margin-top:1rem;">Page not found</h1>
+    <p class="muted" style="margin-top:0.75rem;">
+      This one was deleted, moved, or never shipped.
     </p>
 
-    <h1 class="err-code" aria-label="404">404</h1>
-    <p style="color:var(--foreground1);">
-      This file was deleted, moved, or never shipped.<span class="cursor"></span>
-    </p>
-
-    <p class="mt-8" style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
-      <a is-="button" href="/">[ BACK TO PALASH.OS ]</a>
-      <a is-="button" href="/blog">[ THE LOG ]</a>
-    </p>
-
-    <p class="mt-8 dim">
-      lost? try <a href="/#terminal">the terminal</a> — <kbd>ls</kbd> knows the way
-    </p>
+    <div class="btn-row">
+      <a class="btn btn-primary" href="/">Go home</a>
+      <a class="btn" href="/blog">Read the log</a>
+      <a class="btn" href="/os">Try the desktop ↗</a>
+    </div>
   </div>
-</OS>
-
-<style>
-  .err-code {
-    font-size: clamp(5rem, 20vw, 11rem);
-    font-weight: 800;
-    line-height: 1;
-    margin: 2rem 0 1rem;
-    color: var(--foreground0);
-    text-shadow: var(--glow-strong);
-    letter-spacing: 0.05em;
-  }
-</style>
+</Page>

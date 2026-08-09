@@ -1,0 +1,39 @@
+---
+/**
+ * Reading-mode shell: nav + content + footer, no desktop.
+ *
+ * Pairs with page.css. Deliberately loads none of global.css, the theme
+ * roulette, or the window manager — those belong to OS.astro (/os).
+ */
+import '../styles/page.css';
+import Head from '../components/Head.astro';
+import Nav from '../components/page/Nav.astro';
+import Footer from '../components/page/Footer.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+  ogImage?: string;
+  ogType?: string;
+  /** narrower measure for long-form reading (blog posts, product pages) */
+  narrow?: boolean;
+}
+
+const { title, description, ogImage, ogType, narrow = false } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <Head title={title} description={description} ogImage={ogImage} ogType={ogType} />
+    <slot name="head" />
+  </head>
+  <body>
+    <a href="#main" class="skip-link">Skip to content</a>
+    <Nav />
+    <main id="main" class:list={['shell', narrow && 'shell-narrow']}>
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>

@@ -1,0 +1,26 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  items: CollectionEntry<'gallery'>[];
+  /** link each shot to the product page for its group instead of the raw image */
+  linkToProduct?: boolean;
+}
+
+const { items, linkToProduct = false } = Astro.props;
+---
+
+<div class="gallery-strip">
+  {items.map((item) => (
+    <a
+      class="shot"
+      href={linkToProduct ? `/${item.data.group}` : item.data.src}
+      target={linkToProduct ? undefined : '_blank'}
+      rel={linkToProduct ? undefined : 'noopener'}
+      aria-label={item.data.title}
+    >
+      <img src={item.data.src} alt={item.data.title} loading="lazy" decoding="async" />
+      <span class="shot-cap">{item.data.caption}</span>
+    </a>
+  ))}
+</div>

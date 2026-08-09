@@ -1,0 +1,22 @@
+---
+import { SITE } from '../../site.config';
+
+const path = Astro.url.pathname;
+const isBlog = path.startsWith('/blog');
+---
+
+<header class="nav">
+  <div class="shell nav-inner">
+    <a href="/" class="nav-brand">
+      <img src="/logo.svg" alt="" width="22" height="22" />
+      <span>{SITE.name}</span>
+    </a>
+
+    <nav class="nav-links" aria-label="Main">
+      <a href="/#work">work</a>
+      <a href="/blog" aria-current={isBlog ? 'page' : undefined}>writing</a>
+      <a href={SITE.github} target="_blank" rel="noopener" class="nav-hide-sm">github</a>
+      <a href="/os" class="nav-fun" title="The retro desktop version of this site">fun mode ↗</a>
+    </nav>
+  </div>
+</header>

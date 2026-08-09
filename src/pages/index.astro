@@ -1,19 +1,11 @@
 ---
-import { getCollection, render } from 'astro:content';
-import OS from '../layouts/OS.astro';
-import Desktop from '../components/os/Desktop.astro';
-import Icon from '../components/os/Icon.astro';
-import WindowSrc from '../components/os/WindowSrc.astro';
-import BlogWidget from '../components/os/BlogWidget.astro';
-import About from '../components/windows/About.astro';
-import Programs from '../components/windows/Programs.astro';
-import Program from '../components/windows/Program.astro';
-import Docs from '../components/windows/Docs.astro';
-import Gallery from '../components/windows/Gallery.astro';
-import GalleryGrid from '../components/windows/GalleryGrid.astro';
-import Company from '../components/windows/Company.astro';
-import Experiments from '../components/windows/Experiments.astro';
-import Contact from '../components/windows/Contact.astro';
+import { getCollection } from 'astro:content';
+import Page from '../layouts/Page.astro';
+import Section from '../components/page/Section.astro';
+import WorkList from '../components/page/WorkList.astro';
+import PostList from '../components/page/PostList.astro';
+import LinkList from '../components/page/LinkList.astro';
+import GalleryStrip from '../components/page/GalleryStrip.astro';
 import { SITE } from '../site.config';
 
 const products = (await getCollection('products')).sort(
@@ -26,139 +18,34 @@ const experiments = await getCollection('experiments');
 const gallery = await getCollection('gallery');
 const company = await getCollection('company');
 
-const renderedPosts = await Promise.all(
-  posts.map(async (post) => ({ post, rendered: await render(post) })),
-);
+const recentPosts = posts.slice(0, 4);
 
-// group gallery items per project, ordered like the products list
-const galleryByGroup = new Map<string, typeof gallery>();
-for (const item of gallery) {
-  const list = galleryByGroup.get(item.data.group) ?? [];
-  list.push(item);
-  galleryByGroup.set(item.data.group, list);
-}
-const galleryGroups = [...galleryByGroup.entries()]
-  .sort(([a], [b]) => {
-    const ia = products.findIndex((p) => p.id === a);
-    const ib = products.findIndex((p) => p.id === b);
-    return (ia === -1 ? 99 : ia) - (ib === -1 ? 99 : ib);
-  })
-  .map(([group, items]) => ({
-    group,
-    label: products.find((p) => p.id === group)?.data.name ?? group,
-    items,
-  }));
+// a couple of shots per project, ordered like the work list, so the strip
+// reads as a sample rather than the full gallery
+const productOrder = products.map((p) => p.id);
+const shots = productOrder
+  .flatMap((id) => gallery.filter((g) => g.data.group === id).slice(0, 2))
+  .slice(0, 6);
+
+const companyProjects = company.map((c) => ({
+  name: c.data.name,
+  description: c.data.description,
+  url: c.data.url,
+  lang: c.data.lang,
+  logoUrl: c.data.logoUrl,
+}));
+
+const experimentItems = experiments.map((x) => ({
+  name: x.data.name,
+  description: x.data.description,
+  url: x.data.url,
+  lang: x.data.lang,
+}));
 
 // ------------------------------------------------------------------
-// virtual filesystem for the terminal window
+// structured data — the canonical entity graph for the site lives here,
+// on the canonical homepage. /os intentionally does not repeat it.
 // ------------------------------------------------------------------
-type VfsFile = { t: 'f'; c?: string; open?: string; view?: string; url?: string; x?: boolean };
-type VfsDir = { t: 'd'; ch: Record<string, VfsFile | VfsDir> };
-
-const dir = (ch: Record<string, VfsFile | VfsDir>): VfsDir => ({ t: 'd', ch });
-
-const aboutText = [
-  `${SITE.author} — engineer, product builder, and systems thinker.`,
-  'I make developer tools, media platforms, and infrastructure that',
-  'bridge low-level performance and high-level UX. Things that ship.',
-  '',
-  `stack: ${SITE.stack.join(', ')}`,
-].join('\n');
-
-const vfs = {
-  meta: {
-    user: 'guest',
-    host: 'palash.dev',
-    email: SITE.email,
-    author: SITE.author,
-    logo: '/logo.svg',
-    role: 'Software Engineer · Product Builder',
-    os: 'PALASH.OS v7.0 (CRT edition)',
-    site: 'palash.dev',
-    company: SITE.company.name,
-    companyUrl: SITE.company.url,
-    github: `github.com/${SITE.handle}`,
-    motto: 'things that ship.',
-    stack: SITE.stack,
-    counts: {
-      programs: products.length,
-      articles: posts.length,
-      captures: gallery.length,
-      experiments: experiments.length,
-    },
-  },
-  root: dir({
-    'about.txt': { t: 'f', c: aboutText, open: 'about' },
-    'contact.sh': {
-      t: 'f',
-      c: SITE.links.map((l) => `${l.label}: ${l.href}`).join('\n'),
-      open: 'contact',
-      x: true,
-    },
-    programs: dir(
-      Object.fromEntries(
-        products.map((p) => [
-          `${p.id}.prg`,
-          {
-            t: 'f',
-            c: `${p.data.name} — ${p.data.tagline}\nstatus: ${p.data.status}\nstack: ${p.data.stack.join(', ')}\n${p.data.url ?? ''}`,
-            open: `prg-${p.id}`,
-            x: true,
-          } satisfies VfsFile,
-        ]),
-      ),
-    ),
-    articles: dir(
-      Object.fromEntries(
-        posts.map((p) => [
-          `${p.id}.md`,
-          { t: 'f', c: p.body ?? p.data.description, open: `doc-${p.id}` } satisfies VfsFile,
-        ]),
-      ),
-    ),
-    gallery: dir(
-      Object.fromEntries(
-        galleryGroups.map(({ group, items }) => [
-          group,
-          dir(
-            Object.fromEntries(
-              items.map((i) => [
-                i.data.caption,
-                { t: 'f', c: `[image] ${i.data.title}\n${i.data.src}`, view: i.data.src } satisfies VfsFile,
-              ]),
-            ),
-          ),
-        ]),
-      ),
-    ),
-    company: dir({
-      'yupcha.txt': {
-        t: 'f',
-        c: `${SITE.company.name} — ${SITE.company.tagline}\n\n${SITE.company.blurb}\n${SITE.company.url}`,
-        open: 'company',
-      },
-      ...Object.fromEntries(
-        company.map((c) => [
-          `${c.data.name}.url`,
-          {
-            t: 'f',
-            c: `[${c.data.category}] ${c.data.description}\n${c.data.url}`,
-            url: c.data.url,
-          } satisfies VfsFile,
-        ]),
-      ),
-    }),
-    experiments: dir(
-      Object.fromEntries(
-        experiments.map((x) => [
-          `${x.data.name}.url`,
-          { t: 'f', c: `${x.data.description}\n${x.data.url}`, url: x.data.url } satisfies VfsFile,
-        ]),
-      ),
-    ),
-  }),
-};
-
 const personId = `${SITE.url}/#person`;
 const orgId = `${SITE.url}/#yupcha`;
 
@@ -222,203 +109,82 @@ const homeKeywords = [
 ]
   .filter((v, i, a) => v && a.indexOf(v) === i)
   .join(', ');
+
+/**
+ * Links out in the wild point at desktop windows by hash (/#doc-hello-world,
+ * /#prg-memxt …). Those hashes never reach the server, so forward them to /os
+ * client-side instead of silently dropping the visitor on this page.
+ */
+const hashForward = [
+  '(function(){try{',
+  'var id=location.hash.slice(1);',
+  'if(!id)return;',
+  "var re=/^(about|programs|docs|gallery|company|experiments|terminal|contact|printer|prg-.+|doc-.+|gal-.+)$/;",
+  "if(re.test(id))location.replace('/os#'+id);",
+  '}catch(e){}})();',
+].join('');
 ---
 
-<OS title={SITE.title} mode="os">
+<Page title={SITE.title} description={SITE.description}>
   <Fragment slot="head">
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)}></script>
     <meta name="keywords" content={homeKeywords} />
+    <script is:inline set:html={hashForward} />
   </Fragment>
 
-  <Desktop autopen="about">
-    <Fragment slot="icons">
-      <Icon open="about" kind="file" label="about.txt" />
-      <Icon open="programs" kind="folder" label="programs/" />
-      <Icon open="docs" kind="folder" label="articles/" />
-      <Icon open="gallery" kind="folder" label="gallery/" />
-      <Icon open="company" kind="folder" label="company/" />
-      <Icon open="experiments" kind="folder" label="experiments/" />
-      <Icon open="terminal" kind="terminal" label="terminal" />
-      <Icon open="contact" kind="exec" label="contact.sh" />
-    </Fragment>
+  <section class="hero">
+    <h1>{SITE.author}</h1>
+    <p class="hero-role">Software engineer · product builder</p>
+    <p class="hero-blurb">
+      I make developer tools, media platforms, and infrastructure that bridge
+      low-level performance and high-level UX. Local-first where it counts,
+      open source where it helps. Things that ship.
+    </p>
+    <p class="hero-meta">
+      <span>{products.length} programs</span>
+      <span>{posts.length} posts</span>
+      <span>{experiments.length} experiments</span>
+      <span>built from Agartala, India</span>
+    </p>
+  </section>
 
-    <Fragment slot="pins">
-      {products.map((p) => (
-        <button
-          class="pin"
-          data-open={`prg-${p.id}`}
-          data-tip={`${p.data.name} — ${p.data.tagline}`}
-          aria-label={`Open ${p.data.name}`}
-        >
-          {p.data.logoUrl ? (
-            <img src={p.data.logoUrl} alt="" width="29" height="29" loading="lazy" />
-          ) : (
-            <span aria-hidden="true">{p.data.icon}</span>
-          )}
-        </button>
-      ))}
-      <button class="pin pin-more" data-open="programs" data-tip="all programs" aria-label="All programs">…</button>
-    </Fragment>
+  <Section id="work" title="Work" lede="Products I design, build and maintain.">
+    <WorkList products={products} />
+  </Section>
 
-    <Fragment slot="menu">
-      <button data-open="about">about.txt</button>
-      <button data-open="programs">programs/</button>
-      <button data-open="docs">articles/</button>
-      <button data-open="gallery">gallery/</button>
-      <button data-open="company">company/</button>
-      <button data-open="experiments">experiments/</button>
-      <button data-open="terminal">terminal</button>
-      <button data-open="contact">contact.sh</button>
-      <a href="/blog">the log →</a>
-      <a href={SITE.github} target="_blank" rel="noopener">github ↗</a>
-      <a href="/rss.xml">rss.xml</a>
-    </Fragment>
+  <Section id="writing" title="Writing" more="/blog" moreLabel="all posts">
+    <PostList posts={recentPosts} />
+  </Section>
 
-    <Fragment slot="windows">
-      <WindowSrc id="about" title="about.txt" w={860} h={560} center>
-        <About
-          counts={{
-            programs: products.length,
-            docs: posts.length,
-            captures: gallery.length,
-            experiments: experiments.length,
-          }}
-        />
-      </WindowSrc>
+  {shots.length > 0 && (
+    <Section id="gallery" title="Screenshots">
+      <GalleryStrip items={shots} linkToProduct />
+    </Section>
+  )}
 
-      <WindowSrc id="programs" title="~/programs" w={880} h={640}>
-        <Programs products={products} companyProjects={company} />
-      </WindowSrc>
+  <Section
+    id="experiments"
+    title="Experiments"
+    lede="Smaller things — spikes, prototypes and one-offs, all on GitHub."
+  >
+    <LinkList items={experimentItems} />
+  </Section>
 
-      {products.map((product) => (
-        <WindowSrc
-          id={`prg-${product.id}`}
-          title={`programs/${product.id}.prg`}
-          w={640}
-          h={560}
-        >
-          <Program
-            product={product}
-            screenshots={galleryByGroup.get(product.id) ?? []}
-          />
-        </WindowSrc>
-      ))}
-
-      <WindowSrc id="docs" title="~/articles" w={680} h={380}>
-        <Docs posts={posts} />
-      </WindowSrc>
-
-      {renderedPosts.map(({ post, rendered }) => (
-        <WindowSrc
-          id={`doc-${post.id}`}
-          title={`articles/${post.id}.md — manuscript`}
-          w={720}
-          h={600}
-        >
-          <article class="manuscript">
-            <p class="manu-meta">
-              {post.data.publishDate.toISOString().split('T')[0]} ·{' '}
-              {post.data.tags.map((t) => `#${t}`).join(' ')} ·{' '}
-              <a href={`/blog/${post.id}`}>permalink</a>
-            </p>
-            <div class="prose">
-              <rendered.Content />
-            </div>
-            <p class="manu-end">— EOF —</p>
-          </article>
-        </WindowSrc>
-      ))}
-
-      <WindowSrc id="gallery" title="~/gallery" w={560} h={340}>
-        <Gallery groups={galleryGroups} />
-      </WindowSrc>
-
-      {galleryGroups.map(({ group, label, items }) => (
-        <WindowSrc
-          id={`gal-${group}`}
-          title={`gallery/${group} — ${label}`}
-          w={780}
-          h={560}
-        >
-          <p class="dim mb-3">
-            {items.length} captures · <button class="amber" style="background:none;border:none;cursor:pointer;font:inherit;" data-open={`prg-${group}`}>run {group}.prg →</button>
-          </p>
-          <GalleryGrid items={items} />
-        </WindowSrc>
-      ))}
-
-      <WindowSrc id="company" title="~/company — YUPCHA" w={560} h={460}>
-        <Company />
-      </WindowSrc>
-
-      <WindowSrc id="experiments" title="~/experiments" w={700} h={400}>
-        <Experiments items={experiments} />
-      </WindowSrc>
-
-      <WindowSrc id="terminal" title="guest@palash.dev: ~" w={720} h={440}>
-        <div id="terminal-root"></div>
-      </WindowSrc>
-
-      <WindowSrc id="contact" title="contact.sh" w={480} h={400}>
-        <Contact />
-      </WindowSrc>
-
-      <WindowSrc id="printer" title="lpd — print spooler" w={470} h={620} center>
-        <div id="prn-root" data-state="stuck">
-          <p class="prn-msg" id="prn-msg">
-            ⚠ <strong>shaktimaan.pdf</strong> is stuck in the queue.
-          </p>
-
-          <div class="prn-stage">
-            <div class="prn-wrap" id="prn-wrap" title="the printer">
-              <div class="prn-smoke" aria-hidden="true"><i></i><i></i><i></i></div>
-              <svg class="prn-svg" viewBox="0 0 160 78" width="250" aria-hidden="true">
-                <rect x="30" y="6" width="100" height="16" rx="3" fill="var(--background3)" stroke="var(--foreground2)" stroke-width="2"/>
-                <rect x="10" y="18" width="140" height="40" rx="6" fill="var(--background2)" stroke="var(--foreground1)" stroke-width="3"/>
-                <rect x="22" y="28" width="34" height="9" rx="2" fill="var(--background3)"/>
-                <circle class="prn-led" cx="134" cy="38" r="4.5" fill="var(--amber)"/>
-                <rect x="24" y="52" width="112" height="7" rx="3" fill="var(--background0)" stroke="var(--foreground2)" stroke-width="2"/>
-                <g class="prn-sparks" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                  <path class="bolt" d="M14 48 l7 -9 l-5 -3 l8 -10"/>
-                  <path class="bolt b2" d="M148 30 l-7 8 l5 3 l-9 10"/>
-                </g>
-              </svg>
-              <div class="prn-paper">
-                <img
-                  src="https://i.pinimg.com/736x/b1/18/2b/b1182b161f1ea918ef33b1fd7809d29a.jpg"
-                  alt="Shaktimaan"
-                  width="220"
-                  loading="lazy"
-                />
-              </div>
-              <div class="prn-flash" aria-hidden="true"></div>
-            </div>
-          </div>
-
-          <div class="prn-actions">
-            <button id="prn-retry">[ CLICK TO RETRY ]</button>
-          </div>
-
-          <p class="prn-done" hidden>✓ printed. andhera kaayam <em>nahi</em> raha.</p>
-        </div>
-      </WindowSrc>
-    </Fragment>
-  </Desktop>
-
-  <BlogWidget posts={posts} />
-
-  <script type="application/json" id="vfs-data" set:html={JSON.stringify(vfs)} />
-
-  <noscript>
-    <div style="position:fixed;inset:0;z-index:9999;background:var(--background0);padding:2rem;overflow:auto;">
-      <h1>{SITE.author}</h1>
-      <p>{SITE.description}</p>
-      <p>
-        This site is an interactive retro OS and needs JavaScript. The content
-        is also available at <a href="/blog">/blog</a>,
-        {products.map((p) => <Fragment><a href={`/${p.id}`}>/{p.id}</a>{' '}</Fragment>)}
-        and <a href={SITE.github}>GitHub</a>.
+  <Section id="company" title="Company">
+    <div class="company-card">
+      <p class="company-name">{SITE.company.name}</p>
+      <p class="company-blurb">{SITE.company.blurb}</p>
+      <p class="btn-row">
+        <a class="btn" href={SITE.company.url} target="_blank" rel="noopener">
+          {SITE.company.url.replace('https://', '')} ↗
+        </a>
       </p>
     </div>
-  </noscript>
-</OS>
+
+    {companyProjects.length > 0 && (
+      <div style="margin-top:1.5rem;">
+        <LinkList items={companyProjects} />
+      </div>
+    )}
+  </Section>
+</Page>

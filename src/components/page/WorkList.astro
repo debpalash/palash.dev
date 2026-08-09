@@ -1,0 +1,32 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  products: CollectionEntry<'products'>[];
+}
+
+const { products } = Astro.props;
+---
+
+{/* Name and one line, nothing else — status, stack and links live on the
+    product page, where someone has actually asked for the detail. */}
+<div class="rows">
+  {products.map((p) => (
+    <a class="row" href={`/${p.id}`}>
+      {p.data.logoUrl ? (
+        <img class="row-icon" src={p.data.logoUrl} alt="" width="32" height="32" loading="lazy" />
+      ) : (
+        <span class="row-icon" aria-hidden="true" style="display:grid;place-items:center;font-size:0.9rem;">
+          {p.data.icon}
+        </span>
+      )}
+
+      <div class="row-body">
+        <div class="row-title">{p.data.name}</div>
+        <p class="row-desc">{p.data.tagline}</p>
+      </div>
+
+      <span class="row-arrow" aria-hidden="true">→</span>
+    </a>
+  ))}
+</div>

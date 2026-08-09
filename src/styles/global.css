@@ -362,14 +362,6 @@ body.os {
   background: transparent;
 }
 
-body.page {
-  min-height: 100dvh;
-  padding: 2rem 1rem 4rem;
-}
-body.page > .page-frame {
-  max-width: 84ch;
-  margin: 0 auto;
-}
 
 /* ------------------------------------------------------------
    Starfield + CRT overlay
@@ -910,6 +902,19 @@ body[data-bg='video'] #bg-video {
   color: var(--foreground0);
   background: var(--background2);
 }
+/* way back out to the plain version of the site */
+.tray-exit {
+  text-decoration: none;
+  border: 1px solid var(--background3);
+}
+.tray-exit:hover {
+  border-color: var(--foreground0);
+  text-shadow: none;
+}
+#start-menu .menu-exit {
+  border-top: 1px solid var(--background3);
+  color: var(--foreground2);
+}
 #tray-meter {
   letter-spacing: -1px;
   cursor: default;
@@ -1417,42 +1422,6 @@ body[data-bg='video'] #bg-video {
   .manuscript {
     padding: 1.25rem 1rem 1.5rem;
   }
-}
-
-/* standalone article pages: the manuscript as a full reading sheet */
-.page-manuscript {
-  max-width: 76ch;
-  margin-inline: auto;
-  padding: 2.5rem clamp(1.25rem, 5vw, 3.5rem) 3rem;
-  border: 1px solid var(--background3);
-  box-shadow: 0 12px 48px rgb(0 0 0 / 0.45);
-}
-.page-manuscript .prose {
-  max-width: 100%;
-  font-size: 1.02rem;
-  line-height: 1.75;
-}
-.page-manuscript .prose p {
-  margin: 0.95em 0;
-}
-.page-manuscript .prose h1 {
-  font-size: 1.55rem;
-  line-height: 1.25;
-  margin-bottom: 0.8em;
-}
-.page-manuscript .prose h2 {
-  font-size: 1.2rem;
-  margin-top: 1.8em;
-}
-.page-manuscript .prose blockquote {
-  padding-block: 0.25rem;
-  font-style: italic;
-}
-.page-manuscript .prose :is(ul, ol) {
-  margin: 0.9em 0;
-}
-.page-manuscript .prose li {
-  margin: 0.4em 0;
 }
 
 /* in-window manuscripts get slightly roomier prose too */

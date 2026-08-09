@@ -1,13 +1,11 @@
 ---
 import { getCollection } from 'astro:content';
-import OS from '../../layouts/OS.astro';
+import Page from '../../layouts/Page.astro';
+import PostList from '../../components/page/PostList.astro';
 import { SITE } from '../../site.config';
 
 const allPosts = (await getCollection('blog', ({ data }) => !data.draft))
   .sort((a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf());
-
-const [latest, ...rest] = allPosts;
-const fmt = (d: Date) => d.toISOString().split('T')[0];
 
 const blogUrl = `${SITE.url}/blog`;
 const personId = `${SITE.url}/#person`;
@@ -48,135 +46,28 @@ const jsonLd = {
 };
 ---
 
-<OS
+<Page
   title="The Log — writing on engineering & shipping"
   description="Notes on engineering, shipping, and building in public — by Palash Debnath. Updated often."
   ogImage="/og/blog.png"
-  mode="page"
 >
   <Fragment slot="head">
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)}></script>
   </Fragment>
 
-  <div class="page-frame">
-    <p class="dim flex justify-between flex-wrap gap-2">
-      <a href="/#docs">← PALASH.OS</a>
-      <span>
-        <a href="/rss.xml">rss</a> · <a href={SITE.github} target="_blank" rel="noopener">github</a>
-      </span>
+  <section class="hero">
+    <h1>The Log</h1>
+    <p class="hero-blurb">
+      Notes on engineering, shipping, and building in public.
+      <a href="/rss.xml">Subscribe by RSS</a> and don't miss a post.
     </p>
+    <p class="hero-meta">
+      <span>{allPosts.length} posts</span>
+      <span>updated often</span>
+    </p>
+  </section>
 
-    <header class="mt-8 mb-8">
-      <p class="dim">$ tail -f /dev/thoughts</p>
-      <h1 class="log-title">THE LOG<span class="cursor"></span></h1>
-      <p class="log-sub">
-        notes on engineering, shipping, and building in public.{' '}
-        <span class="amber">updated often</span> — <a href="/rss.xml">subscribe</a> and don't miss a post.
-      </p>
-    </header>
-
-    {latest && (
-      <a href={`/blog/${latest.id}`} class="feature" box-="double">
-        <p class="mb-2">
-          <span class="feature-badge">▓▒░ LATEST</span>
-          <span class="dim"> {fmt(latest.data.publishDate)} · {latest.data.tags.map((t) => `#${t}`).join(' ')}</span>
-        </p>
-        <h2 class="feature-title">{latest.data.title}</h2>
-        <p class="feature-desc">{latest.data.description}</p>
-        <p class="mt-3"><span is-="button">[ READ → ]</span></p>
-      </a>
-    )}
-
-    <div class="mt-8 flex flex-col gap-4">
-      {rest.map((post) => (
-        <a href={`/blog/${post.id}`} class="entry" box-="square">
-          <p class="dim entry-meta">
-            {fmt(post.data.publishDate)} · {post.data.tags.map((t) => `#${t}`).join(' ')}
-          </p>
-          <h3 class="entry-title">{post.data.title}</h3>
-          <p class="entry-desc">{post.data.description}</p>
-          <p class="entry-read">read →</p>
-        </a>
-      ))}
-    </div>
-
-    <footer class="mt-10 dim">
-      EOF — more soon. pipe it straight to your reader: <a href="/rss.xml">/rss.xml</a>
-    </footer>
-  </div>
-</OS>
-
-<style>
-  .log-title {
-    font-size: 2.6rem;
-    font-weight: 800;
-    letter-spacing: 0.05em;
-    color: var(--foreground0);
-    text-shadow: var(--glow-strong);
-    margin: 0.2em 0;
-    line-height: 1;
-  }
-  .log-sub {
-    color: var(--foreground1);
-    max-width: 56ch;
-  }
-
-  .feature {
-    display: block;
-    padding: 1.25rem 1.5rem;
-    text-decoration: none;
-    color: var(--foreground1);
-  }
-  .feature:hover {
-    text-shadow: none;
-    background: color-mix(in srgb, var(--background1) 70%, transparent);
-  }
-  .feature-badge {
-    color: var(--background0);
-    background: var(--amber);
-    font-weight: 700;
-    font-size: 0.75rem;
-    padding: 0.1rem 1ch;
-  }
-  .feature-title {
-    color: var(--foreground0);
-    text-shadow: var(--glow);
-    font-size: 1.5rem;
-    line-height: 1.25;
-    margin: 0.3em 0;
-  }
-  .feature-desc {
-    max-width: 64ch;
-  }
-
-  .entry {
-    display: block;
-    padding: 0.9rem 1.25rem;
-    text-decoration: none;
-    color: var(--foreground1);
-  }
-  .entry:hover {
-    text-shadow: none;
-    background: color-mix(in srgb, var(--background1) 70%, transparent);
-  }
-  .entry:hover .entry-title {
-    text-shadow: var(--glow);
-  }
-  .entry-meta {
-    font-size: 0.8rem;
-  }
-  .entry-title {
-    color: var(--foreground0);
-    font-size: 1.1rem;
-    margin: 0.2em 0;
-  }
-  .entry-desc {
-    max-width: 64ch;
-    font-size: 0.9rem;
-  }
-  .entry-read {
-    color: var(--amber);
-    font-size: 0.85rem;
-    margin-top: 0.4rem;
-  }
-</style>
+  <section class="section">
+    <PostList posts={allPosts} />
+  </section>
+</Page>
