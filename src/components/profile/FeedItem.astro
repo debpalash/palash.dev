@@ -1,0 +1,60 @@
+---
+/**
+ * One row in a feed. Name, one line, and optionally an attached screenshot.
+ * Deliberately no stars, downloads, status chips or stack tags — those live
+ * on the detail page.
+ */
+interface Props {
+  href: string;
+  title: string;
+  /** @slug for a product, a date for a post, a language for an experiment */
+  meta?: string;
+  external?: boolean;
+  icon?: string;
+  logoUrl?: string;
+  image?: string;
+  imageAlt?: string;
+}
+
+const {
+  href,
+  title,
+  meta,
+  external = false,
+  icon = '►',
+  logoUrl,
+  image,
+  imageAlt,
+} = Astro.props;
+---
+
+<a
+  class="fitem"
+  href={href}
+  target={external ? '_blank' : undefined}
+  rel={external ? 'noopener' : undefined}
+>
+  <span class="fitem-avatar" aria-hidden="true">
+    {logoUrl ? (
+      <img src={logoUrl} alt="" width="40" height="40" loading="lazy" />
+    ) : (
+      <span>{icon}</span>
+    )}
+  </span>
+
+  <span class="fitem-body">
+    <span class="fitem-head">
+      <strong class="fitem-title">{title}</strong>
+      {meta && <span class="fitem-meta mono">{meta}</span>}
+      {external && <span class="fitem-meta" aria-hidden="true">↗</span>}
+    </span>
+
+    <span class="fitem-desc"><slot /></span>
+
+    {image && (
+      <span class="fitem-media">
+        <img src={image} alt={imageAlt ?? ''} loading="lazy" decoding="async" />
+      </span>
+    )}
+  </span>
+</a>

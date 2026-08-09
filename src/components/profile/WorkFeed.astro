@@ -1,0 +1,31 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import FeedItem from './FeedItem.astro';
+
+interface Props {
+  products: CollectionEntry<'products'>[];
+  gallery: CollectionEntry<'gallery'>[];
+}
+
+const { products, gallery } = Astro.props;
+
+/** first screenshot of each product, attached to its row like a media post */
+const shotFor = (id: string) => gallery.find((g) => g.data.group === id);
+---
+
+<div class="feed-list">
+  {products.map((p) => {
+    const shot = shotFor(p.id);
+    return (
+      <FeedItem
+        href={`/${p.id}`}
+        title={p.data.name}
+        meta={`@${p.id}`}
+        icon={p.data.icon}
+        logoUrl={p.data.logoUrl}
+        image={shot?.data.src}
+        imageAlt={shot?.data.title}
+      >{p.data.tagline}</FeedItem>
+    );
+  })}
+</div>
