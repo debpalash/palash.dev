@@ -1,0 +1,50 @@
+---
+import { getCollection } from 'astro:content';
+import Profile from '../layouts/Profile.astro';
+import LabFeed from '../components/profile/LabFeed.astro';
+import { SITE } from '../site.config';
+
+const experiments = await getCollection('experiments');
+
+const labUrl = `${SITE.url}/lab`;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'CollectionPage',
+      '@id': `${labUrl}#page`,
+      url: labUrl,
+      name: 'Experiments',
+      description:
+        'Spikes, prototypes and one-offs by Palash Debnath — all open source on GitHub.',
+      isPartOf: { '@id': `${SITE.url}/#website` },
+      about: { '@id': `${SITE.url}/#person` },
+    },
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: SITE.author, item: SITE.url },
+        { '@type': 'ListItem', position: 2, name: 'Experiments', item: labUrl },
+      ],
+    },
+  ],
+};
+---
+
+<Profile
+  title="Experiments — spikes, prototypes and one-offs"
+  description="Smaller things by Palash Debnath — spikes, prototypes and one-offs, all open source on GitHub."
+  ogImage="/og/lab.png"
+  active="lab"
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)}></script>
+  </Fragment>
+
+  {experiments.length > 0 ? (
+    <LabFeed items={experiments} />
+  ) : (
+    <p class="feed-empty">Nothing here yet.</p>
+  )}
+</Profile>

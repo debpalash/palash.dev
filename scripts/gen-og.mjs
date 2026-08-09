@@ -188,4 +188,18 @@ await render(
   fonts,
 );
 
+// ---- the lab (experiments index) ----
+await render(
+  'lab',
+  card({
+    chrome: '~/experiments',
+    kicker: '$ ls -1 ~/spikes',
+    title: 'EXPERIMENTS',
+    subtitle: 'Spikes, prototypes and one-offs. All open source.',
+    metaLeft: 'github.com/debpalash',
+    metaRight: 'palash.dev · Palash Debnath',
+  }),
+  fonts,
+);
+
 console.log('done.');
