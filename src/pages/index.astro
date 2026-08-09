@@ -1,6 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
-import Page from '../layouts/Page.astro';
+import Profile from '../layouts/Profile.astro';
 import Section from '../components/page/Section.astro';
 import WorkList from '../components/page/WorkList.astro';
 import PostList from '../components/page/PostList.astro';
@@ -125,7 +125,7 @@ const hashForward = [
 ].join('');
 ---
 
-<Page title={SITE.title} description={SITE.description}>
+<Profile title={SITE.title} description={SITE.description} active="work">
   <Fragment slot="head">
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)}></script>
     <meta name="keywords" content={homeKeywords} />
@@ -187,4 +187,4 @@ const hashForward = [
       </div>
     )}
   </Section>
-</Page>
+</Profile>

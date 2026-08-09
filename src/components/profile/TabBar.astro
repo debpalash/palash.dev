@@ -1,0 +1,28 @@
+---
+/**
+ * The four profile tabs. Each is a real route, so this is plain navigation —
+ * no client state, no JS.
+ */
+interface Props {
+  active: 'work' | 'writing' | 'lab' | 'media';
+}
+
+const { active } = Astro.props;
+
+const tabs = [
+  { key: 'work', href: '/', label: 'Work' },
+  { key: 'writing', href: '/blog', label: 'Writing' },
+  { key: 'lab', href: '/lab', label: 'Experiments' },
+  { key: 'media', href: '/media', label: 'Media' },
+] as const;
+---
+
+<nav class="ptabs" aria-label="Profile sections">
+  {tabs.map((t) => (
+    <a
+      href={t.href}
+      class:list={['ptab', t.key === active && 'is-active']}
+      aria-current={t.key === active ? 'page' : undefined}
+    >{t.label}</a>
+  ))}
+</nav>

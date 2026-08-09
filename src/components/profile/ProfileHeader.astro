@@ -1,0 +1,69 @@
+---
+import { getCollection } from 'astro:content';
+import { SITE } from '../../site.config';
+
+const [products, posts, experiments] = await Promise.all([
+  getCollection('products'),
+  getCollection('blog', ({ data }) => !data.draft),
+  getCollection('experiments'),
+]);
+
+const plural = (n: number, word: string) => (n === 1 ? word : `${word}s`);
+
+const counts = [
+  { href: '/', n: products.length, label: 'shipped' },
+  { href: '/blog', n: posts.length, label: plural(posts.length, 'post') },
+  { href: '/lab', n: experiments.length, label: plural(experiments.length, 'experiment') },
+];
+---
+
+<header class="phead">
+  <a
+    class="phead-banner"
+    href="/os"
+    aria-label={`${SITE.osName} — the desktop version of this site`}
+  >
+    <img src="/banner.webp" alt="" width="1440" height="360" fetchpriority="high" />
+  </a>
+
+  <div class="phead-top">
+    <img
+      class="phead-avatar"
+      src="/avatar.webp"
+      alt={SITE.author}
+      width="256"
+      height="256"
+      fetchpriority="high"
+    />
+    <div class="phead-actions">
+      <a class="pbtn pbtn-primary" href="/rss.xml">RSS</a>
+      <a class="pbtn pbtn-icon" href={`mailto:${SITE.email}`} aria-label={`Email ${SITE.author}`}>
+        <span aria-hidden="true">✉</span>
+      </a>
+      <a class="pbtn pbtn-fun" href="/os">fun mode ↗</a>
+    </div>
+  </div>
+
+  <h1 class="phead-name">{SITE.author}</h1>
+  <p class="phead-handle mono">@{SITE.handle}</p>
+
+  <p class="phead-bio">
+    Engineer and product builder. Developer tools, media platforms and
+    infrastructure — local-first where it counts, open source where it helps.
+    Things that ship.
+  </p>
+
+  <p class="phead-meta mono">
+    <span><span aria-hidden="true">📍</span> Agartala, India</span>
+    <a href={SITE.github} target="_blank" rel="noopener">
+      <span aria-hidden="true">🔗</span> github.com/{SITE.handle}
+    </a>
+    <span><span aria-hidden="true">⌨</span> {SITE.stack.slice(0, 3).join(' · ')}</span>
+  </p>
+
+  <p class="phead-counts">
+    {counts.map((c) => (
+      <a href={c.href}><strong>{c.n}</strong> {c.label}</a>
+    ))}
+  </p>
+</header>

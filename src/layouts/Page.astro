@@ -17,9 +17,11 @@ interface Props {
   ogType?: string;
   /** narrower measure for long-form reading (blog posts, product pages) */
   narrow?: boolean;
+  /** wider measure with no top padding — the profile pages supply their own */
+  wide?: boolean;
 }
 
-const { title, description, ogImage, ogType, narrow = false } = Astro.props;
+const { title, description, ogImage, ogType, narrow = false, wide = false } = Astro.props;
 ---
 
 <!doctype html>
@@ -31,7 +33,7 @@ const { title, description, ogImage, ogType, narrow = false } = Astro.props;
   <body>
     <a href="#main" class="skip-link">Skip to content</a>
     <Nav />
-    <main id="main" class:list={['shell', narrow && 'shell-narrow']}>
+    <main id="main" class:list={['shell', narrow && 'shell-narrow', wide && 'shell-wide']}>
       <slot />
     </main>
     <Footer />
