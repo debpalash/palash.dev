@@ -27,14 +27,6 @@ const shots = productOrder
   .flatMap((id) => gallery.filter((g) => g.data.group === id).slice(0, 2))
   .slice(0, 6);
 
-const companyProjects = company.map((c) => ({
-  name: c.data.name,
-  description: c.data.description,
-  url: c.data.url,
-  lang: c.data.lang,
-  logoUrl: c.data.logoUrl,
-}));
-
 const experimentItems = experiments.map((x) => ({
   name: x.data.name,
   description: x.data.description,
@@ -168,23 +160,5 @@ const hashForward = [
     lede="Smaller things — spikes, prototypes and one-offs, all on GitHub."
   >
     <LinkList items={experimentItems} />
-  </Section>
-
-  <Section id="company" title="Company">
-    <div class="company-card">
-      <p class="company-name">{SITE.company.name}</p>
-      <p class="company-blurb">{SITE.company.blurb}</p>
-      <p class="btn-row">
-        <a class="btn" href={SITE.company.url} target="_blank" rel="noopener">
-          {SITE.company.url.replace('https://', '')} ↗
-        </a>
-      </p>
-    </div>
-
-    {companyProjects.length > 0 && (
-      <div style="margin-top:1.5rem;">
-        <LinkList items={companyProjects} />
-      </div>
-    )}
   </Section>
 </Profile>

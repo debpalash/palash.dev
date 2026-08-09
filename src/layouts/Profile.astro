@@ -8,6 +8,7 @@
 import Page from './Page.astro';
 import ProfileHeader from '../components/profile/ProfileHeader.astro';
 import TabBar from '../components/profile/TabBar.astro';
+import Rail from '../components/profile/Rail.astro';
 
 interface Props {
   title: string;
@@ -28,6 +29,6 @@ const { title, description, ogImage, active } = Astro.props;
       <TabBar active={active} />
       <div class="feed"><slot /></div>
     </div>
-    <aside class="rail"><slot name="rail" /></aside>
+    <aside class="rail"><slot name="rail"><Rail /></slot></aside>
   </div>
 </Page>
