@@ -1,0 +1,24 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import FeedItem from './FeedItem.astro';
+
+interface Props {
+  posts: CollectionEntry<'blog'>[];
+}
+
+const { posts } = Astro.props;
+
+const fmt = (d: Date) =>
+  d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: '2-digit' });
+---
+
+<div class="feed-list">
+  {posts.map((post) => (
+    <FeedItem
+      href={`/blog/${post.id}`}
+      title={post.data.title}
+      meta={fmt(post.data.publishDate)}
+      icon="✎"
+    >{post.data.description}</FeedItem>
+  ))}
+</div>

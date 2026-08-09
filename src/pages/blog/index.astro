@@ -1,7 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
-import Page from '../../layouts/Page.astro';
-import PostList from '../../components/page/PostList.astro';
+import Profile from '../../layouts/Profile.astro';
+import WritingFeed from '../../components/profile/WritingFeed.astro';
 import { SITE } from '../../site.config';
 
 const allPosts = (await getCollection('blog', ({ data }) => !data.draft))
@@ -46,28 +46,19 @@ const jsonLd = {
 };
 ---
 
-<Page
+<Profile
   title="The Log — writing on engineering & shipping"
   description="Notes on engineering, shipping, and building in public — by Palash Debnath. Updated often."
   ogImage="/og/blog.png"
+  active="writing"
 >
   <Fragment slot="head">
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)}></script>
   </Fragment>
 
-  <section class="hero">
-    <h1>The Log</h1>
-    <p class="hero-blurb">
-      Notes on engineering, shipping, and building in public.
-      <a href="/rss.xml">Subscribe by RSS</a> and don't miss a post.
-    </p>
-    <p class="hero-meta">
-      <span>{allPosts.length} posts</span>
-      <span>updated often</span>
-    </p>
-  </section>
-
-  <section class="section">
-    <PostList posts={allPosts} />
-  </section>
-</Page>
+  {allPosts.length > 0 ? (
+    <WritingFeed posts={allPosts} />
+  ) : (
+    <p class="feed-empty">Nothing here yet.</p>
+  )}
+</Profile>
