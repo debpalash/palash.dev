@@ -1,8 +1,10 @@
 ---
+/**
+ * Deliberately minimal. On profile pages the tab bar handles section
+ * navigation; on detail pages the back-link does. All this needs to do is
+ * identify the site and offer the way across to /os.
+ */
 import { SITE } from '../../site.config';
-
-const path = Astro.url.pathname;
-const isBlog = path.startsWith('/blog');
 ---
 
 <header class="nav">
@@ -11,12 +13,10 @@ const isBlog = path.startsWith('/blog');
       <img src="/logo.svg" alt="" width="22" height="22" />
       <span>{SITE.name}</span>
     </a>
-
-    <nav class="nav-links" aria-label="Main">
-      <a href="/#work">work</a>
-      <a href="/blog" aria-current={isBlog ? 'page' : undefined}>writing</a>
-      <a href={SITE.github} target="_blank" rel="noopener" class="nav-hide-sm">github</a>
-      <a href="/os" class="nav-fun" title="The retro desktop version of this site">fun mode ↗</a>
+    <nav class="nav-links" aria-label="Site">
+      <a href="/os" class="nav-fun" title="The retro desktop version of this site">
+        fun mode ↗
+      </a>
     </nav>
   </div>
 </header>

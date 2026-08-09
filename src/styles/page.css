@@ -258,9 +258,6 @@ main.shell {
     gap: 0.9rem;
     font-size: 0.85rem;
   }
-  .nav-links .nav-hide-sm {
-    display: none;
-  }
 }
 
 /* ---------------------------------------------------------------- hero */
