@@ -1213,3 +1213,31 @@ main.shell-wide {
   padding: 2.5rem 0.75rem;
   color: var(--text-faint);
 }
+
+/* --- media grid --- */
+
+.mgrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+  margin-top: 1.25rem;
+}
+
+.mtile {
+  display: block;
+  overflow: hidden;
+  border-radius: 4px;
+  background: var(--bg-inset);
+}
+
+.mtile img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  transition: opacity 0.16s ease;
+}
+
+.mtile:hover img {
+  opacity: 0.82;
+}

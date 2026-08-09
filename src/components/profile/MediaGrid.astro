@@ -1,0 +1,17 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  items: CollectionEntry<'gallery'>[];
+}
+
+const { items } = Astro.props;
+---
+
+<div class="mgrid">
+  {items.map((item) => (
+    <a class="mtile" href={`/${item.data.group}`} aria-label={item.data.title}>
+      <img src={item.data.src} alt={item.data.title} loading="lazy" decoding="async" />
+    </a>
+  ))}
+</div>

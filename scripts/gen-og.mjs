@@ -202,4 +202,18 @@ await render(
   fonts,
 );
 
+// ---- media (screenshot gallery) ----
+await render(
+  'media',
+  card({
+    chrome: '~/screenshots',
+    kicker: '$ open ~/shots/*.png',
+    title: 'MEDIA',
+    subtitle: 'Screenshots from Opal, OmniVoice Studio and memxt.',
+    metaLeft: 'palash.dev/media',
+    metaRight: 'palash.dev · Palash Debnath',
+  }),
+  fonts,
+);
+
 console.log('done.');
