@@ -12,7 +12,7 @@ export const SITE = {
   url: 'https://palash.dev',
   title: 'Palash Debnath — Software Engineer & Builder',
   description:
-    'Portfolio of Palash Debnath — engineer and product builder making tools at the intersection of AI, audio, and infrastructure.',
+    'Palash Debnath builds VoiceStudio.sh, an open-source ElevenLabs alternative, plus Opal and memXT — local-first tools for AI audio, media, and developer memory.',
   author: 'Palash Debnath',
   /** username / alternate name people also search for */
   handle: 'debpalash',

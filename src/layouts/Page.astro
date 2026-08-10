@@ -16,19 +16,43 @@ interface Props {
   description?: string;
   ogImage?: string;
   ogType?: string;
+  publishedTime?: string;
+  modifiedTime?: string;
+  tags?: string[];
+  noIndex?: boolean;
   /** narrower measure for long-form reading (blog posts, product pages) */
   narrow?: boolean;
   /** wider measure with no top padding — the profile pages supply their own */
   wide?: boolean;
 }
 
-const { title, description, ogImage, ogType, narrow = false, wide = false } = Astro.props;
+const {
+  title,
+  description,
+  ogImage,
+  ogType,
+  publishedTime,
+  modifiedTime,
+  tags,
+  noIndex = false,
+  narrow = false,
+  wide = false,
+} = Astro.props;
 ---
 
 <!doctype html>
 <html lang="en">
   <head>
-    <Head title={title} description={description} ogImage={ogImage} ogType={ogType} />
+    <Head
+      title={title}
+      description={description}
+      ogImage={ogImage}
+      ogType={ogType}
+      publishedTime={publishedTime}
+      modifiedTime={modifiedTime}
+      tags={tags}
+      noIndex={noIndex}
+    />
     <script is:inline>
       try {
         if (localStorage.getItem('palash-mode') === 'light') document.documentElement.dataset.mode = 'light';

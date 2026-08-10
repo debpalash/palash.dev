@@ -28,7 +28,7 @@ const jsonLd = {
         '@id': `${SITE.url}/blog/${post.id}#post`,
         headline: post.data.title,
         description: post.data.description,
-        url: `${SITE.url}/blog/${post.id}`,
+        url: `${SITE.url}/blog/${post.id}/`,
         datePublished: post.data.publishDate.toISOString(),
         dateModified: (post.data.updatedDate ?? post.data.publishDate).toISOString(),
         keywords: post.data.tags.join(', '),

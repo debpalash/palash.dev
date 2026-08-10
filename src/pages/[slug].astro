@@ -42,9 +42,22 @@ const statusLabel =
 const formatStars = (count: number) =>
   count >= 1000 ? `${(count / 1000).toFixed(count >= 10000 ? 0 : 1)}k` : String(count);
 
-const pageUrl = `${SITE.url}/${product.id}`;
+const pageUrl = `${SITE.url}/${product.id}/`;
 const personId = `${SITE.url}/#person`;
 const readmeUrl = github ? `${github.replace(/\/$/, '')}#readme` : undefined;
+const seoTitle = {
+  omnivoice: 'VoiceStudio.sh — Open-source AI voice studio',
+  memxt: 'memXT — Local-first memory for AI agents',
+  opal: 'Opal — AI media player for everything',
+}[product.id] ?? `${name} — ${tagline}`;
+const seoDescription = {
+  omnivoice:
+    'VoiceStudio.sh is an open-source ElevenLabs alternative for AI dubbing, voice cloning, and multilingual voice generation.',
+  memxt:
+    'memXT is local-first, open-source long-term memory for AI coding agents. Persistent context in one static binary, entirely on-device.',
+  opal:
+    'Opal is an AI media player for files, sites, servers, and feeds, built in Zig for macOS, Linux, and Windows.',
+}[product.id] ?? description;
 
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -58,13 +71,20 @@ const jsonLd = {
       applicationCategory: category,
       operatingSystem: os,
       url: pageUrl,
-      ...(logoUrl ? { image: logoUrl } : {}),
+      ...(logoUrl ? { image: new URL(logoUrl, SITE.url).href } : {}),
       ...((github ?? url) ? { codeRepository: github ?? url, downloadUrl: github ?? url } : {}),
       ...(readmeUrl ? { subjectOf: { '@type': 'CreativeWork', name: `${name} README`, url: readmeUrl } } : {}),
-      sameAs: [github, SITE.x].filter(Boolean),
+      sameAs: [website, github].filter(Boolean),
       author: { '@id': personId, '@type': 'Person', name: SITE.author, url: SITE.url },
       publisher: { '@type': 'Organization', name: SITE.company.name, url: SITE.company.url },
-      offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+      offers: {
+        '@type': 'Offer',
+        price: pricing === 'paid' ? undefined : '0',
+        priceCurrency: 'USD',
+        availability: status === 'live'
+          ? 'https://schema.org/InStock'
+          : 'https://schema.org/PreOrder',
+      },
       ...(keywords.length ? { keywords: keywords.join(', ') } : {}),
     },
     {
@@ -79,8 +99,8 @@ const jsonLd = {
 ---
 
 <Page
-  title={`${name} — ${tagline}`}
-  description={description}
+  title={seoTitle}
+  description={seoDescription}
   ogImage={`/og/${product.id}.png`}
   narrow
 >

@@ -19,7 +19,7 @@ const date = post.data.publishDate.toLocaleDateString('en-US', {
   day: 'numeric',
 });
 
-const postUrl = `${SITE.url}/blog/${post.id}`;
+const postUrl = `${SITE.url}/blog/${post.id}/`;
 const personId = `${SITE.url}/#person`;
 
 const jsonLd = {
@@ -31,7 +31,7 @@ const jsonLd = {
       headline: post.data.title,
       description: post.data.description,
       url: postUrl,
-      mainEntityOfPage: postUrl,
+      mainEntityOfPage: { '@type': 'WebPage', '@id': `${postUrl}#webpage`, url: postUrl },
       datePublished: post.data.publishDate.toISOString(),
       dateModified: (post.data.updatedDate ?? post.data.publishDate).toISOString(),
       keywords: post.data.tags.join(', '),
@@ -56,6 +56,9 @@ const jsonLd = {
   description={post.data.description}
   ogImage={`/og/blog-${post.id}.png`}
   ogType="article"
+  publishedTime={post.data.publishDate.toISOString()}
+  modifiedTime={(post.data.updatedDate ?? post.data.publishDate).toISOString()}
+  tags={post.data.tags}
   narrow
 >
   <Fragment slot="head">

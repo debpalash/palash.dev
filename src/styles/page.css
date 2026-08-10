@@ -1782,7 +1782,9 @@ html[data-mode='light'] .mode-pull-moon { opacity: 0; transform: scale(0.7) rota
 }
 
 .fitem-title {
-  font-size: 1.08rem;
+  /* Keep every feed title on the same typographic step. Hierarchy comes from
+     weight and spacing, not from one tab suddenly becoming larger. */
+  font-size: 1rem;
   font-weight: 680;
   letter-spacing: -0.012em;
 }
@@ -1793,7 +1795,11 @@ html[data-mode='light'] .mode-pull-moon { opacity: 0; transform: scale(0.7) rota
 }
 
 .fitem-desc {
-  font-size: 0.92rem;
+  font-size: 0.9rem;
+}
+
+.fitem-writing .fitem-title {
+  font-size: 1rem;
 }
 
 .fitem-category,

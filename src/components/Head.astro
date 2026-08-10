@@ -14,6 +14,10 @@ interface Props {
   ogType?: string;
   /** theme-color meta; the desktop overrides it with its own dark value */
   themeColor?: string;
+  publishedTime?: string;
+  modifiedTime?: string;
+  tags?: string[];
+  noIndex?: boolean;
 }
 
 const {
@@ -22,6 +26,10 @@ const {
   ogImage = '/og-default.png',
   ogType = 'website',
   themeColor = '#ffffff',
+  publishedTime,
+  modifiedTime,
+  tags = [],
+  noIndex = false,
 } = Astro.props;
 
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
@@ -35,6 +43,7 @@ const ogImageUrl = new URL(ogImage, Astro.site);
 <link rel="icon" type="image/png" sizes="128x128" href="/favicon.png" />
 <link rel="apple-touch-icon" href="/favicon.png" />
 <link rel="sitemap" href="/sitemap-index.xml" />
+<link rel="manifest" href="/site.webmanifest" />
 <link
   rel="alternate"
   type="application/rss+xml"
@@ -44,10 +53,16 @@ const ogImageUrl = new URL(ogImage, Astro.site);
 
 <title>{fullTitle}</title>
 <meta name="description" content={description} />
+<meta
+  name="robots"
+  content={noIndex ? 'noindex, nofollow' : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'}
+/>
 <link rel="canonical" href={canonicalUrl} />
 <link rel="me" href={SITE.x} />
+<link rel="author" href={`${SITE.url}/#person`} />
 <meta name="author" content={SITE.author} />
 <meta name="theme-color" content={themeColor} />
+<meta name="format-detection" content="telephone=no" />
 
 <meta property="og:type" content={ogType} />
 <meta property="og:url" content={canonicalUrl} />
@@ -58,9 +73,27 @@ const ogImageUrl = new URL(ogImage, Astro.site);
 <meta property="og:image:height" content="630" />
 <meta property="og:image:alt" content={title} />
 <meta property="og:site_name" content="palash.dev" />
+<meta property="og:locale" content="en_US" />
+<meta property="og:image:type" content="image/png" />
+{ogType === 'article' && publishedTime && <meta property="article:published_time" content={publishedTime} />}
+{ogType === 'article' && modifiedTime && <meta property="article:modified_time" content={modifiedTime} />}
+{ogType === 'article' && tags.map((tag) => <meta property="article:tag" content={tag} />)}
 
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content={fullTitle} />
 <meta name="twitter:description" content={description} />
 <meta name="twitter:image" content={ogImageUrl} />
 <meta name="twitter:image:alt" content={title} />
+<meta name="twitter:creator" content="@idebpalash" />
+
+<script type="application/ld+json" set:html={JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  '@id': `${canonicalUrl}#webpage`,
+  url: canonicalUrl.href,
+  name: fullTitle,
+  description,
+  inLanguage: 'en',
+  isPartOf: { '@id': `${SITE.url}/#website` },
+  about: { '@id': `${SITE.url}/#person` },
+})} />
