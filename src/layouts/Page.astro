@@ -1,14 +1,15 @@
 ---
 /**
- * Reading-mode shell: nav + content + footer, no desktop.
+ * Reading-mode shell: focused content + footer, no desktop chrome.
  *
  * Pairs with page.css. Deliberately loads none of global.css, the theme
  * roulette, or the window manager — those belong to OS.astro (/os).
  */
 import '../styles/page.css';
 import Head from '../components/Head.astro';
-import Nav from '../components/page/Nav.astro';
 import Footer from '../components/page/Footer.astro';
+import ModePull from '../components/profile/ModePull.astro';
+import { ClientRouter } from 'astro:transitions';
 
 interface Props {
   title: string;
@@ -28,11 +29,17 @@ const { title, description, ogImage, ogType, narrow = false, wide = false } = As
 <html lang="en">
   <head>
     <Head title={title} description={description} ogImage={ogImage} ogType={ogType} />
+    <script is:inline>
+      try {
+        if (localStorage.getItem('palash-mode') === 'light') document.documentElement.dataset.mode = 'light';
+      } catch { /* storage can be disabled */ }
+    </script>
+    <ClientRouter />
     <slot name="head" />
   </head>
   <body>
     <a href="#main" class="skip-link">Skip to content</a>
-    <Nav />
+    <ModePull />
     <main id="main" class:list={['shell', narrow && 'shell-narrow', wide && 'shell-wide']}>
       <slot />
     </main>

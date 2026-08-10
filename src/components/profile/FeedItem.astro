@@ -1,19 +1,29 @@
 ---
 /**
- * One row in a feed. Name, one line, and optionally an attached screenshot.
- * Deliberately no stars, downloads, status chips or stack tags — those live
- * on the detail page.
+ * An X-style post: the main card is a link to the detail page, while
+ * project metadata lives in a separate action row so links never nest.
  */
 interface Props {
   href: string;
   title: string;
-  /** @slug for a product, a date for a post, a language for an experiment */
   meta?: string;
   external?: boolean;
   icon?: string;
   logoUrl?: string;
   image?: string;
   imageAlt?: string;
+  website?: string;
+  github?: string;
+  downloadUrl?: string;
+  stars?: number;
+  license?: string;
+  pricing?: 'free' | 'paid' | 'freemium';
+  openSource?: boolean;
+  status?: 'live' | 'beta' | 'coming-soon' | string;
+  theme?: string;
+  variant?: 'work' | 'writing' | 'lab';
+  category?: string;
+  hideDescription?: boolean;
 }
 
 const {
@@ -25,36 +35,77 @@ const {
   logoUrl,
   image,
   imageAlt,
+  website,
+  github,
+  downloadUrl,
+  stars,
+  license,
+  pricing,
+  openSource = false,
+  status,
+  theme,
+  variant = 'work',
+  category,
+  hideDescription = false,
 } = Astro.props;
+
+const formatStars = (count: number) =>
+  count >= 1000 ? `${(count / 1000).toFixed(count >= 10000 ? 0 : 1)}k` : String(count);
+const statusLabel = status === 'coming-soon' ? 'coming soon' : status;
 ---
 
-<a
-  class="fitem"
-  href={href}
-  target={external ? '_blank' : undefined}
-  rel={external ? 'noopener' : undefined}
->
-  <span class="fitem-avatar" aria-hidden="true">
-    {logoUrl ? (
-      <img src={logoUrl} alt="" width="40" height="40" loading="lazy" />
-    ) : (
-      <span>{icon}</span>
-    )}
-  </span>
-
-  <span class="fitem-body">
-    <span class="fitem-head">
-      <strong class="fitem-title">{title}</strong>
-      {meta && <span class="fitem-meta mono">{meta}</span>}
-      {external && <span class="fitem-meta" aria-hidden="true">↗</span>}
-    </span>
-
-    <span class="fitem-desc"><slot /></span>
-
-    {image && (
-      <span class="fitem-media">
-        <img src={image} alt={imageAlt ?? ''} loading="lazy" decoding="async" />
+<article class:list={['fitem', `fitem-${variant}`, theme && `fitem-theme-${theme}`]}>
+  <a class="fitem-main" href={href} target={external ? '_blank' : undefined} rel={external ? 'noopener' : undefined}>
+    {variant !== 'writing' && (
+      <span class="fitem-avatar" aria-hidden="true">
+        {logoUrl ? (
+          <img src={logoUrl} alt="" width="40" height="40" loading="lazy" />
+        ) : (
+          <span>{icon}</span>
+        )}
       </span>
     )}
-  </span>
-</a>
+
+    <span class="fitem-body">
+      {variant === 'writing' && (category || meta) && (
+        <span class="fitem-kicker mono">
+          {category && <span>{category}</span>}
+          {meta && <time>{meta}</time>}
+        </span>
+      )}
+      <span class="fitem-head">
+        <strong class="fitem-title">{title}</strong>
+        {variant !== 'writing' && meta && <span class="fitem-meta mono">{meta}</span>}
+        {variant !== 'writing' && category && <span class="fitem-category mono">{category}</span>}
+        {external && <span class="fitem-meta" aria-hidden="true">↗</span>}
+      </span>
+      {!hideDescription && <span class="fitem-desc"><slot /></span>}
+      {image && (
+        <span class="fitem-media">
+          <img src={image} alt={imageAlt ?? ''} width="1600" height="1000" loading="lazy" decoding="async" />
+        </span>
+      )}
+    </span>
+  </a>
+
+  {(website || github || downloadUrl || stars !== undefined || license || pricing || openSource || statusLabel) && (
+    <div class="fitem-details">
+      <div class="fitem-badges" aria-label="Project details">
+        {statusLabel && <span class="fitem-badge fitem-badge-status">{statusLabel}</span>}
+        {openSource && <span class="fitem-badge">open source</span>}
+        {pricing && <span class="fitem-badge">{pricing}</span>}
+        {license && <span class="fitem-badge">{license}</span>}
+        {stars !== undefined && github && (
+          <a class="fitem-badge fitem-badge-link" href={`${github}/stargazers`} target="_blank" rel="noopener">
+            ★ {formatStars(stars)}
+          </a>
+        )}
+      </div>
+      <nav class="fitem-links" aria-label={`${title} links`}>
+        {website && <a href={website} target="_blank" rel="noopener">website ↗</a>}
+        {github && <a href={github} target="_blank" rel="noopener">github ↗</a>}
+        {downloadUrl && <a href={downloadUrl} target="_blank" rel="noopener">downloads ↗</a>}
+      </nav>
+    </div>
+  )}
+</article>

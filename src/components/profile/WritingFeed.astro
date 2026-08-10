@@ -8,8 +8,14 @@ interface Props {
 
 const { posts } = Astro.props;
 
-const fmt = (d: Date) =>
-  d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: '2-digit' });
+const relativeDate = (date: Date) => {
+  const days = Math.max(0, Math.floor((Date.now() - date.getTime()) / 86_400_000));
+  if (days < 1) return 'today';
+  if (days < 7) return `${days}d ago`;
+  if (days < 30) return `${Math.floor(days / 7)}w ago`;
+  if (days < 365) return `${Math.floor(days / 30)}mo ago`;
+  return `${Math.floor(days / 365)}y ago`;
+};
 ---
 
 <div class="feed-list">
@@ -17,8 +23,10 @@ const fmt = (d: Date) =>
     <FeedItem
       href={`/blog/${post.id}`}
       title={post.data.title}
-      meta={fmt(post.data.publishDate)}
-      icon="✎"
+      meta={relativeDate(post.data.publishDate)}
+      variant="writing"
+      category={post.data.tags[0] ?? 'field notes'}
+      hideDescription
     >{post.data.description}</FeedItem>
   ))}
 </div>

@@ -9,61 +9,136 @@ const [products, posts, experiments] = await Promise.all([
 ]);
 
 const plural = (n: number, word: string) => (n === 1 ? word : `${word}s`);
+const compact = (n: number) => (n >= 1000 ? `${(n / 1000).toFixed(n >= 10000 ? 0 : 1)}k` : `${n}`);
+const totalStars = products.reduce((sum, product) => sum + (product.data.stars ?? 0), 0)
+  + experiments.reduce((sum, experiment) => sum + (experiment.data.stars ?? 0), 0);
+const supportLink = SITE.links.find(({ label }) => label === 'ko-fi')?.href ?? 'https://ko-fi.com/debpalash';
+const paypalLink = SITE.links.find(({ label }) => label === 'paypal')?.href ?? 'https://paypal.me/palashCoder';
 
 const counts = [
   { href: '/', n: products.length, label: 'shipped' },
   { href: '/blog', n: posts.length, label: plural(posts.length, 'post') },
   { href: '/lab', n: experiments.length, label: plural(experiments.length, 'experiment') },
+  { href: SITE.github, n: compact(totalStars), label: 'stars', external: true },
 ];
 ---
 
 <header class="phead">
   <a
     class="phead-banner"
-    href="/os"
-    aria-label={`${SITE.osName} — the desktop version of this site`}
-  >
-    <img src="/banner.webp" alt="" width="1440" height="360" fetchpriority="high" />
+    href="/omnivoice"
+    aria-label="VoiceStudio.sh — view the project"
+    >
+    <img
+      src="/projects/omnivoice-signal-field.webp"
+      alt="VoiceStudio.sh audio signal field"
+      width="1600"
+      height="900"
+      fetchpriority="high"
+    />
   </a>
 
   <div class="phead-top">
-    <img
-      class="phead-avatar"
-      src="/avatar.webp"
-      alt={SITE.author}
-      width="256"
-      height="256"
-      fetchpriority="high"
-    />
+    <div class="phead-person">
+      <img
+        class="phead-avatar"
+        src="/avatar.webp"
+        alt={SITE.author}
+        width="256"
+        height="256"
+        fetchpriority="high"
+      />
+      <div class="phead-identity">
+        <h1 class="phead-name">{SITE.author}</h1>
+        <p class="phead-handle mono">@{SITE.handle}</p>
+      </div>
+    </div>
+
     <div class="phead-actions">
-      <a class="pbtn pbtn-primary" href="/rss.xml">RSS</a>
-      <a class="pbtn pbtn-icon" href={`mailto:${SITE.email}`} aria-label={`Email ${SITE.author}`}>
-        <span aria-hidden="true">✉</span>
+      <a class="phead-rss" href="/rss.xml">
+        <svg class="phead-action-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M5 19h.01M5 14a5 5 0 0 1 5 5M5 9a10 10 0 0 1 10 10" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.7" />
+        </svg>
+        RSS
       </a>
-      <a class="pbtn pbtn-fun" href="/os">fun mode ↗</a>
+      <a class="phead-email" href={`mailto:${SITE.email}`} aria-label={`Email ${SITE.author}`}>
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M3.5 5.5h17v13h-17zM4 6l8 6 8-6" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" />
+        </svg>
+      </a>
+      <a class="pbtn pbtn-fun" href="/os">
+        fun mode
+        <svg class="phead-action-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="m7 17 10-10M9 7h8v8" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" />
+        </svg>
+      </a>
+      <div class="phead-cover-links" aria-label="Profile actions">
+        <span class="phead-expand">
+          <a class="phead-expand-trigger" href={SITE.github} target="_blank" rel="noopener">
+            follow
+            <svg class="phead-expand-chevron" viewBox="0 0 12 12" aria-hidden="true" focusable="false">
+              <path d="m2.5 4.5 3.5 3 3.5-3" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.4" />
+            </svg>
+          </a>
+          <span class="phead-expand-more" aria-label="Follow links">
+            <a href={SITE.github} target="_blank" rel="noopener">GitHub ↗</a>
+            <a href={SITE.x} target="_blank" rel="noopener">X ↗</a>
+          </span>
+        </span>
+        <span class="phead-expand phead-expand-donate">
+          <a class="phead-expand-trigger" href={supportLink} target="_blank" rel="noopener">
+            donate
+            <svg class="phead-expand-chevron" viewBox="0 0 12 12" aria-hidden="true" focusable="false">
+              <path d="m2.5 4.5 3.5 3 3.5-3" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.4" />
+            </svg>
+          </a>
+          <span class="phead-expand-more" aria-label="Donation links">
+            <a href={supportLink} target="_blank" rel="noopener">Ko-fi ↗</a>
+            <a href={paypalLink} target="_blank" rel="noopener">PayPal ↗</a>
+          </span>
+        </span>
+      </div>
     </div>
   </div>
 
-  <h1 class="phead-name">{SITE.author}</h1>
-  <p class="phead-handle mono">@{SITE.handle}</p>
-
   <p class="phead-bio">
-    Engineer and product builder. Developer tools, media platforms and
-    infrastructure — local-first where it counts, open source where it helps.
-    Things that ship.
+    <span>Building <a href="/omnivoice">VoiceStudio.sh</a> — open-source ElevenLabs alternative.</span>
+    <span>Building <a href="/opal">Opal.palash.dev</a> — one media player for everything.</span>
+    <span>Building <a href="/memxt">memXT</a> — local-first memory for AI coding agents.</span>
   </p>
 
   <p class="phead-meta mono">
-    <span><span aria-hidden="true">📍</span> Agartala, India</span>
+    <span>
+      <svg class="pmeta-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M19 10.2c0 5.1-7 10.3-7 10.3S5 15.3 5 10.2a7 7 0 1 1 14 0Z" fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="1.6" />
+        <circle cx="12" cy="10" r="2.2" fill="none" stroke="currentColor" stroke-width="1.6" />
+      </svg>
+      India
+    </span>
     <a href={SITE.github} target="_blank" rel="noopener">
-      <span aria-hidden="true">🔗</span> github.com/{SITE.handle}
+      <svg class="pmeta-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="m9.2 14.8 5.6-5.6M8 18H6.5a4.5 4.5 0 0 1 0-9H10M16 6h1.5a4.5 4.5 0 0 1 0 9H14" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" />
+      </svg>
+      github.com/{SITE.handle}
     </a>
-    <span><span aria-hidden="true">⌨</span> {SITE.stack.slice(0, 3).join(' · ')}</span>
+    <span>
+      <svg class="pmeta-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="m8 6-5 6 5 6M16 6l5 6-5 6M14 4l-4 16" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" />
+      </svg>
+      {SITE.stack.slice(0, 3).join(' · ')}
+    </span>
   </p>
 
   <p class="phead-counts">
     {counts.map((c) => (
-      <a href={c.href}><strong>{c.n}</strong> {c.label}</a>
+      <a
+        href={c.href}
+        target={c.external ? '_blank' : undefined}
+        rel={c.external ? 'noopener' : undefined}
+        title={c.external ? `${totalStars.toLocaleString()} total GitHub stars` : undefined}
+      >
+        <strong>{c.n}</strong> {c.label}
+      </a>
     ))}
   </p>
 </header>

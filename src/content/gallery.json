@@ -2,161 +2,161 @@
   {
     "id": "opal-home",
     "title": "Opal — home",
-    "caption": "home.png",
+    "caption": "Home",
     "src": "https://raw.githubusercontent.com/debpalash/Opal/main/assets/screenshots/home.png",
     "group": "opal"
   },
   {
     "id": "opal-browse",
     "title": "Opal — browse",
-    "caption": "browse.jpg",
+    "caption": "Browse",
     "src": "https://raw.githubusercontent.com/debpalash/Opal/main/assets/screenshots/browse.jpg",
     "group": "opal"
   },
   {
     "id": "opal-player",
     "title": "Opal — player",
-    "caption": "player.jpg",
+    "caption": "Player",
     "src": "https://raw.githubusercontent.com/debpalash/Opal/main/assets/screenshots/player.jpg",
     "group": "opal"
   },
   {
     "id": "opal-search",
     "title": "Opal — search",
-    "caption": "search.png",
+    "caption": "Search",
     "src": "https://raw.githubusercontent.com/debpalash/Opal/main/assets/screenshots/search.png",
     "group": "opal"
   },
   {
     "id": "opal-chat",
     "title": "Opal — chat",
-    "caption": "chat.jpg",
+    "caption": "Chat",
     "src": "https://raw.githubusercontent.com/debpalash/Opal/main/assets/screenshots/chat.jpg",
     "group": "opal"
   },
   {
     "id": "opal-settings",
     "title": "Opal — settings",
-    "caption": "settings.png",
+    "caption": "Settings",
     "src": "https://raw.githubusercontent.com/debpalash/Opal/main/assets/screenshots/settings.png",
     "group": "opal"
   },
   {
     "id": "opal-ask-the-ai",
     "title": "Opal — ask the AI (demo)",
-    "caption": "ask-the-ai.gif",
+    "caption": "Ask the AI",
     "src": "https://raw.githubusercontent.com/debpalash/Opal/main/assets/media/ask-the-ai.gif",
     "group": "opal"
   },
   {
     "id": "opal-browse-demo",
     "title": "Opal — browsing (demo)",
-    "caption": "browse.gif",
+    "caption": "Browsing",
     "src": "https://raw.githubusercontent.com/debpalash/Opal/main/assets/media/browse.gif",
     "group": "opal"
   },
   {
     "id": "opal-stream-torrent",
     "title": "Opal — stream a torrent (demo)",
-    "caption": "stream-a-torrent.gif",
+    "caption": "Stream a torrent",
     "src": "https://raw.githubusercontent.com/debpalash/Opal/main/assets/media/stream-a-torrent.gif",
     "group": "opal"
   },
   {
     "id": "omnivoice-preview",
     "title": "OmniVoice Studio — preview",
-    "caption": "preview.png",
+    "caption": "Preview",
     "src": "https://raw.githubusercontent.com/debpalash/OmniVoice-Studio/main/docs/preview.png",
     "group": "omnivoice"
   },
   {
     "id": "omnivoice-launchpad",
     "title": "OmniVoice Studio — launchpad",
-    "caption": "screenshot-launchpad.png",
+    "caption": "Launchpad",
     "src": "https://raw.githubusercontent.com/debpalash/OmniVoice-Studio/main/docs/screenshot-launchpad.png",
     "group": "omnivoice"
   },
   {
     "id": "omnivoice-studio",
     "title": "OmniVoice Studio — studio",
-    "caption": "screenshot-studio.png",
+    "caption": "Studio",
     "src": "https://raw.githubusercontent.com/debpalash/OmniVoice-Studio/main/docs/screenshot-studio.png",
     "group": "omnivoice"
   },
   {
     "id": "omnivoice-clone",
     "title": "OmniVoice Studio — voice cloning",
-    "caption": "screenshot-clone.png",
+    "caption": "Voice cloning",
     "src": "https://raw.githubusercontent.com/debpalash/OmniVoice-Studio/main/docs/screenshot-clone.png",
     "group": "omnivoice"
   },
   {
     "id": "omnivoice-design",
     "title": "OmniVoice Studio — voice design",
-    "caption": "screenshot-design.png",
+    "caption": "Voice design",
     "src": "https://raw.githubusercontent.com/debpalash/OmniVoice-Studio/main/docs/screenshot-design.png",
     "group": "omnivoice"
   },
   {
     "id": "omnivoice-dub",
     "title": "OmniVoice Studio — dubbing",
-    "caption": "screenshot-dub.png",
+    "caption": "Dubbing",
     "src": "https://raw.githubusercontent.com/debpalash/OmniVoice-Studio/main/docs/screenshot-dub.png",
     "group": "omnivoice"
   },
   {
     "id": "omnivoice-engines",
     "title": "OmniVoice Studio — engines",
-    "caption": "screenshot-engines.png",
+    "caption": "Engines",
     "src": "https://raw.githubusercontent.com/debpalash/OmniVoice-Studio/main/docs/screenshot-engines.png",
     "group": "omnivoice"
   },
   {
     "id": "omnivoice-gallery",
     "title": "OmniVoice Studio — gallery",
-    "caption": "screenshot-gallery.png",
+    "caption": "Gallery",
     "src": "https://raw.githubusercontent.com/debpalash/OmniVoice-Studio/main/docs/screenshot-gallery.png",
     "group": "omnivoice"
   },
   {
     "id": "omnivoice-library",
     "title": "OmniVoice Studio — library & projects",
-    "caption": "screenshot-libraryprojects.png",
+    "caption": "Library & projects",
     "src": "https://raw.githubusercontent.com/debpalash/OmniVoice-Studio/main/docs/screenshot-libraryprojects.png",
     "group": "omnivoice"
   },
   {
     "id": "omnivoice-openapi",
     "title": "OmniVoice Studio — OpenAPI",
-    "caption": "screenshot-openapi.png",
+    "caption": "OpenAPI",
     "src": "https://raw.githubusercontent.com/debpalash/OmniVoice-Studio/main/docs/screenshot-openapi.png",
     "group": "omnivoice"
   },
   {
     "id": "omnivoice-logs",
     "title": "OmniVoice Studio — logs",
-    "caption": "screenshot-logs.png",
+    "caption": "Logs",
     "src": "https://raw.githubusercontent.com/debpalash/OmniVoice-Studio/main/docs/screenshot-logs.png",
     "group": "omnivoice"
   },
   {
     "id": "omnivoice-settings",
     "title": "OmniVoice Studio — settings",
-    "caption": "screenshot-settings.png",
+    "caption": "Settings",
     "src": "https://raw.githubusercontent.com/debpalash/OmniVoice-Studio/main/docs/screenshot-settings.png",
     "group": "omnivoice"
   },
   {
     "id": "omnivoice-updates",
     "title": "OmniVoice Studio — updates",
-    "caption": "screenshot-updates.png",
+    "caption": "Updates",
     "src": "https://raw.githubusercontent.com/debpalash/OmniVoice-Studio/main/docs/screenshot-updates.png",
     "group": "omnivoice"
   },
   {
     "id": "memxt-demo",
     "title": "memxt — semantic recall demo",
-    "caption": "demo.gif",
+    "caption": "Semantic recall",
     "src": "https://raw.githubusercontent.com/debpalash/memxt/main/assets/demo.gif",
     "group": "memxt"
   }

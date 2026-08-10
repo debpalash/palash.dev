@@ -21,7 +21,19 @@ const products = defineCollection({
     tagline: z.string(),
     description: z.string(),
     url: z.string().url().optional(),
-    logoUrl: z.string().url().optional(),
+    website: z.string().url().optional(),
+    github: z.string().url().optional(),
+    stars: z.number().int().nonnegative().optional(),
+    license: z.string().optional(),
+    pricing: z.enum(['free', 'paid', 'freemium']).optional(),
+    openSource: z.boolean().default(false),
+    // Product marks may be hosted remotely or bundled as a public asset.
+    logoUrl: z.string().url().or(z.string().regex(/^\/(?!\/)/)).optional(),
+    /** Optional presentation treatment for the work feed. */
+    featured: z.boolean().default(false),
+    banner: z.string().url().or(z.string().regex(/^\/(?!\/)/)).optional(),
+    workImage: z.string().url().or(z.string().regex(/^\/(?!\/)/)).optional(),
+    theme: z.enum(['omnivoice', 'memxt', 'opal']).optional(),
     icon: z.string().default('►'),
     status: z.enum(['live', 'beta', 'coming-soon']).default('live'),
     stack: z.array(z.string()).default([]),
@@ -42,6 +54,7 @@ const experiments = defineCollection({
     description: z.string(),
     url: z.string().url(),
     lang: z.string(),
+    stars: z.number().int().nonnegative().default(0),
   }),
 });
 

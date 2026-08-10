@@ -54,11 +54,13 @@ export const SITE = {
   },
 
   github: 'https://github.com/debpalash',
+  x: 'https://x.com/idebpalash',
   email: 'hi@palash.dev',
 
   links: [
     { label: 'hi@palash.dev', href: 'mailto:hi@palash.dev' },
     { label: 'github.com/debpalash', href: 'https://github.com/debpalash' },
+    { label: 'x.com/idebpalash', href: 'https://x.com/idebpalash' },
     { label: 'palash.dev', href: 'https://palash.dev' },
     { label: 'rss feed', href: '/rss.xml' },
     { label: 'ko-fi', href: 'https://ko-fi.com/debpalash' },

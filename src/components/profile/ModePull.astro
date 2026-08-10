@@ -1,0 +1,65 @@
+<div class="mode-pull" data-mode-pull>
+  <span class="mode-pull-cord" aria-hidden="true"></span>
+  <button class="mode-pull-knob" type="button" aria-label="Switch to light mode" aria-pressed="false">
+    <span class="mode-pull-sun" aria-hidden="true">☼</span>
+    <span class="mode-pull-moon" aria-hidden="true">◐</span>
+  </button>
+</div>
+
+<script>
+  const restoreMode = () => {
+    try {
+      const saved = localStorage.getItem('palash-mode');
+      if (saved === 'light' || saved === 'dark') {
+        document.documentElement.dataset.mode = saved;
+      }
+    } catch { /* storage can be disabled */ }
+  };
+
+  const setupModePull = () => {
+    restoreMode();
+    const pull = document.querySelector<HTMLElement>('[data-mode-pull]');
+    const knob = pull?.querySelector<HTMLButtonElement>('.mode-pull-knob');
+    if (!pull || !knob || pull.dataset.ready === 'true') return;
+    pull.dataset.ready = 'true';
+
+    const setMode = (mode: 'dark' | 'light', animate = false) => {
+      const apply = () => {
+        document.documentElement.dataset.mode = mode === 'light' ? 'light' : 'dark';
+        knob.setAttribute('aria-pressed', String(mode === 'light'));
+        knob.setAttribute('aria-label', mode === 'light' ? 'Switch to dark mode' : 'Switch to light mode');
+        try { localStorage.setItem('palash-mode', mode); } catch { /* storage can be disabled */ }
+      };
+
+      if (animate && 'startViewTransition' in document) {
+        const root = document.documentElement;
+        root.classList.add('mode-changing');
+        const transition = (document as Document & {
+          startViewTransition?: (callback: () => void) => { finished: Promise<unknown> };
+        }).startViewTransition?.(apply);
+        transition?.finished.finally(() => root.classList.remove('mode-changing'));
+      } else {
+        apply();
+      }
+    };
+
+    let saved: string | null = null;
+    try { saved = localStorage.getItem('palash-mode'); } catch { /* storage can be disabled */ }
+    const current = saved === 'light' || saved === 'dark'
+      ? saved
+      : document.documentElement.dataset.mode === 'light' ? 'light' : 'dark';
+    setMode(current);
+    knob.addEventListener('click', () => {
+      pull.classList.remove('is-pulling');
+      void pull.offsetWidth;
+      pull.classList.add('is-pulling');
+      setMode(document.documentElement.dataset.mode === 'light' ? 'dark' : 'light', true);
+      window.setTimeout(() => pull.classList.remove('is-pulling'), 520);
+    });
+  };
+
+  setupModePull();
+  document.addEventListener('astro:page-load', setupModePull);
+  document.addEventListener('astro:before-preparation', restoreMode);
+  document.addEventListener('astro:after-swap', restoreMode);
+</script>

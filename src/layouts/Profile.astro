@@ -2,13 +2,11 @@
 /**
  * The profile shell shared by /, /blog, /lab and /media.
  *
- * Header and tabs sit in the left column above the feed, with the rail
- * beside them — the desktop Twitter arrangement.
+ * Profile header, tabs, and feed stay in one focused column.
  */
 import Page from './Page.astro';
 import ProfileHeader from '../components/profile/ProfileHeader.astro';
 import TabBar from '../components/profile/TabBar.astro';
-import Rail from '../components/profile/Rail.astro';
 
 interface Props {
   title: string;
@@ -23,12 +21,9 @@ const { title, description, ogImage, active } = Astro.props;
 <Page title={title} description={description} ogImage={ogImage} wide>
   <slot name="head" slot="head" />
 
-  <div class="profile-grid">
-    <div class="profile-main">
-      <ProfileHeader />
-      <TabBar active={active} />
-      <div class="feed"><slot /></div>
-    </div>
-    <aside class="rail"><slot name="rail"><Rail /></slot></aside>
+  <div class="profile-main">
+    <ProfileHeader />
+    <TabBar active={active} />
+    <div class="feed"><slot /></div>
   </div>
 </Page>

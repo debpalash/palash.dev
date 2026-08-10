@@ -3,6 +3,12 @@
   "tagline": "Play everything — the evolved media player",
   "description": "One media player for everything — files, sites, servers, and feeds. Say a title, a file, a magnet, or a vibe, and Opal finds and plays it a moment later. AI-powered discovery built for speed in Zig, running on macOS, Linux, and Windows.",
   "url": "https://github.com/debpalash/Opal",
+  "website": "https://opal.palash.dev",
+  "github": "https://github.com/debpalash/Opal",
+  "stars": 25,
+  "license": "GPL-3.0",
+  "pricing": "free",
+  "openSource": true,
   "icon": "💠",
   "status": "live",
   "stack": [

@@ -14,13 +14,14 @@ const strip = screenshots.slice(0, 4);
 
 <div class="flex items-start gap-4 mb-4 flex-wrap">
   {logoUrl && (
-    <Image
+    <img
       src={logoUrl}
       alt={`${name} logo`}
       width={72}
       height={72}
-      layout="fixed"
       class="prg-logo"
+      loading="eager"
+      decoding="async"
     />
   )}
   <div>

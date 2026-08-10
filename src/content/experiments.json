@@ -4,41 +4,31 @@
     "name": "sshbox",
     "description": "Sandboxed SSH environments, written in Go.",
     "url": "https://github.com/debpalash/sshbox",
-    "lang": "Go"
+    "lang": "Go",
+    "stars": 0
   },
   {
     "id": "omnivoice-gallery",
     "name": "omnivoice-gallery",
     "description": "Voice sample gallery companion for OmniVoice Studio.",
     "url": "https://github.com/debpalash/omnivoice-gallery",
-    "lang": "Python"
-  },
-  {
-    "id": "tauri-webgpu-test",
-    "name": "tauri-webgpu-test",
-    "description": "WebGPU rendering experiments inside a Tauri shell.",
-    "url": "https://github.com/debpalash/tauri-webgpu-test",
-    "lang": "TypeScript"
+    "lang": "Python",
+    "stars": 8
   },
   {
     "id": "opal-plugins",
     "name": "opal-plugins",
     "description": "Source endpoints powering Opal's plugin system.",
     "url": "https://github.com/debpalash/opal-plugins",
-    "lang": "JSON"
+    "lang": "JSON",
+    "stars": 0
   },
   {
-    "id": "wxt-solid-tailwindv4-webext",
-    "name": "wxt-solid-tailwindv4-webext",
-    "description": "Web extension starter — WXT, Bun, SolidJS, Tailwind v4.",
-    "url": "https://github.com/debpalash/wxt-solid-tailwindv4-webext",
-    "lang": "TypeScript"
-  },
-  {
-    "id": "wxt-transformerjs",
-    "name": "wxt-transformerjs",
-    "description": "Running transformers.js models inside a web extension.",
-    "url": "https://github.com/debpalash/wxt-transformerjs",
-    "lang": "TypeScript"
+    "id": "zig-bypassdpi",
+    "name": "zig-bypassdpi",
+    "description": "Cross-platform userspace DPI-bypass proxy in pure Zig — SNI ClientHello fragmentation, no driver or root.",
+    "url": "https://github.com/debpalash/zig-bypassdpi",
+    "lang": "Zig",
+    "stars": 0
   }
 ]

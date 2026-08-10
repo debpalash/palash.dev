@@ -28,7 +28,7 @@ const jsonLd = {
       image: new URL(SITE.avatar, SITE.url).href,
       jobTitle: 'Software Engineer & Product Builder',
       description: SITE.description,
-      sameAs: [SITE.github],
+      sameAs: [SITE.github, SITE.x],
       knowsAbout: SITE.stack,
       worksFor: { '@id': orgId },
     },
@@ -48,20 +48,25 @@ const jsonLd = {
       alternateName: [SITE.author, SITE.alternateName],
       publisher: { '@id': personId },
     },
-    ...products.map((p) => ({
-      '@type': 'SoftwareApplication',
-      '@id': `${SITE.url}/${p.id}#app`,
-      name: p.data.name,
-      ...(p.data.keywords.length ? { alternateName: p.data.keywords.slice(0, 3) } : {}),
-      description: p.data.description,
-      applicationCategory: p.data.category,
-      operatingSystem: p.data.os,
-      url: `${SITE.url}/${p.id}`,
-      ...(p.data.url ? { codeRepository: p.data.url } : {}),
-      author: { '@id': personId },
-      offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
-      ...(p.data.keywords.length ? { keywords: p.data.keywords.join(', ') } : {}),
-    })),
+    ...products.map((p) => {
+      const repository = p.data.github ?? p.data.url;
+      const readme = p.data.github ? `${p.data.github.replace(/\/$/, '')}#readme` : undefined;
+      return {
+        '@type': 'SoftwareApplication',
+        '@id': `${SITE.url}/${p.id}#app`,
+        name: p.data.name,
+        ...(p.data.keywords.length ? { alternateName: p.data.keywords.slice(0, 3) } : {}),
+        description: p.data.description,
+        applicationCategory: p.data.category,
+        operatingSystem: p.data.os,
+        url: `${SITE.url}/${p.id}`,
+        ...(repository ? { codeRepository: repository } : {}),
+        ...(readme ? { subjectOf: { '@type': 'CreativeWork', name: `${p.data.name} README`, url: readme } } : {}),
+        author: { '@id': personId },
+        offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+        ...(p.data.keywords.length ? { keywords: p.data.keywords.join(', ') } : {}),
+      };
+    }),
   ],
 };
 

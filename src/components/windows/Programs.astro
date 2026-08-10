@@ -1,5 +1,4 @@
 ---
-import { Image } from 'astro:assets';
 import type { CollectionEntry } from 'astro:content';
 import { SITE } from '../../site.config';
 
@@ -19,13 +18,14 @@ const { products, companyProjects = [] } = Astro.props;
   {products.map((p) => (
     <button class="prg-card" data-open={`prg-${p.id}`}>
       {p.data.logoUrl ? (
-        <Image
+        <img
           src={p.data.logoUrl}
           alt={`${p.data.name} logo`}
           width={48}
           height={48}
-          layout="fixed"
           class="prg-card-logo"
+          loading="lazy"
+          decoding="async"
         />
       ) : (
         <span class="prg-card-glyph" aria-hidden="true">{p.data.icon}</span>
@@ -54,13 +54,14 @@ const { products, companyProjects = [] } = Astro.props;
         const inner = (
           <Fragment>
             {c.data.logoUrl ? (
-              <Image
+              <img
                 src={c.data.logoUrl}
                 alt={`${c.data.name} logo`}
                 width={48}
                 height={48}
-                layout="fixed"
                 class="prg-card-logo"
+                loading="lazy"
+                decoding="async"
               />
             ) : (
               <span class="prg-card-glyph" aria-hidden="true">⌂</span>

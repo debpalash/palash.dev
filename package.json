@@ -13,15 +13,16 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/cloudflare": "^14.2.0",
     "@astrojs/mdx": "^7.0.5",
     "@astrojs/rss": "^4.0.19",
     "@astrojs/sitemap": "^3.7.3",
+    "@fontsource-variable/space-grotesk": "^5.3.0",
     "@fontsource/ibm-plex-mono": "^5.3.0",
     "@tailwindcss/vite": "^4.3.3",
     "@unpic/astro": "^1.0.2",
     "@webtui/css": "^0.1.9",
     "astro": "^7.2.0",
+    "photoswipe": "^5.4.4",
     "tailwindcss": "^4.3.3"
   },
   "devDependencies": {

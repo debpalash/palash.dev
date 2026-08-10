@@ -23,8 +23,17 @@ const shotFor = (id: string) => gallery.find((g) => g.data.group === id);
         meta={`@${p.id}`}
         icon={p.data.icon}
         logoUrl={p.data.logoUrl}
-        image={shot?.data.src}
-        imageAlt={shot?.data.title}
+        image={p.data.workImage ?? shot?.data.src}
+        imageAlt={p.data.workImage ? `${p.data.name} launchpad` : shot?.data.title}
+        website={p.data.website}
+        github={p.data.github ?? p.data.url}
+        downloadUrl={p.data.github ? `${p.data.github.replace(/\/$/, '')}/releases` : undefined}
+        stars={p.data.stars}
+        license={p.data.license}
+        pricing={p.data.pricing}
+        openSource={p.data.openSource}
+        status={p.data.status}
+        theme={p.data.theme}
       >{p.data.tagline}</FeedItem>
     );
   })}

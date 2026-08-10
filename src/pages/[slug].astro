@@ -1,7 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
-import { Image } from 'astro:assets';
 import Page from '../layouts/Page.astro';
+import GalleryStrip from '../components/page/GalleryStrip.astro';
 import { SITE } from '../site.config';
 
 export async function getStaticPaths() {
@@ -17,14 +17,34 @@ export async function getStaticPaths() {
 }
 
 const { product, screenshots } = Astro.props;
-const { name, tagline, description, url, logoUrl, status, stack, category, os, keywords } =
+const {
+  name,
+  tagline,
+  description,
+  url,
+  website,
+  github,
+  stars,
+  license,
+  pricing,
+  openSource,
+  logoUrl,
+  status,
+  stack,
+  category,
+  os,
+  keywords,
+} =
   product.data;
 
 const statusLabel =
   { live: 'live', beta: 'beta', 'coming-soon': 'coming soon' }[status] ?? status;
+const formatStars = (count: number) =>
+  count >= 1000 ? `${(count / 1000).toFixed(count >= 10000 ? 0 : 1)}k` : String(count);
 
 const pageUrl = `${SITE.url}/${product.id}`;
 const personId = `${SITE.url}/#person`;
+const readmeUrl = github ? `${github.replace(/\/$/, '')}#readme` : undefined;
 
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -39,7 +59,9 @@ const jsonLd = {
       operatingSystem: os,
       url: pageUrl,
       ...(logoUrl ? { image: logoUrl } : {}),
-      ...(url ? { codeRepository: url, downloadUrl: url } : {}),
+      ...((github ?? url) ? { codeRepository: github ?? url, downloadUrl: github ?? url } : {}),
+      ...(readmeUrl ? { subjectOf: { '@type': 'CreativeWork', name: `${name} README`, url: readmeUrl } } : {}),
+      sameAs: [github, SITE.x].filter(Boolean),
       author: { '@id': personId, '@type': 'Person', name: SITE.author, url: SITE.url },
       publisher: { '@type': 'Organization', name: SITE.company.name, url: SITE.company.url },
       offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
@@ -74,13 +96,14 @@ const jsonLd = {
   <article>
     <header class="product-head">
       {logoUrl && (
-        <Image
+        <img
           class="product-logo"
           src={logoUrl}
           alt={`${name} logo`}
           width={56}
           height={56}
-          layout="fixed"
+          loading="eager"
+          decoding="async"
         />
       )}
       <div>
@@ -88,8 +111,18 @@ const jsonLd = {
         <p class="article-desc">{tagline}</p>
         <div class="article-meta">
           <span class:list={['status', `status-${status}`]}>{statusLabel}</span>
+          {openSource && <span class="tag">open source</span>}
+          {pricing && <span class="tag">{pricing}</span>}
+          {license && <span class="tag">{license}</span>}
+          {stars !== undefined && <span class="tag">★ {formatStars(stars)}</span>}
           {stack.map((s) => <span class="tag">{s}</span>)}
         </div>
+        <nav class="product-links" aria-label={`${name} links`}>
+          {website && <a href={website} target="_blank" rel="noopener">website ↗</a>}
+          {(github ?? url) && <a href={github ?? url} target="_blank" rel="noopener">github ↗</a>}
+          {readmeUrl && <a href={readmeUrl} target="_blank" rel="noopener">readme ↗</a>}
+          <a href={SITE.x} target="_blank" rel="me noopener">x ↗</a>
+        </nav>
       </div>
     </header>
 
@@ -98,8 +131,8 @@ const jsonLd = {
     </div>
 
     <div class="btn-row">
-      {url && (
-        <a class="btn btn-primary" href={url} target="_blank" rel="noopener">
+      {(github ?? url) && (
+        <a class="btn btn-primary" href={github ?? url} target="_blank" rel="noopener">
           View source ↗
         </a>
       )}
@@ -112,20 +145,7 @@ const jsonLd = {
           <h2 class="section-title">Screenshots</h2>
           <span class="section-more muted">{screenshots.length}</span>
         </div>
-        <div class="gallery-strip">
-          {screenshots.map((s) => (
-            <a class="shot" href={s.data.src} target="_blank" rel="noopener">
-              <Image
-                src={s.data.src}
-                alt={s.data.title}
-                width={420}
-                height={263}
-                layout="constrained"
-              />
-              <span class="shot-cap">{s.data.caption}</span>
-            </a>
-          ))}
-        </div>
+        <GalleryStrip items={screenshots} />
       </section>
     )}
   </article>
