@@ -1602,8 +1602,9 @@ html[data-mode='light'] .mode-pull-moon { opacity: 0; transform: scale(0.7) rota
 }
 
 .fitem-theme-omnivoice {
-  --card-accent: #e592ad;
-  --card-glow: rgba(229, 146, 173, 0.1);
+  /* Tuned to the VoiceStudio 5.0 mark: warm pink waveform, peach spark. */
+  --card-accent: #f47fa3;
+  --card-glow: rgba(244, 127, 163, 0.1);
 }
 
 .fitem-theme-memxt {
@@ -1614,6 +1615,22 @@ html[data-mode='light'] .mode-pull-moon { opacity: 0; transform: scale(0.7) rota
 .fitem-theme-opal {
   --card-accent: #62d8f5;
   --card-glow: rgba(98, 216, 245, 0.08);
+}
+
+/* Paper mode needs deeper inks for the same identities to stay readable. */
+html[data-mode='light'] .fitem-theme-omnivoice {
+  --card-accent: #b23e63;
+  --card-glow: rgba(178, 62, 99, 0.07);
+}
+
+html[data-mode='light'] .fitem-theme-memxt {
+  --card-accent: #8a6512;
+  --card-glow: rgba(138, 101, 18, 0.07);
+}
+
+html[data-mode='light'] .fitem-theme-opal {
+  --card-accent: #0c7291;
+  --card-glow: rgba(12, 114, 145, 0.07);
 }
 
 .fitem-writing {
@@ -1764,52 +1781,57 @@ html[data-mode='light'] .mode-pull-moon { opacity: 0; transform: scale(0.7) rota
   font-size: 0.72rem;
 }
 
-/* The feed is intentionally typographic: one ink color, one quiet surface,
-   and hierarchy carried by weight, measure, and spacing rather than themes. */
+/* The feed keeps its quiet surface — flat rules, no card chrome — but the ink
+   carries each product's own accent: the tick, the mono path, the status, the
+   links. Hierarchy still comes from weight and spacing; identity from color. */
 .fitem,
-.fitem-writing,
-.fitem-theme-omnivoice,
-.fitem-theme-memxt,
-.fitem-theme-opal {
-  --card-accent: var(--text-muted);
-  --card-glow: transparent;
+.fitem-writing {
   border-color: var(--border);
   border-radius: 0;
-  background: transparent;
+  background: linear-gradient(120deg, color-mix(in srgb, var(--card-accent) 4%, transparent), transparent 46%);
   box-shadow: none;
 }
 
 .fitem::before,
 .fitem-writing::before {
-  width: 1.5rem;
-  height: 1px;
-  background: var(--border-strong);
+  width: 1.75rem;
+  height: 2px;
+  background: var(--card-accent);
   box-shadow: none;
+  transition: width 260ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .fitem:hover,
 .fitem-writing:hover {
   transform: none;
-  border-color: var(--border-strong);
-  background: color-mix(in srgb, var(--text) 3%, transparent);
+  border-color: color-mix(in srgb, var(--card-accent) 32%, var(--border));
+  background: linear-gradient(120deg, color-mix(in srgb, var(--card-accent) 7%, transparent), transparent 52%);
   box-shadow: none;
+}
+
+.fitem:hover::before,
+.fitem-writing:hover::before {
+  width: 3rem;
 }
 
 .fitem-title {
   /* Keep every feed title on the same typographic step. Hierarchy comes from
      weight and spacing, not from one tab suddenly becoming larger. */
-  font-size: 1rem;
-  font-weight: 680;
-  letter-spacing: -0.012em;
+  font-size: 1.02rem;
+  font-weight: 700;
+  letter-spacing: -0.014em;
 }
 
-.fitem-meta,
-.fitem-desc {
-  color: var(--text-muted);
+.fitem-meta {
+  /* The route path in the product's own ink — the thread back to the terminal. */
+  color: color-mix(in srgb, var(--card-accent) 76%, var(--text));
+  font-weight: 500;
+  letter-spacing: 0.01em;
 }
 
 .fitem-desc {
-  font-size: 0.9rem;
+  color: color-mix(in srgb, var(--text) 68%, var(--text-muted));
+  font-size: 0.93rem;
 }
 
 .fitem-writing .fitem-title {
@@ -1817,34 +1839,46 @@ html[data-mode='light'] .mode-pull-moon { opacity: 0; transform: scale(0.7) rota
 }
 
 .fitem-category,
-.fitem-kicker,
+.fitem-kicker {
+  color: var(--accent);
+  font-weight: 680;
+}
+
 .fitem-writing .fitem-meta {
-  color: var(--text-faint);
-  font-weight: 650;
+  color: var(--text-muted);
+  font-weight: 500;
 }
 
 .fitem-kicker,
 .fitem-category {
-  font-size: 0.62rem;
-  letter-spacing: 0.09em;
+  font-size: 0.64rem;
+  letter-spacing: 0.1em;
 }
 
 .fitem-details {
-  border-top-color: var(--border);
+  border-top-color: color-mix(in srgb, var(--card-accent) 20%, var(--border));
 }
 
 .fitem-badge {
-  border-color: var(--border);
+  border-color: color-mix(in srgb, var(--card-accent) 26%, var(--border));
   background: transparent;
-  color: var(--text-faint);
+  color: var(--text-muted);
+  font-size: 0.66rem;
+  letter-spacing: 0.02em;
 }
 
-.fitem-badge-status,
+.fitem-badge-status {
+  color: var(--card-accent);
+  border-color: color-mix(in srgb, var(--card-accent) 55%, var(--border));
+  background: color-mix(in srgb, var(--card-accent) 8%, transparent);
+  font-weight: 500;
+}
+
 .fitem-badge-link,
 .fitem-links a,
 .product-links a {
-  color: var(--text-muted);
-  border-color: var(--border);
+  color: color-mix(in srgb, var(--card-accent) 72%, var(--text));
+  font-weight: 500;
 }
 
 .fitem-badge-link:hover,
