@@ -9,7 +9,6 @@ import '../styles/page.css';
 import Head from '../components/Head.astro';
 import Footer from '../components/page/Footer.astro';
 import ModePull from '../components/profile/ModePull.astro';
-import { ClientRouter } from 'astro:transitions';
 
 interface Props {
   title: string;
@@ -20,6 +19,9 @@ interface Props {
   modifiedTime?: string;
   tags?: string[];
   noIndex?: boolean;
+  schemaType?: string | string[];
+  mainEntityId?: string;
+  breadcrumbId?: string;
   /** narrower measure for long-form reading (blog posts, product pages) */
   narrow?: boolean;
   /** wider measure with no top padding — the profile pages supply their own */
@@ -35,6 +37,9 @@ const {
   modifiedTime,
   tags,
   noIndex = false,
+  schemaType,
+  mainEntityId,
+  breadcrumbId,
   narrow = false,
   wide = false,
 } = Astro.props;
@@ -52,13 +57,19 @@ const {
       modifiedTime={modifiedTime}
       tags={tags}
       noIndex={noIndex}
+      themeColor="#080a0d"
+      schemaType={schemaType}
+      mainEntityId={mainEntityId}
+      breadcrumbId={breadcrumbId}
     />
     <script is:inline>
       try {
-        if (localStorage.getItem('palash-mode') === 'light') document.documentElement.dataset.mode = 'light';
+        if (localStorage.getItem('palash-mode') === 'light') {
+          document.documentElement.dataset.mode = 'light';
+          document.querySelector('meta[name="theme-color"]')?.setAttribute('content', '#f2efe8');
+        }
       } catch { /* storage can be disabled */ }
     </script>
-    <ClientRouter />
     <slot name="head" />
   </head>
   <body>

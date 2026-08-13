@@ -160,6 +160,7 @@ const vfs = {
 };
 
 const personId = `${SITE.url}/#person`;
+const osUrl = `${SITE.url}/os/`;
 
 /**
  * The canonical entity graph (Person / Organization / WebSite) lives on the
@@ -171,8 +172,8 @@ const jsonLd = {
   '@graph': [
     {
       '@type': 'WebPage',
-      '@id': `${SITE.url}/os#webpage`,
-      url: `${SITE.url}/os`,
+      '@id': `${osUrl}#webpage`,
+      url: osUrl,
       name: `${SITE.osName} — interactive desktop`,
       description:
         'The retro desktop edition of palash.dev — windows, a terminal, and a printer that never quite works.',

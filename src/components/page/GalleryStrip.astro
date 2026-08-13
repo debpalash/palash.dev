@@ -1,5 +1,6 @@
 ---
 import type { CollectionEntry } from 'astro:content';
+import 'photoswipe/style.css';
 
 interface Props {
   items: CollectionEntry<'gallery'>[];
@@ -23,7 +24,14 @@ const { items, linkToProduct = false } = Astro.props;
       data-pswp-height={!linkToProduct ? 1000 : undefined}
       data-pswp-caption={!linkToProduct ? item.data.caption : undefined}
     >
-      <img src={item.data.src} alt={item.data.title} width="420" height="263" loading="lazy" decoding="async" />
+      <img
+        src={`/gallery/${item.id}.webp`}
+        alt={item.data.title}
+        width="600"
+        height="375"
+        loading="lazy"
+        decoding="async"
+      />
       <span class="shot-cap">{item.data.caption}</span>
     </a>
   ))}
@@ -58,6 +66,5 @@ const { items, linkToProduct = false } = Astro.props;
     });
   };
 
-  document.addEventListener('astro:page-load', initPhotoSwipe);
   initPhotoSwipe();
 </script>

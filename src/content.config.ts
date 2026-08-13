@@ -18,8 +18,20 @@ const products = defineCollection({
   loader: glob({ pattern: '**/*.json', base: './src/content/products' }),
   schema: z.object({
     name: z.string(),
+    alternateNames: z.array(z.string()).default([]),
     tagline: z.string(),
     description: z.string(),
+    audience: z.string().optional(),
+    positioning: z.string().optional(),
+    features: z.array(z.object({
+      title: z.string(),
+      description: z.string(),
+    })).default([]),
+    proof: z.array(z.object({
+      value: z.string(),
+      label: z.string(),
+    })).default([]),
+    updatedDate: z.coerce.date().optional(),
     url: z.string().url().optional(),
     website: z.string().url().optional(),
     github: z.string().url().optional(),

@@ -1,7 +1,30 @@
 {
   "name": "memxt",
+  "alternateNames": ["memXT"],
   "tagline": "Local-first long-term memory for AI coding agents",
   "description": "The fastest benchmarked open-source AI memory system — a single static binary that gives coding agents persistent, on-device memory across sessions. No cloud, no Python, nothing leaves your machine.",
+  "audience": "Developers who want coding agents to remember architecture, decisions, and working context across sessions without sending that memory to a cloud service.",
+  "positioning": "Your Agent Can Forget the Chat. It Should Not Forget the Work.",
+  "features": [
+    {
+      "title": "Wake Up with Context",
+      "description": "MCP tools and session hooks give an agent relevant project memory at the start of a session instead of another blank slate."
+    },
+    {
+      "title": "Keep Recall Out of the Way",
+      "description": "A Zig binary, local embedding model, llama.cpp, and sqlite-vec keep semantic search fast enough to become invisible infrastructure."
+    },
+    {
+      "title": "Keep Decisions On-Device",
+      "description": "Embeddings, storage, and search stay on the machine. There is no hosted vector database and no API key at query time."
+    }
+  ],
+  "proof": [
+    { "value": "~10 ms", "label": "session wake-up" },
+    { "value": "<1 ms", "label": "warm vector search" },
+    { "value": "1 binary", "label": "no Python or Docker" }
+  ],
+  "updatedDate": "2026-08-13",
   "url": "https://github.com/Yupcha/memXT",
   "website": "https://yupcha.github.io/memXT/",
   "github": "https://github.com/Yupcha/memXT",

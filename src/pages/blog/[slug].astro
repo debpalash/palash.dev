@@ -4,14 +4,21 @@ import Page from '../../layouts/Page.astro';
 import { SITE } from '../../site.config';
 
 export async function getStaticPaths() {
-  const posts = await getCollection('blog', ({ data }) => !data.draft);
-  return posts.map((post) => ({
+  const posts = (await getCollection('blog', ({ data }) => !data.draft))
+    .sort((a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf());
+  const products = await getCollection('products');
+  return posts.map((post, index) => ({
     params: { slug: post.id },
-    props: { post },
+    props: {
+      post,
+      newerPost: index > 0 ? posts[index - 1] : undefined,
+      olderPost: index < posts.length - 1 ? posts[index + 1] : undefined,
+      relatedProduct: products.find((product) => post.data.tags.includes(product.id)),
+    },
   }));
 }
 
-const { post } = Astro.props;
+const { post, newerPost, olderPost, relatedProduct } = Astro.props;
 const { Content } = await render(post);
 const date = post.data.publishDate.toLocaleDateString('en-US', {
   year: 'numeric',
@@ -21,6 +28,9 @@ const date = post.data.publishDate.toLocaleDateString('en-US', {
 
 const postUrl = `${SITE.url}/blog/${post.id}/`;
 const personId = `${SITE.url}/#person`;
+const breadcrumbId = `${postUrl}#breadcrumb`;
+const wordCount = post.body?.split(/\s+/).filter(Boolean).length ?? 0;
+const readingMinutes = Math.max(1, Math.ceil(wordCount / 220));
 
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -35,15 +45,20 @@ const jsonLd = {
       datePublished: post.data.publishDate.toISOString(),
       dateModified: (post.data.updatedDate ?? post.data.publishDate).toISOString(),
       keywords: post.data.tags.join(', '),
+      articleSection: post.data.tags[0] ?? 'Engineering',
+      wordCount,
       image: new URL(post.data.heroImage ?? `/og/blog-${post.id}.png`, SITE.url).href,
       author: { '@id': personId, '@type': 'Person', name: SITE.author, url: SITE.url },
       publisher: { '@id': personId },
+      isPartOf: { '@id': `${SITE.url}/blog/#blog` },
+      ...(relatedProduct ? { about: { '@id': `${SITE.url}/${relatedProduct.id}/#app` } } : {}),
     },
     {
       '@type': 'BreadcrumbList',
+      '@id': breadcrumbId,
       itemListElement: [
-        { '@type': 'ListItem', position: 1, name: SITE.author, item: SITE.url },
-        { '@type': 'ListItem', position: 2, name: 'The Log', item: `${SITE.url}/blog` },
+        { '@type': 'ListItem', position: 1, name: SITE.author, item: `${SITE.url}/` },
+        { '@type': 'ListItem', position: 2, name: 'The Log', item: `${SITE.url}/blog/` },
         { '@type': 'ListItem', position: 3, name: post.data.title, item: postUrl },
       ],
     },
@@ -59,14 +74,16 @@ const jsonLd = {
   publishedTime={post.data.publishDate.toISOString()}
   modifiedTime={(post.data.updatedDate ?? post.data.publishDate).toISOString()}
   tags={post.data.tags}
+  mainEntityId={`${postUrl}#post`}
+  breadcrumbId={breadcrumbId}
   narrow
 >
   <Fragment slot="head">
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)}></script>
   </Fragment>
 
-  <p style="margin-bottom:2rem;font-size:0.875rem;">
-    <a href="/blog" class="muted">← the log</a>
+  <p class="back-link mono">
+    <a href="/blog" class="muted">← Field notes</a>
   </p>
 
   <article>
@@ -74,7 +91,9 @@ const jsonLd = {
       <h1>{post.data.title}</h1>
       <p class="article-desc">{post.data.description}</p>
       <div class="article-meta">
+        <span>By <a href="/">{SITE.author}</a></span>
         <time datetime={post.data.publishDate.toISOString()}>{date}</time>
+        <span>{readingMinutes} min read</span>
         {post.data.tags.map((t) => <span class="tag">{t}</span>)}
       </div>
     </header>
@@ -84,9 +103,37 @@ const jsonLd = {
     </div>
   </article>
 
-  <p style="margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--border);font-size:0.9rem;">
-    <a href="/blog">← all posts</a>
-    <span class="muted"> · or </span>
-    <a href={`/os#doc-${post.id}`}>read it in {SITE.osName} ↗</a>
+  {relatedProduct && (
+    <aside class="article-related">
+      <p class="product-eyebrow mono">Related product</p>
+      <a href={`/${relatedProduct.id}`}>
+        <span>
+          <strong>{relatedProduct.data.name}</strong>
+          <small>{relatedProduct.data.tagline}</small>
+        </span>
+        <span aria-hidden="true">↗</span>
+      </a>
+    </aside>
+  )}
+
+  <nav class="post-nav" aria-label="More field notes">
+    {newerPost ? (
+      <a href={`/blog/${newerPost.id}`} rel="prev">
+        <small class="mono">Newer</small>
+        <strong>{newerPost.data.title}</strong>
+      </a>
+    ) : <span></span>}
+    {olderPost && (
+      <a href={`/blog/${olderPost.id}`} rel="next">
+        <small class="mono">Older</small>
+        <strong>{olderPost.data.title}</strong>
+      </a>
+    )}
+  </nav>
+
+  <p class="article-foot mono">
+    <a href="/blog">All field notes</a>
+    <span class="muted">·</span>
+    <a href={`/os#doc-${post.id}`}>Read in {SITE.osName} ↗</a>
   </p>
 </Page>

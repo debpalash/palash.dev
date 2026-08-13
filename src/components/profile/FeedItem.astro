@@ -7,6 +7,7 @@ interface Props {
   href: string;
   title: string;
   meta?: string;
+  dateTime?: string;
   external?: boolean;
   icon?: string;
   logoUrl?: string;
@@ -23,13 +24,13 @@ interface Props {
   theme?: string;
   variant?: 'work' | 'writing' | 'lab';
   category?: string;
-  hideDescription?: boolean;
 }
 
 const {
   href,
   title,
   meta,
+  dateTime,
   external = false,
   icon = '►',
   logoUrl,
@@ -46,7 +47,6 @@ const {
   theme,
   variant = 'work',
   category,
-  hideDescription = false,
 } = Astro.props;
 
 const formatStars = (count: number) =>
@@ -70,7 +70,7 @@ const statusLabel = status === 'coming-soon' ? 'coming soon' : status;
       {variant === 'writing' && (category || meta) && (
         <span class="fitem-kicker mono">
           {category && <span>{category}</span>}
-          {meta && <time>{meta}</time>}
+          {meta && <time datetime={dateTime}>{meta}</time>}
         </span>
       )}
       <span class="fitem-head">
@@ -79,7 +79,7 @@ const statusLabel = status === 'coming-soon' ? 'coming soon' : status;
         {variant !== 'writing' && category && <span class="fitem-category mono">{category}</span>}
         {external && <span class="fitem-meta" aria-hidden="true">↗</span>}
       </span>
-      {!hideDescription && <span class="fitem-desc"><slot /></span>}
+      <span class="fitem-desc"><slot /></span>
       {image && (
         <span class="fitem-media">
           <img src={image} alt={imageAlt ?? ''} width="1600" height="1000" loading="lazy" decoding="async" />

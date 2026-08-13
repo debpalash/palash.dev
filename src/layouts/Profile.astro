@@ -13,17 +13,49 @@ interface Props {
   description?: string;
   ogImage?: string;
   active: 'work' | 'writing' | 'lab' | 'media';
+  pageHeading?: string;
+  sectionHeading?: string;
+  sectionDescription?: string;
+  schemaType?: string | string[];
+  mainEntityId?: string;
+  breadcrumbId?: string;
 }
 
-const { title, description, ogImage, active } = Astro.props;
+const {
+  title,
+  description,
+  ogImage,
+  active,
+  pageHeading,
+  sectionHeading,
+  sectionDescription,
+  schemaType,
+  mainEntityId,
+  breadcrumbId,
+} = Astro.props;
 ---
 
-<Page title={title} description={description} ogImage={ogImage} wide>
+<Page
+  title={title}
+  description={description}
+  ogImage={ogImage}
+  schemaType={schemaType}
+  mainEntityId={mainEntityId}
+  breadcrumbId={breadcrumbId}
+  wide
+>
   <slot name="head" slot="head" />
 
   <div class="profile-main">
-    <ProfileHeader />
+    <ProfileHeader showH1={!pageHeading} compact={active !== 'work'} />
     <TabBar active={active} />
+    {(pageHeading || sectionHeading) && (
+      <header class="feed-intro">
+        <p class="feed-intro-kicker mono">{active === 'work' ? 'Selected work' : active}</p>
+        {pageHeading ? <h1>{pageHeading}</h1> : <h2>{sectionHeading}</h2>}
+        {sectionDescription && <p>{sectionDescription}</p>}
+      </header>
+    )}
     <div class="feed"><slot /></div>
   </div>
 </Page>

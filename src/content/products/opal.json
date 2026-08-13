@@ -1,7 +1,30 @@
 {
   "name": "Opal",
+  "alternateNames": ["Opal Media Player"],
   "tagline": "Play everything — the evolved media player",
   "description": "One media player for everything — files, sites, servers, and feeds. Say a title, a file, a magnet, or a vibe, and Opal finds and plays it a moment later. AI-powered discovery built for speed in Zig, running on macOS, Linux, and Windows.",
+  "audience": "People who want one fast, native place to find and play media instead of a browser full of services, players, feeds, and tabs.",
+  "positioning": "The Next Decades of Entertainment Should Belong to Whoever Is Holding the Remote.",
+  "features": [
+    {
+      "title": "Ask for Media Naturally",
+      "description": "Start with a title, local file, magnet link, server, feed, or a mood. Opal turns the request into something playable."
+    },
+    {
+      "title": "Keep One Clean Surface",
+      "description": "Search, discovery, chat, browsing, and playback share one window instead of handing the journey across disconnected apps."
+    },
+    {
+      "title": "Stay Native and Extensible",
+      "description": "A Zig core keeps startup and runtime lean while source plugins let endpoints evolve without turning the player into a monolith."
+    }
+  ],
+  "proof": [
+    { "value": "1 input", "label": "titles, files, magnets, vibes" },
+    { "value": "3 OSes", "label": "macOS, Linux, Windows" },
+    { "value": "Zig", "label": "native core" }
+  ],
+  "updatedDate": "2026-08-13",
   "url": "https://github.com/debpalash/Opal",
   "website": "https://opal.palash.dev",
   "github": "https://github.com/debpalash/Opal",
@@ -18,6 +41,7 @@
   ],
   "order": 3,
   "logoUrl": "https://raw.githubusercontent.com/debpalash/Opal/main/assets/logo.svg",
+  "workImage": "/projects/opal-home.webp",
   "category": "MultimediaApplication",
   "os": "macOS, Linux, Windows",
   "keywords": [

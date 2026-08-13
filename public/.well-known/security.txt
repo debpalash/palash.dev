@@ -1,0 +1,4 @@
+Contact: mailto:hi@palash.dev
+Canonical: https://palash.dev/.well-known/security.txt
+Policy: https://github.com/debpalash/palash.dev/security/policy
+Expires: 2027-08-12T00:00:00.000Z

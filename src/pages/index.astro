@@ -31,6 +31,11 @@ const jsonLd = {
       description: SITE.description,
       sameAs: [SITE.github, SITE.x],
       knowsAbout: SITE.stack,
+      homeLocation: {
+        '@type': 'Place',
+        name: 'Agartala, Tripura, India',
+        address: { '@type': 'PostalAddress', addressLocality: 'Agartala', addressRegion: 'Tripura', addressCountry: 'IN' },
+      },
       worksFor: { '@id': orgId },
     },
     {
@@ -47,7 +52,12 @@ const jsonLd = {
       url: `${SITE.url}/`,
       name: 'palash.dev',
       alternateName: [SITE.author, SITE.alternateName],
+      inLanguage: 'en',
       publisher: { '@id': personId },
+      hasPart: [
+        { '@id': `${SITE.url}/blog/#blog` },
+        ...products.map((product) => ({ '@id': `${SITE.url}/${product.id}/#app` })),
+      ],
     },
     ...products.map((p) => {
       const repository = p.data.github ?? p.data.url;
@@ -56,7 +66,7 @@ const jsonLd = {
         '@type': 'SoftwareApplication',
         '@id': `${SITE.url}/${p.id}/#app`,
         name: p.data.name,
-        ...(p.data.keywords.length ? { alternateName: p.data.keywords.slice(0, 3) } : {}),
+        ...(p.data.alternateNames.length ? { alternateName: p.data.alternateNames } : {}),
         description: p.data.description,
         applicationCategory: p.data.category,
         operatingSystem: p.data.os,
@@ -66,23 +76,13 @@ const jsonLd = {
         ...(p.data.logoUrl ? { image: new URL(p.data.logoUrl, SITE.url).href } : {}),
         author: { '@id': personId },
         offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+        ...(p.data.features.length ? { featureList: p.data.features.map((feature) => feature.title) } : {}),
         ...(p.data.keywords.length ? { keywords: p.data.keywords.join(', ') } : {}),
+        ...(p.data.updatedDate ? { dateModified: p.data.updatedDate.toISOString() } : {}),
       };
     }),
   ],
 };
-
-// brand + product terms people search for
-const homeKeywords = [
-  SITE.author,
-  SITE.alternateName,
-  'Palash Debnath engineer',
-  `github.com/${SITE.handle}`,
-  ...products.flatMap((p) => [p.data.name, ...p.data.keywords.slice(0, 2)]),
-  SITE.company.name,
-]
-  .filter((v, i, a) => v && a.indexOf(v) === i)
-  .join(', ');
 
 /**
  * Links out in the wild point at desktop windows by hash (/#doc-hello-world,
@@ -99,10 +99,17 @@ const hashForward = [
 ].join('');
 ---
 
-<Profile title={SITE.title} description={SITE.description} active="work">
+<Profile
+  title={SITE.title}
+  description={SITE.description}
+  active="work"
+  sectionHeading="Systems with a Point of View"
+  sectionDescription="Open-source products built around a simple belief: powerful software should feel immediate, stay understandable, and belong to the person using it."
+  schemaType="ProfilePage"
+  mainEntityId={personId}
+>
   <Fragment slot="head">
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)}></script>
-    <meta name="keywords" content={homeKeywords} />
     <script is:inline set:html={hashForward} />
   </Fragment>
 

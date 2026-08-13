@@ -13,7 +13,6 @@
 @import '@fontsource/ibm-plex-mono/400.css';
 @import '@fontsource/ibm-plex-mono/500.css';
 @import '@fontsource-variable/space-grotesk';
-@import 'photoswipe/style.css';
 
 :root {
   --font-sans: 'Space Grotesk Variable', 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
@@ -94,12 +93,28 @@ body {
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   overflow-x: clip;
-  background-image: radial-gradient(circle at 85% 8%, rgba(117, 245, 150, 0.055), transparent 26rem);
+  background-image:
+    radial-gradient(circle at 85% 8%, rgba(117, 245, 150, 0.06), transparent 26rem),
+    radial-gradient(circle at 10% 32%, rgba(98, 216, 245, 0.025), transparent 24rem);
   transition: background-color 380ms ease, color 380ms ease;
 }
 
 html[data-mode='light'] body {
-  background-image: radial-gradient(circle at 85% 8%, rgba(8, 122, 71, 0.055), transparent 26rem);
+  background-image:
+    radial-gradient(circle at 85% 8%, rgba(8, 122, 71, 0.055), transparent 26rem),
+    radial-gradient(circle at 10% 32%, rgba(28, 111, 154, 0.025), transparent 24rem);
+}
+
+html[data-mode='light'] .status-live {
+  color: #166534;
+  background: #f0fdf4;
+  border-color: #bbf7d0;
+}
+
+html[data-mode='light'] .status-beta {
+  color: #92400e;
+  background: #fffbeb;
+  border-color: #fde68a;
 }
 
 ::view-transition-group(root) {
@@ -117,26 +132,9 @@ html[data-mode='light'] body {
   to { clip-path: inset(0); }
 }
 
-::view-transition-old(root) {
-  animation: route-out 140ms ease both;
-}
-
-::view-transition-new(root) {
-  z-index: 2;
-  animation: route-in 260ms cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
 html.mode-changing::view-transition-new(root) {
+  z-index: 2;
   animation: mode-reveal 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-@keyframes route-out {
-  to { opacity: 0; transform: translateY(-4px); }
-}
-
-@keyframes route-in {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -160,6 +158,13 @@ h4 {
   letter-spacing: -0.018em;
   font-weight: 640;
   color: var(--text);
+  text-wrap: balance;
+}
+
+h2[id],
+h3[id],
+h4[id] {
+  scroll-margin-top: 5rem;
 }
 
 p,
@@ -173,10 +178,29 @@ a {
   text-decoration: none;
 }
 
+a,
+button,
+summary {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: color-mix(in srgb, var(--accent) 18%, transparent);
+}
+
 a:hover {
   color: var(--accent-hover);
   text-decoration: underline;
   text-underline-offset: 3px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 img {
@@ -473,6 +497,9 @@ main.shell {
 }
 
 .footer-links a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
   color: var(--text-muted);
 }
 
@@ -649,6 +676,7 @@ main.shell {
   color: var(--text);
   font-size: 0.9rem;
   font-weight: 550;
+  min-height: 2.75rem;
 }
 
 .btn:hover {
@@ -693,6 +721,14 @@ main.shell {
   letter-spacing: -0.02em;
 }
 
+.notfound h1 {
+  margin-top: 1rem;
+}
+
+.notfound-copy {
+  margin-top: 0.75rem;
+}
+
 .notfound .btn-row {
   justify-content: center;
 }
@@ -703,7 +739,7 @@ main.shell {
   --feed-w: 600px;
   --rail-w: 320px;
   --col-gap: 2rem;
-  --banner-h: 260px;
+  --banner-h: 220px;
   --avatar: 128px;
   --tab-h: 3rem;
 }
@@ -741,6 +777,7 @@ main.shell-wide {
   height: 100%;
   object-fit: cover;
   object-position: center 35%;
+  transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1), opacity 180ms ease;
 }
 
 /* keeps the name legible whatever the crop happens to contain */
@@ -1083,6 +1120,10 @@ main.shell-wide {
 }
 
 .phead-counts a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.22rem;
+  min-height: 1.75rem;
   color: var(--text-muted);
 }
 
@@ -1459,48 +1500,8 @@ html[data-mode='light'] .mode-pull-moon { opacity: 0; transform: scale(0.7) rota
   backdrop-filter: blur(10px);
 }
 
-/* A quiet arrival and a living signal image give the feed character without
-   turning it into a motion demo. Every animation is opacity/transform only. */
-
-.phead {
-  animation: page-arrive 520ms cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-.phead-banner img {
-  animation: signal-breathe 14s ease-in-out 520ms infinite alternate;
-  transform-origin: 50% 50%;
-}
-
-.feed-list > .fitem {
-  animation: item-arrive 480ms cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-.feed-list > .fitem:nth-child(2) { animation-delay: 80ms; }
-.feed-list > .fitem:nth-child(3) { animation-delay: 140ms; }
-.feed-list > .fitem:nth-child(4) { animation-delay: 200ms; }
-
-@keyframes page-arrive {
-  from { opacity: 0; transform: translateY(12px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes item-arrive {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes signal-breathe {
-  from { opacity: 0.86; transform: scale(1); }
-  to { opacity: 1; transform: scale(1.018); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .phead,
-  .phead-banner img,
-  .feed-list > .fitem {
-    animation: none;
-  }
-}
+/* Feed items can arrive quietly; above-the-fold identity remains immediately
+   paintable so the visual flourish never delays LCP. */
 
 /* --- profile responsive --- */
 
@@ -1736,6 +1737,19 @@ html[data-mode='light'] .mode-pull-moon { opacity: 0; transform: scale(0.7) rota
   font-size: 0.66rem;
 }
 
+.fitem-badge-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.8rem;
+}
+
+.fitem-links a,
+.product-links a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.5rem;
+}
+
 .fitem-links a + a,
 .product-links a + a {
   padding-left: 0.65rem;
@@ -1877,4 +1891,722 @@ html[data-mode='light'] .mode-pull-moon { opacity: 0; transform: scale(0.7) rota
   font-weight: 500;
   letter-spacing: 0.04em;
   white-space: nowrap;
+}
+
+/* ------------------------------------------------------ refinement pass */
+
+/* Route-level orientation should be visible, not hidden from the reader. */
+.feed-intro {
+  padding: 2.15rem 0 1.35rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.feed-intro-kicker,
+.product-eyebrow {
+  margin-bottom: 0.45rem;
+  color: var(--text-faint);
+  font-size: 0.66rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.feed-intro h1,
+.feed-intro h2 {
+  max-width: 20ch;
+  font-size: clamp(1.45rem, 3vw, 2rem);
+  font-weight: 680;
+  letter-spacing: -0.035em;
+}
+
+.feed-intro > p:last-child:not(:first-child) {
+  max-width: 64ch;
+  margin-top: 0.65rem;
+  color: var(--text-muted);
+  font-size: 0.96rem;
+  line-height: 1.65;
+  text-wrap: pretty;
+}
+
+/* The cover is a project doorway, so its destination is visible. */
+.phead-banner {
+  isolation: isolate;
+  border-inline: 1px solid var(--border);
+}
+
+.phead-banner::after {
+  z-index: 1;
+  background:
+    linear-gradient(to top, color-mix(in srgb, var(--bg) 84%, transparent), transparent 58%),
+    linear-gradient(to right, rgba(0, 0, 0, 0.38), transparent 58%);
+}
+
+.phead-banner-caption {
+  position: absolute;
+  z-index: 2;
+  right: 1.25rem;
+  bottom: 1.1rem;
+  display: grid;
+  gap: 0.08rem;
+  color: #f6f5f2;
+  line-height: 1.3;
+  text-shadow: 0 2px 18px rgba(0, 0, 0, 0.82);
+  text-align: right;
+}
+
+.phead-banner-caption strong {
+  font-size: clamp(1rem, 2vw, 1.28rem);
+  letter-spacing: -0.02em;
+}
+
+.phead-banner-caption > span:last-child {
+  color: rgba(255, 255, 255, 0.76);
+  font-size: 0.78rem;
+}
+
+.phead-banner-kicker {
+  color: #f2abc2;
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.phead-banner:hover {
+  text-decoration: none;
+}
+
+.phead-banner:hover img {
+  opacity: 0.96;
+  transform: scale(1.012);
+}
+
+.phead-avatar {
+  box-shadow: 0 0 0 1px var(--border), 0 12px 30px rgba(0, 0, 0, 0.28);
+}
+
+.phead-role {
+  margin-top: 0.45rem;
+  color: var(--text-faint);
+  font-size: 0.66rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.phead-bio {
+  max-width: 68ch;
+  color: var(--text-muted);
+  font-size: 1.02rem;
+  line-height: 1.72;
+  text-wrap: pretty;
+}
+
+.phead-bio a {
+  color: var(--text);
+  text-decoration: underline;
+  text-decoration-color: var(--border-strong);
+  text-underline-offset: 0.2em;
+}
+
+.phead-bio a:hover {
+  color: var(--accent);
+  text-decoration-color: currentColor;
+}
+
+.phead-actions {
+  gap: 0.35rem 0.55rem;
+}
+
+.phead-rss,
+.phead-email,
+.pbtn,
+.phead-menu > summary {
+  min-height: 2.75rem;
+}
+
+.phead-rss,
+.pbtn {
+  padding-inline: 0.45rem;
+}
+
+.phead-email {
+  width: 2.75rem;
+  height: 2.75rem;
+}
+
+.phead-cover-links {
+  gap: 0.15rem;
+}
+
+.phead-menu {
+  position: relative;
+  z-index: 4;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+}
+
+.phead-menu > summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.25rem 0.45rem;
+  color: var(--text);
+  cursor: pointer;
+  list-style: none;
+}
+
+.phead-menu > summary::-webkit-details-marker {
+  display: none;
+}
+
+.phead-menu > summary:hover,
+.phead-menu[open] > summary {
+  color: var(--accent);
+}
+
+.phead-menu[open] .phead-expand-chevron {
+  transform: rotate(180deg);
+}
+
+.phead-menu-panel {
+  position: absolute;
+  top: calc(100% + 0.2rem);
+  right: 0;
+  display: grid;
+  min-width: 7.5rem;
+  padding: 0.3rem;
+  border: 1px solid var(--border-strong);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--bg-subtle) 94%, transparent);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(16px);
+}
+
+.phead-menu-panel a {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.55rem 0.6rem;
+  border-radius: 6px;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.phead-menu-panel a:hover {
+  color: var(--text);
+  background: var(--bg-inset);
+  text-decoration: none;
+}
+
+.mode-pull {
+  right: max(1rem, calc((100vw - 64rem) / 2 + 0.25rem));
+  padding-top: env(safe-area-inset-top);
+}
+
+.mode-pull-knob {
+  width: 2.75rem;
+  height: 2.75rem;
+}
+
+.mode-pull-cord {
+  height: 3.15rem;
+}
+
+.ptabs {
+  top: 0;
+  margin-top: 1.35rem;
+}
+
+.ptab {
+  min-height: 3.25rem;
+}
+
+.ptab.is-active {
+  border-bottom-color: var(--accent);
+}
+
+.feed-list {
+  padding-bottom: 0.8rem;
+}
+
+.fitem {
+  margin-block: 0;
+  padding-block: 1.35rem;
+}
+
+.fitem-main {
+  gap: 1rem;
+}
+
+.fitem-desc {
+  max-width: 64ch;
+  margin-top: 0.28rem;
+  line-height: 1.55;
+  text-wrap: pretty;
+}
+
+.fitem-writing .fitem-desc {
+  display: -webkit-box;
+  overflow: hidden;
+  margin-top: 0.45rem;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.fitem-media {
+  border-radius: 10px;
+}
+
+.fitem-media img {
+  transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1), opacity 180ms ease;
+}
+
+.fitem:hover .fitem-media img {
+  transform: scale(1.012);
+}
+
+.fitem-details {
+  margin-left: 3.5rem;
+}
+
+.mgrid {
+  gap: 0.75rem;
+  margin-top: 1.35rem;
+  padding-bottom: 1.5rem;
+}
+
+.mtile {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 250px;
+}
+
+.mtile-caption > span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ------------------------------------------------------ product stories */
+
+.back-link {
+  margin-bottom: 2rem;
+  font-size: 0.76rem;
+}
+
+.back-link a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+}
+
+.product-cta-row {
+  margin-top: -0.55rem;
+  margin-bottom: 2.5rem;
+}
+
+.product-proof {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 0 0 3rem;
+  border-block: 1px solid var(--border);
+}
+
+.product-proof > div {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 0.3rem;
+  min-width: 0;
+  padding: 1.1rem 1rem;
+}
+
+.product-proof > div + div {
+  border-left: 1px solid var(--border);
+}
+
+.product-proof dt {
+  color: var(--text-faint);
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.05em;
+  line-height: 1.45;
+  text-transform: uppercase;
+}
+
+.product-proof dd {
+  margin: 0;
+  color: var(--text);
+  font-size: clamp(1.05rem, 3vw, 1.35rem);
+  font-weight: 680;
+  letter-spacing: -0.025em;
+}
+
+.product-section {
+  padding: 3rem 0;
+  border-top: 1px solid var(--border);
+}
+
+.product-section > h2,
+.product-thesis h2,
+.product-final-cta h2,
+.section-head h2 {
+  max-width: 22ch;
+  font-size: clamp(1.45rem, 4vw, 2rem);
+  letter-spacing: -0.035em;
+}
+
+.product-thesis {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.product-thesis > p:not(.product-eyebrow):not(.product-audience) {
+  max-width: 62ch;
+  margin-top: 1.1rem;
+  color: var(--text-muted);
+  font-size: 1.06rem;
+  line-height: 1.78;
+  text-wrap: pretty;
+}
+
+.product-audience {
+  max-width: 58ch;
+  margin-top: 1.4rem;
+  padding: 0.8rem 0 0.8rem 1rem;
+  border-left: 2px solid var(--border-strong);
+  color: var(--text-muted);
+  line-height: 1.65;
+}
+
+.product-audience strong {
+  color: var(--text);
+}
+
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-top: 1.6rem;
+  border-block: 1px solid var(--border);
+}
+
+.feature-card {
+  min-width: 0;
+  padding: 1.35rem 1.05rem 1.5rem;
+}
+
+.feature-card + .feature-card {
+  border-left: 1px solid var(--border);
+}
+
+.feature-index {
+  color: var(--text-faint);
+  font-size: 0.62rem;
+}
+
+.feature-card h3 {
+  margin-top: 1.3rem;
+  font-size: 1rem;
+  letter-spacing: -0.018em;
+}
+
+.feature-card p {
+  margin-top: 0.65rem;
+  color: var(--text-muted);
+  font-size: 0.87rem;
+  line-height: 1.65;
+  text-wrap: pretty;
+}
+
+.product-gallery .section-head {
+  align-items: flex-end;
+}
+
+.related-list {
+  display: grid;
+  margin-top: 1.35rem;
+  border-top: 1px solid var(--border);
+}
+
+.related-list > a,
+.article-related > a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.05rem 0;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+}
+
+.related-list > a:hover,
+.article-related > a:hover {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.related-list a > span:first-child,
+.article-related a > span:first-child {
+  display: grid;
+  min-width: 0;
+}
+
+.related-list small,
+.article-related small {
+  margin-top: 0.25rem;
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+.product-final-cta {
+  margin-top: 1rem;
+  padding: 2rem;
+  border: 1px solid var(--border-strong);
+  border-radius: 16px;
+  background:
+    radial-gradient(circle at 90% 0, color-mix(in srgb, var(--accent) 10%, transparent), transparent 17rem),
+    var(--bg-subtle);
+}
+
+.product-final-cta > p:not(.product-eyebrow) {
+  max-width: 54ch;
+  margin: 0.8rem 0 1.25rem;
+  color: var(--text-muted);
+}
+
+/* ------------------------------------------------------- article journey */
+
+.article-meta a {
+  color: var(--text-muted);
+}
+
+.article-meta a:hover {
+  color: var(--text);
+}
+
+.article-related {
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+}
+
+.post-nav {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  margin-top: 2.5rem;
+}
+
+.post-nav a {
+  display: grid;
+  align-content: start;
+  min-height: 7.5rem;
+  padding: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg-subtle);
+  color: var(--text);
+}
+
+.post-nav a:last-child {
+  text-align: right;
+}
+
+.post-nav a:hover {
+  border-color: var(--border-strong);
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.post-nav small {
+  margin-bottom: 0.45rem;
+  color: var(--text-faint);
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.post-nav strong {
+  font-size: 0.9rem;
+  line-height: 1.45;
+  text-wrap: pretty;
+}
+
+.article-foot {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 2rem;
+  font-size: 0.74rem;
+}
+
+/* Secondary profile routes keep the identity but bring their own content into
+   the first viewport. */
+.phead-compact .phead-banner {
+  height: 10rem;
+}
+
+.phead-compact .phead-top {
+  margin-top: -2.75rem;
+}
+
+.phead-compact .phead-avatar {
+  width: 5.5rem;
+  height: 5.5rem;
+}
+
+.phead-compact .phead-actions {
+  margin-top: 2.9rem;
+}
+
+.phead-compact .phead-name {
+  margin-top: 0.4rem;
+  font-size: 1.35rem;
+}
+
+.phead-compact .phead-role,
+.phead-compact .phead-meta,
+.phead-compact .phead-counts {
+  display: none;
+}
+
+.phead-compact .phead-bio {
+  max-width: 72ch;
+  margin-top: 0.7rem;
+  font-size: 0.92rem;
+  line-height: 1.6;
+}
+
+.phead-compact + .ptabs {
+  margin-top: 1rem;
+}
+
+/* The compact route stays compact without sacrificing touch targets. */
+@media (max-width: 767px) {
+  .phead-banner-caption {
+    right: 1rem;
+    bottom: 0.8rem;
+  }
+
+  .phead-banner-caption > span:last-child {
+    display: none;
+  }
+
+  .phead-actions {
+    width: 100%;
+    gap: 0.15rem;
+  }
+
+  .phead-compact .phead-banner {
+    height: 7.5rem;
+  }
+
+  .phead-compact .phead-top {
+    margin-top: -2.25rem;
+  }
+
+  .phead-compact .phead-avatar {
+    width: 4.5rem;
+    height: 4.5rem;
+  }
+
+  .phead-compact .phead-actions {
+    margin-top: 0;
+  }
+
+  .phead-cover-links {
+    margin-left: -0.15rem;
+  }
+
+  .feed-intro {
+    padding-top: 1.6rem;
+  }
+
+  .feature-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .feature-card + .feature-card {
+    border-top: 1px solid var(--border);
+    border-left: 0;
+  }
+
+  .mgrid {
+    gap: 0.45rem;
+  }
+}
+
+@media (max-width: 520px) {
+  :root {
+    --gutter: 1.1rem;
+  }
+
+  main.shell {
+    padding-bottom: 3.5rem;
+  }
+
+  .phead-rss {
+    font-size: 0;
+  }
+
+  .phead-rss .phead-action-icon {
+    width: 1.05rem;
+    height: 1.05rem;
+  }
+
+  .pbtn-fun {
+    font-size: 0.7rem;
+  }
+
+  .phead-menu > summary {
+    padding-inline: 0.35rem;
+  }
+
+  .product-proof {
+    grid-template-columns: 1fr;
+  }
+
+  .product-proof > div {
+    flex-direction: row-reverse;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .product-proof > div + div {
+    border-top: 1px solid var(--border);
+    border-left: 0;
+  }
+
+  .product-final-cta {
+    padding: 1.35rem;
+  }
+
+  .post-nav {
+    grid-template-columns: 1fr;
+  }
+
+  .post-nav > span:empty {
+    display: none;
+  }
+
+  .post-nav a:last-child {
+    text-align: left;
+  }
+}
+
+@media (max-width: 400px) {
+  .phead-actions .pbtn-fun {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.75rem;
+    padding-inline: 0;
+    font-size: 0;
+  }
+
+  .phead-actions .pbtn-fun .phead-action-icon {
+    width: 1.05rem;
+    height: 1.05rem;
+  }
 }

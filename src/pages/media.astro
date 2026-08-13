@@ -12,24 +12,32 @@ const gallery = await getCollection('gallery');
 /** group the shots by product, in work-tab order */
 const shots = products.flatMap((p) => gallery.filter((g) => g.data.group === p.id));
 
-const mediaUrl = `${SITE.url}/media`;
+const mediaUrl = `${SITE.url}/media/`;
 
 const jsonLd = {
   '@context': 'https://schema.org',
   '@graph': [
     {
-      '@type': 'CollectionPage',
-      '@id': `${mediaUrl}#page`,
-      url: mediaUrl,
-      name: 'Media',
-      description: 'Screenshots from the tools and apps Palash Debnath builds.',
-      isPartOf: { '@id': `${SITE.url}/#website` },
-      about: { '@id': `${SITE.url}/#person` },
+      '@type': 'ItemList',
+      '@id': `${mediaUrl}#items`,
+      name: 'Product interface gallery by Palash Debnath',
+      numberOfItems: shots.length,
+      itemListElement: shots.map((shot, index) => ({
+        '@type': 'ListItem',
+        position: index + 1,
+        item: {
+          '@type': 'ImageObject',
+          name: shot.data.title,
+          caption: shot.data.caption,
+          contentUrl: shot.data.src,
+        },
+      })),
     },
     {
       '@type': 'BreadcrumbList',
+      '@id': `${mediaUrl}#breadcrumb`,
       itemListElement: [
-        { '@type': 'ListItem', position: 1, name: SITE.author, item: SITE.url },
+        { '@type': 'ListItem', position: 1, name: SITE.author, item: `${SITE.url}/` },
         { '@type': 'ListItem', position: 2, name: 'Media', item: mediaUrl },
       ],
     },
@@ -42,6 +50,11 @@ const jsonLd = {
   description="Screenshots from Opal, VoiceStudio.sh and memxt — the tools Palash Debnath builds."
   ogImage="/og/media.png"
   active="media"
+  pageHeading="Interfaces Should Make a Promise"
+  sectionDescription="A visual archive of the products—launchpads, studios, players, and the small decisions that make complex systems feel direct."
+  schemaType="CollectionPage"
+  mainEntityId={`${mediaUrl}#items`}
+  breadcrumbId={`${mediaUrl}#breadcrumb`}
 >
   <Fragment slot="head">
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)}></script>

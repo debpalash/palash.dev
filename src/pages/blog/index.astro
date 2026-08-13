@@ -7,7 +7,7 @@ import { SITE } from '../../site.config';
 const allPosts = (await getCollection('blog', ({ data }) => !data.draft))
   .sort((a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf());
 
-const blogUrl = `${SITE.url}/blog`;
+const blogUrl = `${SITE.url}/blog/`;
 const personId = `${SITE.url}/#person`;
 
 const jsonLd = {
@@ -25,7 +25,7 @@ const jsonLd = {
       publisher: { '@id': personId },
       blogPost: allPosts.map((post) => ({
         '@type': 'BlogPosting',
-        '@id': `${SITE.url}/blog/${post.id}#post`,
+        '@id': `${SITE.url}/blog/${post.id}/#post`,
         headline: post.data.title,
         description: post.data.description,
         url: `${SITE.url}/blog/${post.id}/`,
@@ -37,8 +37,9 @@ const jsonLd = {
     },
     {
       '@type': 'BreadcrumbList',
+      '@id': `${blogUrl}#breadcrumb`,
       itemListElement: [
-        { '@type': 'ListItem', position: 1, name: SITE.author, item: SITE.url },
+        { '@type': 'ListItem', position: 1, name: SITE.author, item: `${SITE.url}/` },
         { '@type': 'ListItem', position: 2, name: 'The Log', item: blogUrl },
       ],
     },
@@ -51,6 +52,11 @@ const jsonLd = {
   description="Notes on engineering, shipping, and building in public — by Palash Debnath. Updated often."
   ogImage="/og/blog.png"
   active="writing"
+  pageHeading="Field Notes from the Work"
+  sectionDescription="Engineering decisions, product bets, and lessons earned by shipping ambitious software from Agartala."
+  schemaType="CollectionPage"
+  mainEntityId={`${blogUrl}#blog`}
+  breadcrumbId={`${blogUrl}#breadcrumb`}
 >
   <Fragment slot="head">
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)}></script>

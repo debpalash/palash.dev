@@ -7,20 +7,30 @@ import { SITE } from '../site.config';
 export async function getStaticPaths() {
   const products = await getCollection('products');
   const gallery = await getCollection('gallery');
+  const posts = await getCollection('blog', ({ data }) => !data.draft);
   return products.map((product) => ({
     params: { slug: product.id },
     props: {
       product,
       screenshots: gallery.filter((g) => g.data.group === product.id),
+      relatedPosts: posts
+        .filter((post) => post.data.tags.includes(product.id))
+        .sort((a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf()),
     },
   }));
 }
 
-const { product, screenshots } = Astro.props;
+const { product, screenshots, relatedPosts } = Astro.props;
 const {
   name,
+  alternateNames,
   tagline,
   description,
+  audience,
+  positioning,
+  features,
+  proof,
+  updatedDate,
   url,
   website,
   github,
@@ -45,6 +55,13 @@ const formatStars = (count: number) =>
 const pageUrl = `${SITE.url}/${product.id}/`;
 const personId = `${SITE.url}/#person`;
 const readmeUrl = github ? `${github.replace(/\/$/, '')}#readme` : undefined;
+const downloadUrl = github ? `${github.replace(/\/$/, '')}/releases` : url;
+const breadcrumbId = `${pageUrl}#breadcrumb`;
+const licenseUrl = license ? {
+  'AGPL-3.0': 'https://spdx.org/licenses/AGPL-3.0-only.html',
+  'GPL-3.0': 'https://spdx.org/licenses/GPL-3.0-only.html',
+  MIT: 'https://spdx.org/licenses/MIT.html',
+}[license] ?? license : undefined;
 const seoTitle = {
   omnivoice: 'VoiceStudio.sh — Open-source AI voice studio',
   memxt: 'memXT — Local-first memory for AI agents',
@@ -66,15 +83,26 @@ const jsonLd = {
       '@type': 'SoftwareApplication',
       '@id': `${pageUrl}#app`,
       name,
-      ...(keywords.length ? { alternateName: keywords.slice(0, 3) } : {}),
+      ...(alternateNames.length ? { alternateName: alternateNames } : {}),
       description,
       applicationCategory: category,
       operatingSystem: os,
       url: pageUrl,
+      mainEntityOfPage: { '@id': `${pageUrl}#webpage` },
       ...(logoUrl ? { image: new URL(logoUrl, SITE.url).href } : {}),
-      ...((github ?? url) ? { codeRepository: github ?? url, downloadUrl: github ?? url } : {}),
+      ...((github ?? url) ? { codeRepository: github ?? url } : {}),
+      ...(downloadUrl ? { downloadUrl } : {}),
       ...(readmeUrl ? { subjectOf: { '@type': 'CreativeWork', name: `${name} README`, url: readmeUrl } } : {}),
       sameAs: [website, github].filter(Boolean),
+      ...(features.length ? { featureList: features.map((feature) => feature.title) } : {}),
+      ...(screenshots.length ? {
+        screenshot: screenshots.slice(0, 6).map((shot) => ({
+          '@type': 'ImageObject',
+          name: shot.data.title,
+          caption: shot.data.caption,
+          contentUrl: shot.data.src,
+        })),
+      } : {}),
       author: { '@id': personId, '@type': 'Person', name: SITE.author, url: SITE.url },
       publisher: { '@type': 'Organization', name: SITE.company.name, url: SITE.company.url },
       offers: {
@@ -86,11 +114,15 @@ const jsonLd = {
           : 'https://schema.org/PreOrder',
       },
       ...(keywords.length ? { keywords: keywords.join(', ') } : {}),
+      isAccessibleForFree: pricing === 'free',
+      ...(licenseUrl ? { license: licenseUrl } : {}),
+      ...(updatedDate ? { dateModified: updatedDate.toISOString() } : {}),
     },
     {
       '@type': 'BreadcrumbList',
+      '@id': breadcrumbId,
       itemListElement: [
-        { '@type': 'ListItem', position: 1, name: SITE.author, item: SITE.url },
+        { '@type': 'ListItem', position: 1, name: SITE.author, item: `${SITE.url}/` },
         { '@type': 'ListItem', position: 2, name, item: pageUrl },
       ],
     },
@@ -102,15 +134,16 @@ const jsonLd = {
   title={seoTitle}
   description={seoDescription}
   ogImage={`/og/${product.id}.png`}
+  mainEntityId={`${pageUrl}#app`}
+  breadcrumbId={breadcrumbId}
   narrow
 >
   <Fragment slot="head">
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)}></script>
-    {keywords.length > 0 && <meta name="keywords" content={keywords.join(', ')} />}
   </Fragment>
 
-  <p style="margin-bottom:2rem;font-size:0.875rem;">
-    <a href="/#work" class="muted">← work</a>
+  <p class="back-link mono">
+    <a href="/" class="muted">← Selected work</a>
   </p>
 
   <article>
@@ -135,7 +168,7 @@ const jsonLd = {
           {pricing && <span class="tag">{pricing}</span>}
           {license && <span class="tag">{license}</span>}
           {stars !== undefined && <span class="tag">★ {formatStars(stars)}</span>}
-          {stack.map((s) => <span class="tag">{s}</span>)}
+          {stack.slice(0, 4).map((s) => <span class="tag">{s}</span>)}
         </div>
         <nav class="product-links" aria-label={`${name} links`}>
           {website && <a href={website} target="_blank" rel="noopener">website ↗</a>}
@@ -146,27 +179,89 @@ const jsonLd = {
       </div>
     </header>
 
-    <div class="prose">
-      <p>{description}</p>
-    </div>
-
-    <div class="btn-row">
+    <div class="btn-row product-cta-row">
       {(github ?? url) && (
         <a class="btn btn-primary" href={github ?? url} target="_blank" rel="noopener">
-          View source ↗
+          Explore the Source ↗
         </a>
       )}
       <a class="btn" href={`/os#prg-${product.id}`}>Run in {SITE.osName}</a>
     </div>
 
+    {proof.length > 0 && (
+      <dl class="product-proof" aria-label={`${name} at a glance`}>
+        {proof.map((item) => (
+          <div>
+            <dt>{item.label}</dt>
+            <dd>{item.value}</dd>
+          </div>
+        ))}
+      </dl>
+    )}
+
+    <section class="product-section product-thesis">
+      <p class="product-eyebrow mono">The thesis</p>
+      {positioning && <h2>{positioning}</h2>}
+      <p>{description}</p>
+      {audience && <p class="product-audience"><strong>Built for:</strong> {audience}</p>}
+    </section>
+
+    {features.length > 0 && (
+      <section class="product-section">
+        <p class="product-eyebrow mono">What it changes</p>
+        <h2>Complex Machinery, Direct Experience</h2>
+        <div class="feature-grid">
+          {features.map((feature, index) => (
+            <article class="feature-card">
+              <span class="feature-index mono" aria-hidden="true">0{index + 1}</span>
+              <h3>{feature.title}</h3>
+              <p>{feature.description}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+    )}
+
     {screenshots.length > 0 && (
-      <section class="section" style="margin-top:2.5rem;">
+      <section class="product-section product-gallery">
         <div class="section-head">
-          <h2 class="section-title">Screenshots</h2>
-          <span class="section-more muted">{screenshots.length}</span>
+          <div>
+            <p class="product-eyebrow mono">Inside the product</p>
+            <h2>Screens, Not Claims</h2>
+          </div>
+          <span class="section-more mono muted">{screenshots.length} views</span>
         </div>
         <GalleryStrip items={screenshots} />
       </section>
     )}
+
+    {relatedPosts.length > 0 && (
+      <section class="product-section related-notes">
+        <p class="product-eyebrow mono">Field notes</p>
+        <h2>The Thinking Behind {name}</h2>
+        <div class="related-list">
+          {relatedPosts.map((post) => (
+            <a href={`/blog/${post.id}`}>
+              <span>
+                <strong>{post.data.title}</strong>
+                <small>{post.data.description}</small>
+              </span>
+              <span aria-hidden="true">↗</span>
+            </a>
+          ))}
+        </div>
+      </section>
+    )}
+
+    <aside class="product-final-cta">
+      <p class="product-eyebrow mono">Open by design</p>
+      <h2>Inspect the Work. Run It. Change It.</h2>
+      <p>{name} is built in public, with the source and engineering decisions open to scrutiny.</p>
+      {(github ?? url) && (
+        <a class="btn btn-primary" href={github ?? url} target="_blank" rel="noopener">
+          Open {name} on GitHub ↗
+        </a>
+      )}
+    </aside>
   </article>
 </Page>

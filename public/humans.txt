@@ -1,0 +1,25 @@
+/* TEAM */
+Name: Palash Debnath
+Role: Software engineer and product builder
+Location: India
+Site: https://palash.dev
+Contact: mailto:hi@palash.dev
+GitHub: https://github.com/debpalash
+X: https://x.com/idebpalash
+
+/* PROJECTS */
+VoiceStudio.sh: https://palash.dev/omnivoice/
+VoiceStudio.sh source: https://github.com/debpalash/VoiceStudio
+Opal: https://palash.dev/opal/
+Opal source: https://github.com/debpalash/Opal
+memXT: https://palash.dev/memxt/
+memXT source: https://github.com/Yupcha/memXT
+
+/* SITE */
+Built with: Astro, TypeScript, CSS, Cloudflare Workers
+Source: https://github.com/debpalash/palash.dev
+RSS: https://palash.dev/rss.xml
+LLM context: https://palash.dev/llms.txt
+/* THANKS */
+Fonts: Space Grotesk and IBM Plex Mono via Fontsource
+Photoswipe: https://photoswipe.com/

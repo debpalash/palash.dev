@@ -1,4 +1,17 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://palash.dev/sitemap-index.xml
+# There are no private site sections; keep CSS, fonts, images, and JS crawlable
+# so search engines can render the experience accurately.
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: GPTBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+Sitemap: https://palash.dev/sitemap.xml
+Host: palash.dev

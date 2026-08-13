@@ -9,8 +9,10 @@ interface Props {
 
 const { products, gallery } = Astro.props;
 
-/** first screenshot of each product, attached to its row like a media post */
-const shotFor = (id: string) => gallery.find((g) => g.data.group === id);
+/** Prefer a still for feed previews; animated demos stay in the dedicated gallery. */
+const shotFor = (id: string) => gallery.find(
+  (item) => item.data.group === id && !/\.gif(?:$|\?)/i.test(item.data.src),
+);
 ---
 
 <div class="feed-list">
@@ -20,7 +22,7 @@ const shotFor = (id: string) => gallery.find((g) => g.data.group === id);
       <FeedItem
         href={`/${p.id}`}
         title={p.data.name}
-        meta={`@${p.id}`}
+        meta={`/${p.id}`}
         icon={p.data.icon}
         logoUrl={p.data.logoUrl}
         image={p.data.workImage ?? shot?.data.src}
