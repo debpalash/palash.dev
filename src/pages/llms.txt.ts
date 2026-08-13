@@ -67,6 +67,7 @@ export const GET: APIRoute = async () => {
 
   lines.push('## About', '');
   lines.push('Engineer, product builder, and systems thinker building VoiceStudio.sh, Opal, and memXT in the open.');
+  lines.push('Also known as: debpalash (GitHub), idebpalash (X). Domain: palash.dev.');
   lines.push('Stack: TypeScript, Rust, Zig, Python, CUDA, Astro, Tailwind v4, Cloudflare Workers, Tauri');
   lines.push('Contact: mailto:hi@palash.dev');
   lines.push('GitHub: https://github.com/debpalash');

@@ -23,7 +23,7 @@ const jsonLd = {
       '@type': 'Person',
       '@id': personId,
       name: SITE.author,
-      alternateName: [SITE.alternateName, 'Palash'],
+      alternateName: [SITE.alternateName, SITE.xHandle, 'Palash', 'palash.dev'],
       url: SITE.url,
       mainEntityOfPage: { '@id': `${SITE.url}/#webpage` },
       image: new URL(SITE.avatar, SITE.url).href,
@@ -51,7 +51,7 @@ const jsonLd = {
       '@id': `${SITE.url}/#website`,
       url: `${SITE.url}/`,
       name: 'palash.dev',
-      alternateName: [SITE.author, SITE.alternateName],
+      alternateName: [SITE.author, SITE.alternateName, SITE.xHandle],
       inLanguage: 'en',
       publisher: { '@id': personId },
       hasPart: [

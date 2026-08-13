@@ -1,5 +1,6 @@
 /* TEAM */
 Name: Palash Debnath
+Aka: debpalash (GitHub), idebpalash (X)
 Role: Software engineer and product builder
 Location: India
 Site: https://palash.dev

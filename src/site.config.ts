@@ -10,13 +10,15 @@
 export const SITE = {
   name: 'palash.dev',
   url: 'https://palash.dev',
-  title: 'Palash Debnath — Software Engineer & Product Builder',
+  title: 'Palash Debnath (debpalash) — Software Engineer & Product Builder',
   description:
-    'Palash Debnath builds VoiceStudio.sh, an open-source ElevenLabs alternative, plus Opal and memXT — local-first tools for AI audio, media, and developer memory.',
+    'Palash Debnath (debpalash on GitHub, idebpalash on X) builds VoiceStudio.sh, an open-source ElevenLabs alternative, plus Opal and memXT — local-first tools for AI audio, media, and developer memory.',
   author: 'Palash Debnath',
   /** username / alternate name people also search for */
   handle: 'debpalash',
   alternateName: 'debpalash',
+  /** X / Twitter handle — kept separate because it differs from the GitHub one */
+  xHandle: 'idebpalash',
   /** image used for the Person entity in structured data */
   avatar: '/avatar-original.png',
 

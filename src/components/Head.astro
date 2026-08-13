@@ -71,6 +71,7 @@ const ogImageUrl = new URL(ogImage, Astro.site);
 />
 <link rel="canonical" href={canonicalUrl} />
 <link rel="me" href={SITE.x} />
+<link rel="me" href={SITE.github} />
 <link rel="author" href={`${SITE.url}/#person`} />
 <meta name="author" content={SITE.author} />
 <meta http-equiv="content-language" content="en" />
@@ -99,8 +100,8 @@ const ogImageUrl = new URL(ogImage, Astro.site);
 <meta name="twitter:description" content={description} />
 <meta name="twitter:image" content={ogImageUrl} />
 <meta name="twitter:image:alt" content={title} />
-<meta name="twitter:creator" content="@idebpalash" />
-<meta name="twitter:site" content="@idebpalash" />
+<meta name="twitter:creator" content={`@${SITE.xHandle}`} />
+<meta name="twitter:site" content={`@${SITE.xHandle}`} />
 
 <script type="application/ld+json" set:html={JSON.stringify({
   '@context': 'https://schema.org',
