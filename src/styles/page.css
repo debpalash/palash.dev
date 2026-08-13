@@ -2075,10 +2075,20 @@ html[data-mode='light'] .phead-banner-kicker {
   gap: 0.35rem 0.55rem;
 }
 
+/* Every action shares one box model — same height, flex-centered content,
+   same type size — so the row reads as a single even baseline. */
 .phead-rss,
-.phead-email,
 .pbtn,
 .phead-menu > summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  min-height: 2.75rem;
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+
+.phead-email {
   min-height: 2.75rem;
 }
 
