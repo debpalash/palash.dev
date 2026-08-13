@@ -626,16 +626,24 @@ function initThemes() {
   const menu = $('theme-menu');
   btn?.addEventListener('click', (e) => {
     e.stopPropagation();
-    if (menu) menu.hidden = !menu.hidden;
+    if (menu) {
+      menu.hidden = !menu.hidden;
+      btn.setAttribute('aria-expanded', String(!menu.hidden));
+    }
   });
   document.addEventListener('click', (e) => {
     const t = e.target as HTMLElement;
     const pick = t.closest<HTMLElement>('[data-theme-set]');
     if (pick) {
       applyTheme(pick.dataset.themeSet!, true);
+      if (menu) menu.hidden = true;
+      btn?.setAttribute('aria-expanded', 'false');
       return;
     }
-    if (menu && !menu.hidden && !t.closest('#theme-corner')) menu.hidden = true;
+    if (menu && !menu.hidden && !t.closest('#theme-corner')) {
+      menu.hidden = true;
+      btn?.setAttribute('aria-expanded', 'false');
+    }
   });
 
   $('tray-theme')?.addEventListener('click', () => {
@@ -745,6 +753,7 @@ export function initWM() {
       e.preventDefault();
       openWindow(opener.dataset.open!);
       $('start-menu')?.setAttribute('hidden', '');
+      $('start-btn')?.setAttribute('aria-expanded', 'false');
       hideCtxMenu();
       return;
     }
@@ -763,6 +772,8 @@ export function initWM() {
         .find((m) => m && !m.hidden);
       if (openMenu) {
         openMenu.hidden = true;
+        if (openMenu.id === 'theme-menu') $('theme-btn')?.setAttribute('aria-expanded', 'false');
+        if (openMenu.id === 'start-menu') $('start-btn')?.setAttribute('aria-expanded', 'false');
       } else if (focusedId) {
         closeWin(focusedId);
       }
@@ -773,11 +784,15 @@ export function initWM() {
   const menu = $('start-menu');
   startBtn?.addEventListener('click', (e) => {
     e.stopPropagation();
-    if (menu) menu.hidden = !menu.hidden;
+    if (menu) {
+      menu.hidden = !menu.hidden;
+      startBtn.setAttribute('aria-expanded', String(!menu.hidden));
+    }
   });
   document.addEventListener('click', (e) => {
     if (menu && !menu.hidden && !(e.target as HTMLElement).closest('#start-menu, #start-btn')) {
       menu.hidden = true;
+      startBtn?.setAttribute('aria-expanded', 'false');
     }
   });
 

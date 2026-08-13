@@ -21,13 +21,42 @@ const { autopen = 'about' } = Astro.props;
 
 <div id="boot" data-lines={JSON.stringify(SITE.bootLines)} aria-hidden="true"></div>
 
-<main id="desktop" data-autopen={autopen} data-bg={SITE.background.mode}>
+<main id="desktop" data-autopen={autopen} data-bg={SITE.background.mode} tabindex="-1">
+  <div class="desktop-art" aria-hidden="true">
+    <svg class="art-orbit" viewBox="0 0 760 760" role="presentation">
+      <circle class="orbit-line orbit-outer" cx="380" cy="380" r="310" />
+      <circle class="orbit-line orbit-mid" cx="380" cy="380" r="226" />
+      <circle class="orbit-line orbit-inner" cx="380" cy="380" r="116" />
+      <path class="orbit-arc" d="M91 494A310 310 0 0 1 553 103" />
+      <path class="orbit-arc orbit-arc-two" d="M264 702A344 344 0 0 0 721 392" />
+      <path class="orbit-axis" d="M20 380h720M380 20v720" />
+      <path class="orbit-tick" d="M380 54v32M380 674v32M54 380h32M674 380h32" />
+      <circle class="orbit-node" cx="553" cy="103" r="7" />
+      <circle class="orbit-node orbit-node-alt" cx="91" cy="494" r="4" />
+    </svg>
+
+    <div class="art-wordmark">
+      <span>PALASH / OPERATING SYSTEM 07</span>
+      <strong>Make the<br />Machine<br /><i>Feel Human.</i></strong>
+    </div>
+
+    <p class="art-coordinate">23°49′53″ N<br />91°17′12″ E</p>
+
+    <div class="art-principles">
+      <span>01 · Code as Material</span>
+      <span>02 · Privacy as Posture</span>
+      <span>03 · Shipping as Practice</span>
+    </div>
+
+    <p class="art-transmission"><b></b> Live Transmission / Agartala / India</p>
+  </div>
+
   <div id="icons">
     <slot name="icons" />
   </div>
 
   <div id="theme-corner">
-    <button id="theme-btn" class="taskbtn" aria-haspopup="menu">◐ phosphor</button>
+    <button id="theme-btn" class="taskbtn" aria-haspopup="menu" aria-expanded="false" aria-controls="theme-menu">◐ phosphor</button>
     <nav id="theme-menu" class="os-menu" hidden aria-label="Themes">
       <div class="menu-head">genre-defying themes</div>
       <button data-theme-set="shaktimaan"><span class="sw" style="--a:#ffd24a;--b:#190407"></span>shaktimaan <span class="dim">// andhera kaayam rahe</span></button>
@@ -50,7 +79,7 @@ const { autopen = 'about' } = Astro.props;
 </main>
 
 <footer id="taskbar">
-  <button class="taskbtn" id="start-btn">⏻ {SITE.name}</button>
+  <button class="taskbtn" id="start-btn" aria-haspopup="menu" aria-expanded="false" aria-controls="start-menu">⏻ {SITE.name}</button>
   <nav id="start-menu" class="os-menu" hidden aria-label="Start menu">
     <div class="menu-head">{SITE.osName} — {SITE.author}</div>
     <slot name="menu" />

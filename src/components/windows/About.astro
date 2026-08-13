@@ -6,157 +6,441 @@ interface Props {
 }
 
 const { counts } = Astro.props;
-const packages = counts
-  ? `${counts.programs} programs · ${counts.docs} docs · ${counts.captures} captures · ${counts.experiments} experiments`
-  : null;
+const stats = [
+  { value: counts?.programs ?? 0, label: 'Programs' },
+  { value: counts?.docs ?? 0, label: 'Field Notes' },
+  { value: counts?.captures ?? 0, label: 'Captures' },
+  { value: counts?.experiments ?? 0, label: 'Experiments' },
+];
 ---
 
-<div class="about">
-  <p class="dim mb-2">$ neofetch --about</p>
-
-  <div class="nf">
-    <img
-      src="/logo.svg"
-      alt={`${SITE.author} logo`}
-      width="150"
-      height="150"
-      class="nf-logo"
-      loading="eager"
-    />
-    <div class="nf-info">
-      <p class="nf-title">{SITE.email}</p>
-      <p class="dim">─────────────────────</p>
-      <table class="nf-table" divide-="none">
-        <tbody>
-          <tr><td class="dim">Name</td><td><strong>{SITE.author}</strong></td></tr>
-          <tr><td class="dim">Role</td><td>Software Engineer · Product Builder</td></tr>
-          <tr><td class="dim">OS</td><td>{SITE.osName} v7.0 (CRT edition)</td></tr>
-          <tr><td class="dim">Host</td><td><a href={SITE.url}>palash.dev</a></td></tr>
-          <tr><td class="dim">Company</td><td><button class="nf-link" data-open="company">{SITE.company.name} ↗</button></td></tr>
-          <tr><td class="dim">GitHub</td><td><a href={SITE.github} target="_blank" rel="noopener">github.com/{SITE.handle}</a></td></tr>
-          {packages && <tr><td class="dim">Packages</td><td>{packages}</td></tr>}
-          <tr><td class="dim">Motto</td><td>things that ship.</td></tr>
-        </tbody>
-      </table>
-      <p class="nf-palette" aria-hidden="true">
-        <span style="background:var(--foreground0)"></span>
-        <span style="background:var(--foreground1)"></span>
-        <span style="background:var(--foreground2)"></span>
-        <span style="background:var(--amber)"></span>
-        <span style="background:var(--cyan)"></span>
-        <span style="background:var(--alert)"></span>
-        <span style="background:var(--background3)"></span>
-      </p>
+<article class="about-dossier">
+  <header class="about-hero">
+    <div class="about-identity" aria-hidden="true">
+      <p class="about-index">PERSON / 001</p>
+      <div class="about-sigil">
+        <svg viewBox="0 0 220 220" role="presentation">
+          <circle class="sigil-orbit orbit-a" cx="110" cy="110" r="98" />
+          <circle class="sigil-orbit orbit-b" cx="110" cy="110" r="76" />
+          <path class="sigil-axis" d="M10 110h200M110 10v200" />
+          <path class="sigil-arc" d="M31 129A82 82 0 0 1 181 59" />
+          <circle class="sigil-node" cx="181" cy="59" r="4" />
+        </svg>
+        <img
+          src="/logo.svg"
+          alt=""
+          width="142"
+          height="142"
+          loading="eager"
+        />
+      </div>
+      <p class="about-coordinates">23.8315° N · 91.2868° E</p>
     </div>
-  </div>
 
-  <p class="mt-4"><span class="dim">$</span> cat stack.txt</p>
-  <p>
-    {SITE.stack.map((s, i) => (
-      <Fragment>{i > 0 && <span class="dim"> · </span>}<span class="cyan">{s}</span></Fragment>
+    <div class="about-copy">
+      <p class="about-kicker">
+        <span class="live-pulse" aria-hidden="true"></span>
+        Live Human Signal · Agartala, India
+      </p>
+      <h1>Systems With a <em>Point of View.</em></h1>
+      <p class="about-lede">
+        {SITE.author} is a software engineer and product builder making
+        local-first tools for voice, media, and memory—where low-level craft
+        meets an interface you can feel.
+      </p>
+      <div class="about-actions" aria-label="Explore Palash's work">
+        <button data-open="programs">Run the Programs</button>
+        <a href="/blog">Read the Field Notes</a>
+        <button class="action-quiet" data-open="contact">Open a Channel</button>
+      </div>
+    </div>
+  </header>
+
+  <dl class="about-stats" aria-label="Portfolio archive counts">
+    {stats.map(({ value, label }, index) => (
+      <div>
+        <dt>{label}</dt>
+        <dd><span aria-hidden="true">0{index + 1} / </span>{String(value).padStart(2, '0')}</dd>
+      </div>
     ))}
-  </p>
+  </dl>
 
-  <p class="mt-4"><span class="dim">$</span> ls ~/</p>
-  <div class="ls-row">
-    <button data-open="programs">programs/</button>
-    <button data-open="docs">articles/</button>
-    <button data-open="gallery">gallery/</button>
-    <button data-open="company">company/</button>
-    <button data-open="experiments">experiments/</button>
-    <button data-open="contact">contact.sh</button>
-  </div>
-
-  <div class="mini-term"></div>
-</div>
+  <section class="about-console" aria-labelledby="stack-heading">
+    <div class="console-command">
+      <p id="stack-heading"><span aria-hidden="true">$</span> inspect craft.stack</p>
+      <div class="stack-reel">
+        {SITE.stack.map((item, index) => (
+          <Fragment>
+            <span>{item}</span>{index < SITE.stack.length - 1 && <i aria-hidden="true">✦</i>}
+          </Fragment>
+        ))}
+      </div>
+    </div>
+    <blockquote>
+      <p>“Tools should respect the machine, reward curiosity, and carry the fingerprints of the person who made them.”</p>
+      <footer>— operating principle / 07</footer>
+    </blockquote>
+  </section>
+</article>
 
 <style>
-  .nf {
+  .about-dossier {
+    min-height: 100%;
+    display: grid;
+    align-content: start;
+    gap: 1.15rem;
+  }
+
+  .about-hero {
+    display: grid;
+    grid-template-columns: minmax(13rem, 0.72fr) minmax(18rem, 1.55fr);
+    gap: clamp(1.25rem, 4cqw, 3rem);
+    align-items: center;
+    padding: 0.35rem 0 0.25rem;
+  }
+
+  .about-identity {
+    min-width: 0;
+  }
+
+  .about-index,
+  .about-coordinates {
+    margin: 0;
+    color: var(--foreground2);
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+
+  .about-index::after {
+    content: '';
+    display: inline-block;
+    width: min(7rem, 42%);
+    height: 1px;
+    margin-left: 1ch;
+    background: var(--foreground2);
+    vertical-align: middle;
+  }
+
+  .about-coordinates {
+    text-align: right;
+  }
+
+  .about-sigil {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: min(100%, 13.75rem);
+    aspect-ratio: 1;
+    margin: -0.1rem auto -0.3rem;
+  }
+
+  .about-sigil svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+
+  .about-sigil img {
+    position: relative;
+    z-index: 1;
+    width: 64%;
+    height: 64%;
+    object-fit: contain;
+    filter: drop-shadow(0 0 14px color-mix(in srgb, var(--foreground0) 28%, transparent));
+  }
+
+  .sigil-orbit,
+  .sigil-axis,
+  .sigil-arc {
+    fill: none;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .sigil-orbit {
+    stroke: var(--foreground2);
+    stroke-width: 1;
+    stroke-dasharray: 2 7;
+  }
+
+  .orbit-b {
+    stroke-dasharray: 18 8 2 8;
+    opacity: 0.55;
+  }
+
+  .sigil-axis {
+    stroke: var(--foreground2);
+    stroke-width: 0.7;
+    opacity: 0.42;
+  }
+
+  .sigil-arc {
+    stroke: var(--amber);
+    stroke-width: 2;
+    stroke-dasharray: 12 5;
+  }
+
+  .sigil-node {
+    fill: var(--amber);
+    filter: drop-shadow(0 0 5px var(--amber));
+  }
+
+  .about-copy {
+    min-width: 0;
+  }
+
+  .about-kicker {
     display: flex;
-    gap: 1.5rem;
-    align-items: flex-start;
-    flex-wrap: wrap;
+    align-items: center;
+    gap: 1ch;
+    margin: 0 0 0.75rem;
+    color: var(--foreground1);
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
   }
-  .nf-logo {
-    flex-shrink: 0;
+
+  .live-pulse {
+    width: 0.55rem;
+    height: 0.55rem;
+    flex: 0 0 auto;
+    border-radius: 50%;
+    background: var(--foreground0);
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--foreground0) 55%, transparent), var(--glow);
+    animation: dossier-pulse 2.4s ease-out infinite;
   }
-  .nf-info {
-    flex: 1;
-    min-width: 0; /* allow shrinking inside the flex row */
-  }
-  @container win (max-width: 480px) {
-    .nf {
-      flex-direction: column;
-      gap: 1rem;
-    }
-  }
-  .nf-title {
+
+  .about-copy h1 {
+    max-width: 15ch;
+    margin: 0;
     color: var(--foreground0);
+    font-family: var(--font-family);
+    font-size: 3.35rem;
+    font-size: clamp(2rem, 4.2vw, 3.45rem);
     font-weight: 700;
+    line-height: 0.94;
+    letter-spacing: -0.065em;
+    text-wrap: balance;
     text-shadow: var(--glow);
   }
-  .nf-table td {
-    padding: 0 2ch 0.1rem 0;
-    vertical-align: top;
-    word-break: break-word;
-  }
-  .nf-table td:first-child {
-    white-space: nowrap;
-    word-break: normal;
-  }
-  .nf-table td:last-child {
-    padding-right: 0;
-  }
-  .nf-link {
-    background: none;
-    border: none;
-    padding: 0;
-    height: auto;
-    min-height: 0;
+
+  .about-copy h1 em {
+    display: block;
+    margin-top: 0.14em;
     color: var(--amber);
-    font: inherit;
-    text-decoration: underline;
-    text-underline-offset: 3px;
-    cursor: pointer;
+    font-style: normal;
+    font-weight: 400;
   }
-  .nf-link:hover {
-    color: var(--foreground0);
-    text-shadow: var(--glow);
+
+  .about-lede {
+    max-width: 61ch;
+    margin: 1rem 0 0;
+    color: var(--foreground1);
+    font-size: 0.88rem;
+    line-height: 1.65;
+    text-wrap: pretty;
   }
-  .nf-palette {
-    display: flex;
-    gap: 2px;
-    margin-top: 0.6rem;
-  }
-  .nf-palette span {
-    width: 2ch;
-    height: 0.9rem;
-    display: inline-block;
-  }
-  .ls-row {
+
+  .about-actions {
     display: flex;
     flex-wrap: wrap;
-    align-items: baseline;
-    gap: 0.25rem 3ch;
-    margin-top: 0.25rem;
+    gap: 0.45rem;
+    margin-top: 1.1rem;
   }
-  .ls-row button {
-    display: inline-block;
-    background: none;
-    border: none;
-    padding: 0 0.5ch;
-    height: auto;
-    min-height: 0;
-    line-height: inherit;
-    color: var(--foreground0);
-    font-family: inherit;
-    font-size: inherit;
-    font-weight: 700;
-    cursor: pointer;
-  }
-  .ls-row button:hover,
-  .ls-row button:focus-visible {
+
+  .about-actions :is(button, a) {
+    min-height: 2.35rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.35rem 1.15ch;
+    border: 1px solid var(--foreground0);
     background: var(--foreground0);
     color: var(--background0);
+    font: inherit;
+    font-size: 0.74rem;
+    font-weight: 700;
+    text-decoration: none;
+    text-shadow: none;
+    cursor: pointer;
+    touch-action: manipulation;
+    transition: background-color 140ms ease, color 140ms ease, border-color 140ms ease, transform 140ms ease;
+  }
+
+  .about-actions .action-quiet {
+    background: transparent;
+    border-color: var(--foreground2);
+    color: var(--foreground1);
+  }
+
+  .about-actions :is(button, a):hover,
+  .about-actions :is(button, a):focus-visible {
+    border-color: var(--amber);
+    background: var(--amber);
+    color: var(--background0);
+    transform: translateY(-2px);
+  }
+
+  .about-stats {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    margin: 0;
+    border-block: 1px solid var(--background3);
+  }
+
+  .about-stats > div {
+    min-width: 0;
+    padding: 0.7rem 0.8rem;
+    border-left: 1px solid var(--background3);
+  }
+
+  .about-stats > div:first-child {
+    border-left: 0;
+  }
+
+  .about-stats dt {
+    color: var(--foreground2);
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .about-stats dd {
+    margin: 0.15rem 0 0;
+    color: var(--foreground0);
+    font-size: 1.1rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .about-stats dd span {
+    color: var(--foreground2);
+    font-size: 0.68rem;
+  }
+
+  .about-console {
+    display: grid;
+    grid-template-columns: minmax(0, 1.4fr) minmax(14rem, 0.8fr);
+    gap: 1rem;
+    align-items: stretch;
+  }
+
+  .console-command,
+  .about-console blockquote {
+    margin: 0;
+    padding: 0.75rem 0.9rem;
+    background: color-mix(in srgb, var(--background2) 65%, transparent);
+    border-left: 2px solid var(--foreground2);
+  }
+
+  .console-command > p {
+    margin: 0 0 0.45rem;
+    color: var(--foreground2);
+    font-size: 0.7rem;
+  }
+
+  .console-command > p span {
+    color: var(--amber);
+  }
+
+  .stack-reel {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem 0.7ch;
+    color: var(--foreground1);
+    font-size: 0.72rem;
+    line-height: 1.55;
+  }
+
+  .stack-reel i {
+    color: var(--amber);
+    font-style: normal;
+  }
+
+  .about-console blockquote {
+    border-left-color: var(--amber);
+  }
+
+  .about-console blockquote p {
+    margin: 0;
+    color: var(--foreground1);
+    font-size: 0.72rem;
+    line-height: 1.55;
+  }
+
+  .about-console blockquote footer {
+    margin-top: 0.55rem;
+    color: var(--foreground2);
+    font-size: 0.62rem;
+    text-transform: uppercase;
+  }
+
+  @keyframes dossier-pulse {
+    0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--foreground0) 48%, transparent), var(--glow); }
+    70%, 100% { box-shadow: 0 0 0 0.65rem transparent, var(--glow); }
+  }
+
+  @container win (max-width: 660px) {
+    .about-hero {
+      grid-template-columns: minmax(8rem, 0.55fr) minmax(15rem, 1.45fr);
+      gap: 1rem;
+    }
+
+    .about-sigil {
+      width: min(100%, 10rem);
+    }
+
+    .about-copy h1 {
+      font-size: 2.5rem;
+      font-size: clamp(1.85rem, 5vw, 2.65rem);
+    }
+
+    .about-stats {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .about-stats > div:nth-child(3) {
+      border-left: 0;
+      border-top: 1px solid var(--background3);
+    }
+
+    .about-stats > div:nth-child(4) {
+      border-top: 1px solid var(--background3);
+    }
+
+    .about-console {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @container win (max-width: 480px) {
+    .about-hero {
+      grid-template-columns: 1fr;
+    }
+
+    .about-identity {
+      display: none;
+    }
+
+    .about-copy h1 {
+      font-size: 2.4rem;
+      font-size: clamp(2rem, 9vw, 3rem);
+    }
+
+    .about-actions :is(button, a) {
+      flex: 1 1 12rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .live-pulse {
+      animation: none;
+    }
+
+    .about-actions :is(button, a) {
+      transition: none;
+    }
   }
 </style>

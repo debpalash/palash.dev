@@ -362,6 +362,30 @@ body.os {
   background: transparent;
 }
 
+.os-skip-link {
+  position: fixed;
+  top: 0.65rem;
+  left: 0.65rem;
+  z-index: 10000;
+  padding: 0.45rem 0.8rem;
+  border: 1px solid var(--foreground0);
+  background: var(--background0);
+  color: var(--foreground0);
+  font-weight: 700;
+  text-decoration: none;
+  transform: translateY(calc(-100% - 1rem));
+  transition: transform 140ms ease;
+}
+
+.os-skip-link:focus-visible {
+  transform: translateY(0);
+}
+
+body.os :where(a, button, input, [tabindex]):focus-visible {
+  outline: 2px solid var(--amber);
+  outline-offset: 2px;
+}
+
 
 /* ------------------------------------------------------------
    Starfield + CRT overlay
@@ -512,6 +536,186 @@ body[data-bg='video'] #bg-video {
   position: relative;
   height: calc(100dvh - var(--taskbar-h));
   overflow: hidden;
+  isolation: isolate;
+}
+
+/* The desktop is also a poster: a quiet system diagram beneath the windows.
+   It uses the live theme tokens, so every genre becomes its own artwork. */
+.desktop-art {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  color: var(--foreground0);
+  opacity: 0.72;
+  user-select: none;
+}
+
+.desktop-art::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, color-mix(in srgb, var(--foreground2) 12%, transparent) 1px, transparent 1px),
+    linear-gradient(color-mix(in srgb, var(--foreground2) 12%, transparent) 1px, transparent 1px);
+  background-size: clamp(3.5rem, 6vw, 6rem) clamp(3.5rem, 6vw, 6rem);
+  mask-image: linear-gradient(90deg, transparent 3%, #000 24%, #000 100%);
+}
+
+.desktop-art::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 78% 41%, color-mix(in srgb, var(--foreground0) 9%, transparent), transparent 23%),
+    linear-gradient(116deg, transparent 0 68%, color-mix(in srgb, var(--amber) 8%, transparent) 68% 68.15%, transparent 68.15%);
+}
+
+.art-orbit {
+  position: absolute;
+  top: 50%;
+  right: clamp(-15rem, -10vw, -4rem);
+  width: min(77vw, 52rem);
+  height: min(77vw, 52rem);
+  color: var(--foreground0);
+  transform: translateY(-52%) rotate(-8deg);
+  filter: drop-shadow(0 0 8px color-mix(in srgb, var(--foreground0) 22%, transparent));
+}
+
+.orbit-line,
+.orbit-arc,
+.orbit-axis,
+.orbit-tick {
+  fill: none;
+  vector-effect: non-scaling-stroke;
+}
+
+.orbit-line {
+  stroke: var(--foreground2);
+  stroke-width: 1;
+  stroke-dasharray: 2 10;
+}
+
+.orbit-mid {
+  stroke-dasharray: 54 15 3 15;
+  opacity: 0.55;
+}
+
+.orbit-inner {
+  stroke: var(--foreground1);
+  stroke-dasharray: 1 7;
+  opacity: 0.48;
+}
+
+.orbit-arc {
+  stroke: var(--amber);
+  stroke-width: 2;
+  stroke-dasharray: 84 18 5 18;
+  opacity: 0.85;
+}
+
+.orbit-arc-two {
+  stroke: var(--cyan);
+  stroke-dasharray: 16 13;
+  opacity: 0.48;
+}
+
+.orbit-axis,
+.orbit-tick {
+  stroke: var(--foreground2);
+  stroke-width: 0.75;
+  opacity: 0.38;
+}
+
+.orbit-node {
+  fill: var(--amber);
+  filter: drop-shadow(0 0 6px var(--amber));
+}
+
+.orbit-node-alt {
+  fill: var(--cyan);
+  filter: drop-shadow(0 0 6px var(--cyan));
+}
+
+.art-wordmark {
+  position: absolute;
+  top: 50%;
+  left: clamp(8.5rem, 12vw, 12rem);
+  transform: translateY(-58%);
+}
+
+.art-wordmark > span {
+  display: block;
+  margin-bottom: 0.75rem;
+  color: var(--foreground2);
+  font-size: clamp(0.58rem, 0.72vw, 0.72rem);
+  letter-spacing: 0.24em;
+}
+
+.art-wordmark strong {
+  display: block;
+  color: color-mix(in srgb, var(--foreground0) 34%, transparent);
+  font-size: clamp(2.8rem, 7.2vw, 7rem);
+  font-weight: 700;
+  line-height: 0.78;
+  letter-spacing: -0.095em;
+  text-transform: uppercase;
+}
+
+.art-wordmark i {
+  color: color-mix(in srgb, var(--amber) 56%, transparent);
+  font-style: normal;
+  font-weight: 400;
+}
+
+.art-coordinate {
+  position: absolute;
+  top: clamp(4rem, 10vh, 7rem);
+  right: 2rem;
+  margin: 0;
+  color: var(--foreground2);
+  font-size: 0.66rem;
+  line-height: 1.75;
+  letter-spacing: 0.14em;
+  text-align: right;
+}
+
+.art-principles {
+  position: absolute;
+  right: 2rem;
+  bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.25rem;
+  color: var(--foreground2);
+  font-size: 0.63rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.art-transmission {
+  position: absolute;
+  top: 1rem;
+  left: 50%;
+  margin: 0;
+  color: var(--foreground2);
+  font-size: 0.62rem;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  transform: translateX(-50%);
+}
+
+.art-transmission b {
+  display: inline-block;
+  width: 0.48rem;
+  height: 0.48rem;
+  margin-right: 0.7ch;
+  border-radius: 50%;
+  background: var(--foreground0);
+  box-shadow: var(--glow);
+  animation: blink 2.2s steps(1) infinite;
 }
 
 #icons {
@@ -523,9 +727,11 @@ body[data-bg='video'] #bg-video {
   gap: 0.75rem;
   max-height: calc(100% - 2rem);
   z-index: 1;
+  counter-reset: desktop-icon;
 }
 
 .icon {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -538,6 +744,17 @@ body[data-bg='video'] #bg-video {
   font-family: inherit;
   font-size: 0.8rem;
   cursor: pointer;
+  counter-increment: desktop-icon;
+  transition: background-color 140ms ease, border-color 140ms ease, transform 140ms ease;
+}
+.icon::before {
+  content: '0' counter(desktop-icon);
+  position: absolute;
+  top: 0.15rem;
+  right: 0.35rem;
+  color: var(--foreground2);
+  font-size: 0.55rem;
+  font-variant-numeric: tabular-nums;
 }
 /* label chip keeps icon text readable over photo/video backgrounds
    in light themes */
@@ -557,6 +774,7 @@ body[data-bg='video'] #bg-video {
 .icon:focus-visible {
   border-color: var(--foreground2);
   background: color-mix(in srgb, var(--background3) 45%, transparent);
+  transform: translateY(-2px);
 }
 .icon:hover .glyph {
   border-color: var(--foreground0);
@@ -574,10 +792,12 @@ body[data-bg='video'] #bg-video {
   min-height: 160px;
   max-width: calc(100vw - 2rem);
   max-height: calc(100dvh - var(--taskbar-h) - 1rem);
-  background: color-mix(in srgb, var(--background0) 88%, transparent);
-  backdrop-filter: blur(3px);
+  background-color: var(--background0);
+  background-color: color-mix(in srgb, var(--background0) 97%, transparent);
+  background-image: linear-gradient(135deg, color-mix(in srgb, var(--foreground0) 3%, transparent), transparent 42%);
+  backdrop-filter: blur(7px) saturate(0.82);
   border: 1px solid var(--foreground2);
-  box-shadow: 0 0 0 1px rgb(0 0 0 / 0.6), 0 8px 40px rgb(0 0 0 / 0.7);
+  box-shadow: 0 0 0 1px rgb(0 0 0 / 0.64), 0 22px 70px rgb(0 0 0 / 0.64);
   animation: win-open 0.17s ease-out both;
   transform-origin: center 40%;
 }
@@ -591,7 +811,7 @@ body[data-bg='video'] #bg-video {
 }
 .window.focused {
   border-color: var(--foreground0);
-  box-shadow: 0 0 0 1px rgb(0 0 0 / 0.6), 0 8px 40px rgb(0 0 0 / 0.8), var(--glow);
+  box-shadow: 0 0 0 1px rgb(0 0 0 / 0.68), 0 26px 80px rgb(0 0 0 / 0.72), var(--glow);
 }
 .window.maximized {
   inset: 0 !important;
@@ -1600,6 +1820,27 @@ body[data-bg='video'] #bg-video {
    Mobile: windows go fullscreen, icons form a grid
    ------------------------------------------------------------ */
 @media (max-width: 768px) {
+  .desktop-art {
+    opacity: 0.48;
+  }
+
+  .art-wordmark,
+  .art-principles,
+  .art-coordinate {
+    display: none;
+  }
+
+  .art-orbit {
+    right: -55vw;
+    width: 150vw;
+    height: 150vw;
+  }
+
+  .art-transmission {
+    width: calc(100% - 2rem);
+    text-align: center;
+  }
+
   #icons {
     position: static;
     flex-direction: row;
@@ -1617,7 +1858,30 @@ body[data-bg='video'] #bg-video {
     height: auto !important;
     max-width: none;
     max-height: none;
+    background-color: var(--background0);
+    background-image: none;
+    backdrop-filter: none;
   }
+
+  body:has(#windows > .window) #theme-corner {
+    display: none;
+  }
+
+  body:has(#windows > .window) #icons {
+    visibility: hidden;
+  }
+
   .titlebar { cursor: default; }
   .titlebar .controls button[data-act='max'] { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .art-transmission b {
+    animation: none;
+  }
+
+  .icon,
+  .os-skip-link {
+    transition: none;
+  }
 }

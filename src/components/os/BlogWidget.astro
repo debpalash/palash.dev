@@ -42,7 +42,7 @@ const latest = recent[0];
         <a href={`/blog/${latest.id}`} class="bw-latest">→ {latest.data.title}</a>
       </div>
     )}
-    <button class="bw-clippy" id="bw-toggle" aria-expanded="false" aria-controls="bw-panel" title="THE LOG">
+    <button class="bw-clippy" id="bw-toggle" aria-label="Open The Log" aria-expanded="false" aria-controls="bw-panel" title="THE LOG">
       <svg viewBox="0 0 64 96" width="52" height="78" aria-hidden="true">
         <path
           class="wire"
@@ -87,6 +87,7 @@ const latest = recent[0];
     display: flex;
     align-items: flex-end;
     gap: 0.6rem;
+    max-width: 100%;
   }
 
   /* --- Clippy --- */
@@ -151,6 +152,8 @@ const latest = recent[0];
   /* --- speech bubble --- */
   .bw-bubble {
     position: relative;
+    width: min(17rem, calc(100vw - 6.5rem));
+    min-width: 0;
     background: color-mix(in srgb, var(--background0) 96%, transparent);
     border: 1px solid var(--foreground0);
     box-shadow: var(--glow), 0 8px 30px rgb(0 0 0 / 0.5);
@@ -172,6 +175,7 @@ const latest = recent[0];
   }
   .bw-quip {
     margin: 0 0 0.3rem;
+    overflow-wrap: anywhere;
   }
   .bw-quip strong {
     color: var(--foreground0);
@@ -310,14 +314,15 @@ const latest = recent[0];
     if (!panel || !toggle) return;
     panel.hidden = !open;
     toggle.setAttribute('aria-expanded', String(open));
+    toggle.setAttribute('aria-label', open ? 'Close The Log' : 'Open The Log');
     if (open && bubble) bubble.hidden = true;
     save('clippy-open', open ? '1' : '0');
   }
 
   if (widget && panel && toggle) {
-    // THE LOG panel is open by default; stays closed only if the
-    // visitor collapsed it themselves
-    setOpen(load('clippy-open') !== '0');
+    // Keep the artboard clear until the visitor deliberately opens THE LOG.
+    // Once chosen, the state follows them through the rest of the session.
+    setOpen(load('clippy-open') === '1');
     if (load('clippy-hush') === '1' && bubble) bubble.hidden = true;
 
     toggle.addEventListener('click', () => setOpen(panel.hidden));
