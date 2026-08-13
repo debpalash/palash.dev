@@ -47,7 +47,8 @@ const {
   <slot name="head" slot="head" />
 
   <div class="profile-main">
-    <ProfileHeader showH1={!pageHeading} compact={active !== 'work'} />
+    {/* One identical header on every tab — switching tabs must not reflow it. */}
+    <ProfileHeader showH1={!pageHeading} />
     <TabBar active={active} />
     {(pageHeading || sectionHeading) && (
       <header class="feed-intro">

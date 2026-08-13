@@ -1055,6 +1055,10 @@ main.shell-wide {
   font-size: 1.55rem;
   font-weight: 680;
   letter-spacing: -0.03em;
+  /* rendered as h1 on /, p elsewhere — pin the metrics so tabs never shift */
+  line-height: 1.25;
+  color: var(--text);
+  text-wrap: balance;
 }
 
 .phead-handle {
