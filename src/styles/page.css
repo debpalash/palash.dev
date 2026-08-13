@@ -2014,6 +2014,31 @@ html[data-mode='light'] .fitem-theme-opal {
   transform: scale(1.012);
 }
 
+/* Paper mode gets its own print of the cover art — same signal, light stock —
+   and the caption flips from white-on-dark to ink-on-paper. */
+html[data-mode='light'] .phead-banner img {
+  content: url('/projects/omnivoice-signal-field-light-1200.webp');
+}
+
+html[data-mode='light'] .phead-banner::after {
+  background:
+    linear-gradient(to top, color-mix(in srgb, var(--bg) 84%, transparent), transparent 58%),
+    linear-gradient(to right, rgba(242, 239, 232, 0.5), transparent 58%);
+}
+
+html[data-mode='light'] .phead-banner-caption {
+  color: #221a1c;
+  text-shadow: 0 2px 18px rgba(242, 239, 232, 0.9);
+}
+
+html[data-mode='light'] .phead-banner-caption > span:last-child {
+  color: rgba(34, 26, 28, 0.72);
+}
+
+html[data-mode='light'] .phead-banner-kicker {
+  color: #b23e63;
+}
+
 .phead-avatar {
   box-shadow: 0 0 0 1px var(--border), 0 12px 30px rgba(0, 0, 0, 0.28);
 }
