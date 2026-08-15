@@ -66,91 +66,91 @@
     "id": "omnivoice-preview",
     "title": "OmniVoice Studio — preview",
     "caption": "Preview",
-    "src": "https://raw.githubusercontent.com/debpalash/OmniVoice-Studio/main/docs/preview.png",
+    "src": "https://raw.githubusercontent.com/debpalash/VoiceStudio/main/docs/preview.png",
     "group": "omnivoice"
   },
   {
     "id": "omnivoice-launchpad",
     "title": "OmniVoice Studio — launchpad",
     "caption": "Launchpad",
-    "src": "https://raw.githubusercontent.com/debpalash/OmniVoice-Studio/main/docs/screenshot-launchpad.png",
+    "src": "https://raw.githubusercontent.com/debpalash/VoiceStudio/main/docs/screenshot-launchpad.png",
     "group": "omnivoice"
   },
   {
     "id": "omnivoice-studio",
     "title": "OmniVoice Studio — studio",
     "caption": "Studio",
-    "src": "https://raw.githubusercontent.com/debpalash/OmniVoice-Studio/main/docs/screenshot-studio.png",
+    "src": "https://raw.githubusercontent.com/debpalash/VoiceStudio/main/docs/screenshot-studio.png",
     "group": "omnivoice"
   },
   {
     "id": "omnivoice-clone",
     "title": "OmniVoice Studio — voice cloning",
     "caption": "Voice cloning",
-    "src": "https://raw.githubusercontent.com/debpalash/OmniVoice-Studio/main/docs/screenshot-clone.png",
+    "src": "https://raw.githubusercontent.com/debpalash/VoiceStudio/main/docs/screenshot-clone.png",
     "group": "omnivoice"
   },
   {
     "id": "omnivoice-design",
     "title": "OmniVoice Studio — voice design",
     "caption": "Voice design",
-    "src": "https://raw.githubusercontent.com/debpalash/OmniVoice-Studio/main/docs/screenshot-design.png",
+    "src": "https://raw.githubusercontent.com/debpalash/VoiceStudio/main/docs/screenshot-design.png",
     "group": "omnivoice"
   },
   {
     "id": "omnivoice-dub",
     "title": "OmniVoice Studio — dubbing",
     "caption": "Dubbing",
-    "src": "https://raw.githubusercontent.com/debpalash/OmniVoice-Studio/main/docs/screenshot-dub.png",
+    "src": "https://raw.githubusercontent.com/debpalash/VoiceStudio/main/docs/screenshot-dub.png",
     "group": "omnivoice"
   },
   {
     "id": "omnivoice-engines",
     "title": "OmniVoice Studio — engines",
     "caption": "Engines",
-    "src": "https://raw.githubusercontent.com/debpalash/OmniVoice-Studio/main/docs/screenshot-engines.png",
+    "src": "https://raw.githubusercontent.com/debpalash/VoiceStudio/main/docs/screenshot-engines.png",
     "group": "omnivoice"
   },
   {
     "id": "omnivoice-gallery",
     "title": "OmniVoice Studio — gallery",
     "caption": "Gallery",
-    "src": "https://raw.githubusercontent.com/debpalash/OmniVoice-Studio/main/docs/screenshot-gallery.png",
+    "src": "https://raw.githubusercontent.com/debpalash/VoiceStudio/main/docs/screenshot-gallery.png",
     "group": "omnivoice"
   },
   {
     "id": "omnivoice-library",
     "title": "OmniVoice Studio — library & projects",
     "caption": "Library & projects",
-    "src": "https://raw.githubusercontent.com/debpalash/OmniVoice-Studio/main/docs/screenshot-libraryprojects.png",
+    "src": "https://raw.githubusercontent.com/debpalash/VoiceStudio/main/docs/screenshot-libraryprojects.png",
     "group": "omnivoice"
   },
   {
     "id": "omnivoice-openapi",
     "title": "OmniVoice Studio — OpenAPI",
     "caption": "OpenAPI",
-    "src": "https://raw.githubusercontent.com/debpalash/OmniVoice-Studio/main/docs/screenshot-openapi.png",
+    "src": "https://raw.githubusercontent.com/debpalash/VoiceStudio/main/docs/screenshot-openapi.png",
     "group": "omnivoice"
   },
   {
     "id": "omnivoice-logs",
     "title": "OmniVoice Studio — logs",
     "caption": "Logs",
-    "src": "https://raw.githubusercontent.com/debpalash/OmniVoice-Studio/main/docs/screenshot-logs.png",
+    "src": "https://raw.githubusercontent.com/debpalash/VoiceStudio/main/docs/screenshot-logs.png",
     "group": "omnivoice"
   },
   {
     "id": "omnivoice-settings",
     "title": "OmniVoice Studio — settings",
     "caption": "Settings",
-    "src": "https://raw.githubusercontent.com/debpalash/OmniVoice-Studio/main/docs/screenshot-settings.png",
+    "src": "https://raw.githubusercontent.com/debpalash/VoiceStudio/main/docs/screenshot-settings.png",
     "group": "omnivoice"
   },
   {
     "id": "omnivoice-updates",
     "title": "OmniVoice Studio — updates",
     "caption": "Updates",
-    "src": "https://raw.githubusercontent.com/debpalash/OmniVoice-Studio/main/docs/screenshot-updates.png",
+    "src": "https://raw.githubusercontent.com/debpalash/VoiceStudio/main/docs/screenshot-updates.png",
     "group": "omnivoice"
   },
   {

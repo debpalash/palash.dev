@@ -1,32 +1,55 @@
 {
-  "name": "home-pal-desktop-palash-dev",
+  "name": "palash-dev-solid",
   "type": "module",
   "version": "0.0.1",
+  "description": "palash.dev reading mode on Solid 2.0 \u2014 streaming SSR on Cloudflare Workers",
   "engines": {
-    "node": "^22.15.0 || >=23.5.0"
+    "node": ">=22.12.0"
   },
   "scripts": {
-    "dev": "rm -rf node_modules/.vite && astro dev",
+    "gen": "node scripts/gen-content.mjs",
+    "dev": "vite",
+    "build": "node scripts/gen-og.mjs && vite build",
+    "preview": "vite preview",
+    "deploy": "npm run build && wrangler deploy",
+    "typecheck": "tsc --noEmit",
     "og": "node scripts/gen-og.mjs",
-    "build": "node scripts/gen-og.mjs && astro build",
-    "preview": "astro preview",
-    "astro": "astro"
+    "stats": "node scripts/refresh-stats.mjs",
+    "lint": "oxlint src scripts && tsc --noEmit"
   },
   "dependencies": {
-    "@astrojs/mdx": "^7.0.5",
-    "@astrojs/rss": "^4.0.19",
-    "@astrojs/sitemap": "^3.7.3",
     "@fontsource-variable/space-grotesk": "^5.3.0",
     "@fontsource/ibm-plex-mono": "^5.3.0",
-    "@tailwindcss/vite": "^4.3.3",
-    "@unpic/astro": "^1.0.2",
-    "@webtui/css": "^0.1.9",
-    "astro": "^7.2.0",
+    "@solidjs/meta": "^1.0.0-next.2",
+    "@solidjs/router": "^2.0.0-next.16",
+    "@solidjs/web": "^2.0.0-rc.0",
     "photoswipe": "^5.4.4",
-    "tailwindcss": "^4.3.3"
+    "solid-js": "^2.0.0-rc.0"
   },
   "devDependencies": {
+    "@cloudflare/vite-plugin": "^1.13.4",
     "@resvg/resvg-js": "^2.6.2",
-    "satori": "^0.26.0"
+    "@shikijs/rehype": "^3.13.0",
+    "@solidjs/vite-plugin": "^3.0.0-next.28",
+    "@types/node": "^26.2.0",
+    "filesystem-routing": "0.2.1",
+    "gray-matter": "^4.0.3",
+    "oxlint": "^1.32.0",
+    "rehype-slug": "^6.0.0",
+    "rehype-stringify": "^10.0.1",
+    "remark-gfm": "^4.0.1",
+    "remark-parse": "^11.0.0",
+    "remark-rehype": "^11.1.2",
+    "remark-smartypants": "^3.0.2",
+    "satori": "^0.26.0",
+    "shiki": "^3.13.0",
+    "typescript": "^5.9.2",
+    "unified": "^11.0.5",
+    "vite": "^8.1.5",
+    "wrangler": "^4.42.0"
+  },
+  "allowScripts": {
+    "esbuild": true,
+    "workerd": true
   }
 }

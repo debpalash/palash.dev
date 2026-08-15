@@ -26,8 +26,10 @@
   --text-faint: #737c76;
   --border: #242c2a;
   --border-strong: #3b4843;
-  --accent: #75f596;
-  --accent-hover: #b7ffc5;
+  /* Neutral ink accent — highlights come from weight and texture, not green.
+     Product cards still carry their own --card-accent colors. */
+  --accent: #dfe5e0;
+  --accent-hover: #ffffff;
 
   --measure: 68ch;
   --gutter: 1.5rem;
@@ -47,8 +49,8 @@ html[data-mode='light'] {
   --text-faint: #7e867f;
   --border: #d8d3c8;
   --border-strong: #bbb5aa;
-  --accent: #087a47;
-  --accent-hover: #075a36;
+  --accent: #23292a;
+  --accent-hover: #000000;
   color-scheme: light;
 }
 
@@ -231,15 +233,25 @@ img {
 
 /* --------------------------------------------------------------- shell */
 
+/* One framed column: main and footer share this exact box, so the | | rails
+   run straight through header, cards and footer on every page. */
 .shell {
   width: 100%;
-  max-width: 60rem;
+  max-width: 64rem;
   margin: 0 auto;
   padding: 0 var(--gutter);
+  border-inline: 1px solid var(--border);
 }
 
 .shell-narrow {
   max-width: 44rem;
+}
+
+/* Long-form pages keep their reading measure inside the frame instead of
+   narrowing the frame itself (which would break the footer alignment). */
+.shell-measure {
+  max-width: 44rem;
+  margin-inline: auto;
 }
 
 /* .shell would otherwise win on specificity and flatten main's vertical rhythm */
@@ -477,12 +489,14 @@ main.shell {
 
 .footer {
   border-top: 1px solid var(--border);
-  padding: 2rem 0 3rem;
   font-size: 0.875rem;
   color: var(--text-muted);
 }
 
 .footer-inner {
+  /* vertical padding lives on the inner shell so the rails span the full
+     footer height and stay flush with the frame */
+  padding-block: 2rem 3rem;
   display: flex;
   flex-wrap: wrap;
   gap: 0.75rem 1.5rem;
@@ -1048,6 +1062,33 @@ main.shell-wide {
 .phead-email:hover {
   color: var(--accent);
   text-decoration: none;
+}
+
+/* The Follow/Support dropdowns became direct icon links — same square
+   hit-target as the email button so the action row stays one even row. */
+.phead-icon {
+  display: inline-grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  min-height: 2.75rem;
+  color: var(--text);
+  line-height: 1;
+}
+
+.phead-icon svg {
+  width: 1.05rem;
+  height: 1.05rem;
+  transition: transform 180ms ease;
+}
+
+.phead-icon:hover {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.phead-icon:hover svg {
+  transform: scale(1.12);
 }
 
 .phead-name {
@@ -1951,10 +1992,12 @@ html[data-mode='light'] .fitem-theme-opal {
 
 .feed-intro h1,
 .feed-intro h2 {
-  max-width: 20ch;
-  font-size: clamp(1.45rem, 3vw, 2rem);
-  font-weight: 680;
-  letter-spacing: -0.035em;
+  max-width: 22ch;
+  font-size: clamp(2rem, 4.5vw, 2.85rem);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 1.08;
+  text-wrap: balance;
 }
 
 .feed-intro > p:last-child:not(:first-child) {
@@ -2682,4 +2725,427 @@ html[data-mode='light'] .phead-banner-kicker {
     width: 1.05rem;
     height: 1.05rem;
   }
+}
+
+/* ---------------------------------------------------------------------------
+   Film grain on the work cards — a whisper of SVG turbulence over the accent
+   wash. Data-URI noise tile: no asset, no request, crisp at every zoom.
+   pointer-events off so the whole card stays clickable. */
+.fitem-work::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 160px 160px;
+  opacity: 0.05;
+  mix-blend-mode: overlay;
+}
+
+.fitem-work:hover::after {
+  opacity: 0.07;
+}
+
+/* On paper, grain reads as print texture — multiply instead of overlay. */
+html[data-mode='light'] .fitem-work::after {
+  mix-blend-mode: multiply;
+  opacity: 0.045;
+}
+
+/* ---------------------------------------------------------------------------
+   Framed list: inside the | | rails a card owns no border of its own. Cards
+   bleed to the rails (background and grain run rail-to-rail) and exactly one
+   rule divides neighbours — never a doubled line. The tab bar's rule opens
+   the list and the footer's rule closes it. */
+.fitem {
+  border: 0;
+  margin-inline: calc(var(--gutter) * -1);
+  padding-inline: var(--gutter);
+}
+
+.feed-list > .fitem + .fitem {
+  border-top: 1px solid var(--border);
+}
+
+/* keep the accent tick riding the separator line */
+.fitem::before,
+.fitem-writing::before {
+  left: var(--gutter);
+}
+
+/* Detail row reads at body-adjacent size, not fine print. */
+.fitem-badge {
+  font-size: 0.78rem;
+  padding: 0.28rem 0.62rem;
+}
+
+.fitem-badge-link,
+.fitem-links a {
+  font-size: 0.8rem;
+}
+
+/* ---------------------------------------------------------------------------
+   Subtle highlights: the accent-tinted washes read too green — cards now sit
+   on a neutral surface and the texture does the talking: a dot-matrix screen
+   layered under the film grain, drifting in coarse steps like a refreshing
+   dot display. Product accents survive only as ink (tick, path, badges). */
+.fitem,
+.fitem-writing {
+  background: transparent;
+}
+
+.fitem:hover,
+.fitem-writing:hover {
+  background: color-mix(in srgb, var(--text) 3%, transparent);
+}
+
+/* every card gets the textured layer, not just the work tab */
+.fitem::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    radial-gradient(color-mix(in srgb, var(--text) 60%, transparent) 1px, transparent 1.5px),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 7px 7px, 160px 160px;
+  opacity: 0.05;
+  mix-blend-mode: overlay;
+  animation: fitem-matrix 9s steps(12) infinite;
+}
+
+.fitem:hover::after {
+  opacity: 0.1;
+}
+
+@keyframes fitem-matrix {
+  to {
+    background-position: 0 -84px, 96px -160px;
+  }
+}
+
+html[data-mode='light'] .fitem::after {
+  mix-blend-mode: multiply;
+  opacity: 0.05;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fitem::after {
+    animation: none;
+  }
+}
+
+/* the writing tab's category/date labels drop the green too */
+.fitem-category,
+.fitem-kicker {
+  color: var(--text-faint);
+}
+
+/* Grain/dot-matrix must actually read on near-black: overlay math cancels
+   on dark surfaces, so dark mode lightens with screen instead. */
+.fitem::after {
+  mix-blend-mode: screen;
+  opacity: 0.08;
+}
+
+.fitem:hover::after {
+  opacity: 0.14;
+}
+
+html[data-mode='light'] .fitem::after {
+  mix-blend-mode: multiply;
+  opacity: 0.05;
+}
+
+/* the active tab underlines in ink, not green */
+.ptab.is-active {
+  border-bottom-color: var(--text);
+}
+
+/* Texture belongs to the card's background, never over its text or media:
+   isolate the card and sink the grain layer beneath the content. */
+.fitem {
+  isolation: isolate;
+}
+
+.fitem::after {
+  z-index: -1;
+}
+
+/* Finer screen: half-pixel dots on a 4px pitch. */
+.fitem::after {
+  background-image:
+    radial-gradient(color-mix(in srgb, var(--text) 60%, transparent) 0.5px, transparent 1px),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 4px 4px, 160px 160px;
+}
+
+/* Hover: no surface tint — a whisper of border glow in the card's own ink,
+   and the dot screen wakes up. Texture idles as a static paint (zero work
+   at rest); the drift only runs while the pointer is on the card. */
+.fitem:hover,
+.fitem-writing:hover {
+  background: transparent;
+}
+
+.fitem:hover {
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--card-accent) 30%, transparent),
+    0 0 1.6rem color-mix(in srgb, var(--card-accent) 12%, transparent);
+}
+
+/* even finer screen: half-pixel dots on a 3px pitch */
+.fitem::after {
+  background-image:
+    radial-gradient(color-mix(in srgb, var(--text) 60%, transparent) 0.5px, transparent 0.9px),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 3px 3px, 160px 160px;
+  animation: none;
+}
+
+.fitem:hover::after {
+  animation: fitem-matrix 2.4s steps(8) infinite;
+}
+
+/* ---------------------------------------------------------------------------
+   Spec / comparison tables on product pages — same discipline as the feed:
+   single rules, mono data, the product's ink only where it counts. */
+.spec-lead {
+  margin-top: 0.5rem;
+  max-width: 64ch;
+  color: var(--text-muted);
+}
+
+.spec-wrap {
+  margin-top: 1.15rem;
+  overflow-x: auto;
+}
+
+.spec-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
+.spec-table th,
+.spec-table td {
+  padding: 0.6rem 1rem 0.6rem 0;
+  text-align: left;
+  vertical-align: top;
+  border-top: 1px solid var(--border);
+}
+
+.spec-table thead th {
+  border-top: 0;
+  padding-top: 0;
+  color: var(--text-faint);
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.spec-table tbody th {
+  color: var(--text);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* middle column(s) read as the baseline; the last column is the answer */
+.spec-table td {
+  color: var(--text-muted);
+}
+
+.spec-table td:last-child {
+  color: var(--text);
+  font-weight: 500;
+}
+
+.spec-table td:last-child::selection,
+.spec-table strong {
+  color: var(--card-accent, var(--text));
+}
+
+.spec-footnote {
+  margin-top: 0.8rem;
+  max-width: 70ch;
+  color: var(--text-faint);
+  font-size: 0.72rem;
+  line-height: 1.6;
+}
+
+/* ---------------------------------------------------------------------------
+   The sticky bar earns its keep: when it pins (sentinel scrolled away) a
+   mini identity slides in — avatar, name, handle — X-style. The tabs get a
+   real underline animation instead of the flat block hover. */
+.ptabs-sentinel {
+  height: 1px;
+}
+
+.ptabs-id {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  max-width: 0;
+  opacity: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  transform: translateY(0.35rem);
+  transition: max-width 340ms cubic-bezier(0.22, 1, 0.36, 1), opacity 220ms ease, transform 340ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.ptabs.is-stuck .ptabs-id {
+  max-width: 15rem;
+  opacity: 1;
+  transform: none;
+  margin-right: 0.9rem;
+}
+
+.ptabs-id img {
+  flex: 0 0 auto;
+  border-radius: 50%;
+  border: 1px solid var(--border-strong);
+}
+
+.ptabs-id-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+}
+
+.ptabs-id-text strong {
+  font-size: 0.8rem;
+  font-weight: 680;
+  letter-spacing: -0.02em;
+  color: var(--text);
+}
+
+.ptabs-id-text small {
+  font-size: 0.6rem;
+  color: var(--text-faint);
+}
+
+.ptabs-id:hover {
+  text-decoration: none;
+}
+
+/* de-bleh the tabs: no block hover, an underline that grows from center */
+.ptab {
+  position: relative;
+  flex: 0 1 auto;
+  min-width: 0;
+  padding-inline: 1rem;
+  border-bottom: 0;
+  font-size: 0.86rem;
+  font-weight: 520;
+  letter-spacing: 0.01em;
+}
+
+.ptab:hover {
+  background: transparent;
+}
+
+.ptab .ptab-label {
+  position: relative;
+  padding-block: 0.2rem;
+}
+
+.ptab .ptab-label::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -0.35rem;
+  height: 2px;
+  background: var(--text);
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 240ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.ptab:hover .ptab-label::after {
+  transform: scaleX(0.55);
+}
+
+.ptab.is-active {
+  border-bottom: 0;
+  font-weight: 680;
+}
+
+.ptab.is-active .ptab-label::after {
+  transform: scaleX(1);
+}
+
+.ptabs.is-stuck {
+  border-bottom-color: var(--border-strong);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.22);
+}
+
+html[data-mode='light'] .ptabs.is-stuck {
+  box-shadow: 0 10px 30px rgba(24, 20, 12, 0.08);
+}
+
+/* Tabs stretch across the whole bar again — the underline restyle should
+   not have shrunk them to their labels. They only flex down when the
+   mini identity needs room in the stuck bar. */
+.ptab {
+  flex: 1 1 auto;
+  min-width: 4.5rem;
+  font-size: 0.92rem;
+}
+
+/* The stuck bar gets stature: taller, roomier, identity a touch larger. */
+.ptab {
+  min-height: 3.6rem;
+}
+
+.ptabs.is-stuck {
+  padding-block: 0.35rem;
+}
+
+.ptabs.is-stuck .ptab {
+  font-size: 0.98rem;
+}
+
+.ptabs.is-stuck .ptabs-id img {
+  width: 34px;
+  height: 34px;
+}
+
+.ptabs.is-stuck .ptabs-id-text strong {
+  font-size: 0.86rem;
+}
+
+/* One-line rows: title and handle/date share the baseline — never stack.
+   Long titles ellipsize instead of wrapping. */
+.fitem-head {
+  flex-wrap: nowrap;
+  min-width: 0;
+}
+
+.fitem-head .fitem-title {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fitem-head .fitem-meta,
+.fitem-head .fitem-category {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
+/* writing kicker: date leads, tags trail it */
+.fitem-kicker time {
+  color: var(--text-muted);
+}
+
+.fitem-kicker time::after {
+  content: ' — ';
+  color: var(--text-faint);
 }

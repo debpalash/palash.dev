@@ -9,7 +9,8 @@ GitHub: https://github.com/debpalash
 X: https://x.com/idebpalash
 
 /* PROJECTS */
-VoiceStudio.sh: https://palash.dev/omnivoice/
+VoiceStudio.sh: https://voicestudio.sh
+VoiceStudio.sh on palash.dev: https://palash.dev/omnivoice/
 VoiceStudio.sh source: https://github.com/debpalash/VoiceStudio
 Opal: https://palash.dev/opal/
 Opal source: https://github.com/debpalash/Opal
@@ -17,7 +18,7 @@ memXT: https://palash.dev/memxt/
 memXT source: https://github.com/Yupcha/memXT
 
 /* SITE */
-Built with: Astro, TypeScript, CSS, Cloudflare Workers
+Built with: SolidJS, TypeScript, CSS, Cloudflare Workers
 Source: https://github.com/debpalash/palash.dev
 RSS: https://palash.dev/rss.xml
 LLM context: https://palash.dev/llms.txt

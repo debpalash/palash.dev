@@ -1,8 +1,8 @@
 {
   "name": "VoiceStudio.sh",
   "alternateNames": ["VoiceStudio", "OmniVoice Studio"],
-  "tagline": "Cinematic audio dubbing, cloning & voice generation",
-  "description": "A cinematic audio dubbing, cloning and voice generation studio. Enterprise-grade processing with AI-powered voice synthesis, 600+ language support, and self-hosted deployment.",
+  "tagline": "Make voices. Tell stories. Keep the files.",
+  "description": "Clone, design, dub, dictate, and build audiobooks in one open-source desktop studio. Local-first by default — no subscription, no usage meter; online services stay opt-in.",
   "audience": "Creators, localization teams, and developers who need a serious voice workflow without renting every second of it from a hosted API.",
   "positioning": "Your Voice. Your Hardware. Your Studio.",
   "features": [
@@ -12,20 +12,73 @@
     },
     {
       "title": "Move from Clip to Production",
-      "description": "A multi-track dubbing workflow, project library, voice gallery, and engine controls turn isolated model demos into repeatable work."
+      "description": "A multi-track dubbing workflow, audiobook editor, project library, voice gallery, and engine controls turn isolated model demos into repeatable work."
     },
     {
       "title": "Run Where the Work Lives",
-      "description": "Use MLX on Apple silicon, CUDA on NVIDIA, Docker on a server, or the OpenAPI surface from another tool."
+      "description": "Use MLX on Apple silicon, CUDA on NVIDIA, ROCm on Linux, Docker on a server — or the OpenAI-compatible API from another tool."
     }
   ],
   "proof": [
-    { "value": "600+", "label": "languages supported" },
-    { "value": "9.8k+", "label": "GitHub stars" },
+    { "value": "646", "label": "languages" },
+    { "value": "16 + 11", "label": "TTS + ASR engines" },
     { "value": "1 studio", "label": "desktop app + API" }
   ],
+  "tables": [
+    {
+      "eyebrow": "Versus the cloud",
+      "heading": "The Scoreboard",
+      "lead": "Same jobs, different terms. This is the table that made me build it.",
+      "columns": ["", "ElevenLabs", "VoiceStudio"],
+      "rows": [
+        ["Pricing", "Subscription + usage meter", "Free, open source — AGPL-3.0"],
+        ["Voice cloning", "3s clip", "3s clip, zero-shot"],
+        ["Voice design", "Gender, age", "Gender, age, accent, pitch, style, dialect"],
+        ["Audiobooks", "—", "Full editor — EPUB/PDF in, .m4b out"],
+        ["Languages", "Plan-dependent", "646"],
+        ["Video dubbing", "Cloud-only", "Fully local"],
+        ["Where audio goes", "Their servers", "Your machine — online is opt-in"],
+        ["API keys", "Account required", "None for local work"],
+        ["GPU", "N/A — it's a browser tab", "CUDA · Apple Silicon · ROCm · CPU"],
+        ["Desktop app", "—", "macOS · Windows · Linux"],
+        ["TTS engines", "1", "16"],
+        ["ASR engines", "1", "11"],
+        ["MCP server", "—", "Claude, Cursor, any MCP client"],
+        ["Source", "Closed", "Fork it, extend it, ship it"]
+      ]
+    },
+    {
+      "eyebrow": "Will it run",
+      "heading": "The System Floor",
+      "lead": "A GPU is optional. The whole pipeline runs on CPU — slower, but yours.",
+      "columns": ["", "Minimum", "Recommended"],
+      "rows": [
+        ["OS", "Windows 10 · macOS 13.3+ (Apple Silicon) · Ubuntu 24.04+", "Any modern 64-bit OS"],
+        ["RAM", "8 GB", "16 GB+"],
+        ["VRAM", "4 GB — TTS auto-offloads to CPU", "8 GB+ (RTX 3060+)"],
+        ["Disk", "10 GB free", "20 GB+ SSD"],
+        ["GPU", "Optional — CPU works", "NVIDIA CUDA · Apple MPS · AMD ROCm (Linux)"]
+      ]
+    },
+    {
+      "eyebrow": "Engine room",
+      "heading": "Sixteen Voices In, Eleven Ears Out",
+      "lead": "One picker, Cmd/Ctrl+E from anywhere. Defaults are chosen; the rest auto-detect or install on first use.",
+      "columns": ["", "Count", "Default", "Standouts"],
+      "rows": [
+        ["TTS", "16", "VoiceStudio — 600+ languages, clone + instruct", "CosyVoice 3 · VoxCPM2 · IndexTTS 2.5 · MLX-Audio on Apple Silicon"],
+        ["ASR", "11", "WhisperX — ~100 languages, word-level timing", "Parakeet TDT at ~10× realtime on CPU · FunASR with inline diarization"]
+      ],
+      "footnote": "Drop-in OpenAI/ElevenLabs-compatible API: point your existing SDK at localhost — voice takes your own cloned-profile IDs, model pins an engine per request."
+    }
+  ],
+  "registries": {
+    "dockerHub": "palashdeb/omnivoice-studio",
+    "ghcr": "https://github.com/debpalash/VoiceStudio/pkgs/container/omnivoice-studio"
+  },
   "updatedDate": "2026-08-13",
   "url": "https://github.com/debpalash/VoiceStudio",
+  "website": "https://voicestudio.sh",
   "github": "https://github.com/debpalash/VoiceStudio",
   "stars": 9784,
   "license": "AGPL-3.0",
@@ -45,7 +98,7 @@
   "logoUrl": "/projects/voicestudio-logo.svg",
   "featured": true,
   "banner": "/projects/omnivoice-signal-field-1200.webp",
-  "workImage": "/projects/omnivoice-launchpad.webp",
+  "workImage": "/projects/voicestudio-launchpad.webp",
   "theme": "omnivoice",
   "category": "MultimediaApplication",
   "os": "macOS, Linux, Windows",
@@ -57,6 +110,7 @@
     "AI dubbing software",
     "voice generation studio",
     "self-hosted ElevenLabs alternative",
+    "ElevenLabs vs VoiceStudio",
     "Palash Debnath"
   ]
 }

@@ -1,0 +1,14 @@
+{
+  // Same worker name the domain has always been bound to — deploying this
+  // replaces the old site in place and inherits the palash.dev routing.
+  "name": "broad-mode-90b0",
+  "compatibility_date": "2026-08-01",
+  "compatibility_flags": ["nodejs_compat"],
+  // The Solid vite plugin resolves this virtual entry to the built SSR
+  // request handler; no custom Worker source is needed.
+  "main": "virtual:solid-ssr-handler",
+  "assets": {
+    "directory": "./dist/client",
+    "binding": "ASSETS"
+  }
+}
