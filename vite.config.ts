@@ -53,7 +53,12 @@ export default defineConfig({
     }),
     // `httpMethods` also scans route modules for GET/... exports (API
     // routes); handler modules never enter the client bundle.
-    fileRoutes({ httpMethods: true, types: true }),
+    // `codeSplitting: false`: lazy route chunks make the FIRST render of a
+    // route async, and the SSR head flushes before @solidjs/meta settles —
+    // cold hits shipped without <title>/<meta> (and the edge cache pinned
+    // them). Nine routes; eager delivery costs ~nothing and makes every
+    // render synchronous.
+    fileRoutes({ httpMethods: true, types: true, codeSplitting: false }),
   ],
   server: {
     port: 3000,
