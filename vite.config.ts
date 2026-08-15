@@ -64,6 +64,11 @@ export default defineConfig({
       interval: 250,
     },
   },
+  // Salted into edge-cache keys so a deploy never serves the previous
+  // build's cached pages.
+  define: {
+    __BUILD_ID__: JSON.stringify(Date.now().toString(36)),
+  },
   build: {
     target: 'esnext',
     assetsInlineLimit: 0,

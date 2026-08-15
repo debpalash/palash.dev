@@ -1,15 +1,15 @@
-import type { APIHandler } from 'filesystem-routing/api';
-import { postById } from '../../lib/content';
-import { SITE } from '../../site.config';
+import { postById } from './content';
+import { SITE } from '../site.config';
 
 /**
- * Raw markdown mirror of each post at /blog/<slug>.md — the emerging
- * convention AI agents fetch instead of scraping HTML.
+ * Raw markdown mirror of each post at /blog/<slug>.md — the convention AI
+ * agents fetch instead of scraping HTML. Served from the middleware chain
+ * (not a file route: the router's ":slug.md" pattern matches whole segments
+ * and would swallow the post pages themselves).
  */
-export const GET: APIHandler = ({ request }) => {
-  // parse the slug off the URL — the matcher's ":slug.md" param naming is
-  // ambiguous, the pathname isn't
-  const slug = new URL(request.url).pathname.match(/^\/blog\/([^/]+)\.md$/)?.[1] ?? '';
+export function servePostMarkdown(request: Request): Response | undefined {
+  const slug = new URL(request.url).pathname.match(/^\/blog\/([^/]+)\.md$/)?.[1];
+  if (!slug) return undefined;
   const post = postById(slug);
   if (!post) return new Response('Not found', { status: 404 });
 
@@ -35,4 +35,4 @@ export const GET: APIHandler = ({ request }) => {
       'X-Content-Type-Options': 'nosniff',
     },
   });
-};
+}

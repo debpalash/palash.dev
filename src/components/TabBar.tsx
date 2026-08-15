@@ -1,4 +1,5 @@
-import { For, onSettled } from 'solid-js';
+import { For } from 'solid-js';
+import { onClientMount } from '../lib/mount';
 import { SITE } from '../site.config';
 
 export type TabKey = 'work' | 'writing' | 'lab' | 'media' | 'contact';
@@ -21,7 +22,7 @@ export default function TabBar(props: { active: TabKey }) {
   let sentinel: HTMLDivElement | undefined;
   let bar: HTMLElement | undefined;
 
-  onSettled(() => {
+  onClientMount(() => {
     if (!sentinel || !bar) return;
     const barEl = bar;
     const observer = new IntersectionObserver(

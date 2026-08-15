@@ -1,10 +1,11 @@
-import { For, onSettled } from 'solid-js';
+import { For } from 'solid-js';
+import { onClientMount } from '../lib/mount';
 import type { GalleryShot } from '../lib/content';
 import { initPhotoSwipe } from '../lib/lightbox';
 
 export default function MediaGrid(props: { items: GalleryShot[] }) {
   let grid: HTMLDivElement | undefined;
-  onSettled(() => {
+  onClientMount(() => {
     if (grid) void initPhotoSwipe(grid);
   });
 

@@ -1,18 +1,14 @@
-import { NoHydration } from 'solid-js';
+import { Script } from '@solidjs/meta';
 
 /**
- * A schema.org JSON-LD block. Crawlers accept ld+json anywhere in the
- * document, and crawlers only ever see the server render.
+ * A schema.org JSON-LD block, hoisted into <head> by @solidjs/meta.
  *
- * NoHydration is load-bearing: a raw <script> element inside a hydrated
- * subtree desyncs the client's claim walk — the route content stays inert
- * and interactive children (PhotoSwipe, …) bind to a detached tree. Marking
- * the script server-only keeps it out of the claim sequence.
+ * Two hard-won constraints meet here: a raw <script> element inside the
+ * hydrated subtree desyncs the client's claim walk (route content goes
+ * inert), and wrapping it in <NoHydration> kills the meta system's head
+ * hoisting for the whole page. The meta-managed <Script> avoids both —
+ * it never enters the body's claim sequence at all.
  */
 export default function JsonLd(props: { data: object }) {
-  return (
-    <NoHydration>
-      <script type="application/ld+json" innerHTML={JSON.stringify(props.data)} />
-    </NoHydration>
-  );
+  return <Script type="application/ld+json">{JSON.stringify(props.data)}</Script>;
 }

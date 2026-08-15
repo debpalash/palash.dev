@@ -1,4 +1,5 @@
-import { For, onSettled } from 'solid-js';
+import { For } from 'solid-js';
+import { onClientMount } from '../lib/mount';
 import type { GalleryShot } from '../lib/content';
 import { initPhotoSwipe } from '../lib/lightbox';
 
@@ -8,7 +9,7 @@ export default function GalleryStrip(props: {
   linkToProduct?: boolean;
 }) {
   let strip: HTMLDivElement | undefined;
-  onSettled(() => {
+  onClientMount(() => {
     if (strip && !props.linkToProduct) void initPhotoSwipe(strip);
   });
 

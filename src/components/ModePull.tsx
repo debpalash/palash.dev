@@ -1,4 +1,4 @@
-import { onSettled } from 'solid-js';
+import { onClientMount } from '../lib/mount';
 
 /**
  * The light/dark cord pull. Markup renders on the server; the behavior
@@ -8,7 +8,7 @@ export default function ModePull() {
   let pull: HTMLDivElement | undefined;
   let knob: HTMLButtonElement | undefined;
 
-  onSettled(() => {
+  onClientMount(() => {
     const pullEl = pull;
     const knobEl = knob;
     if (!pullEl || !knobEl || pullEl.dataset.ready === 'true') return;

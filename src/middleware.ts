@@ -5,6 +5,7 @@
 // falling through to the page renderer.
 import { createAPIHandler } from 'filesystem-routing/api';
 import routes from 'virtual:file-routes';
+import { servePostMarkdown } from './lib/post-markdown';
 
 type Middleware = (
   request: Request,
@@ -41,6 +42,10 @@ const normalizeTrailingSlash: Middleware = (request, next) => {
  */
 const EDGE_HTML_CACHE_CONTROL = 'public, max-age=0, s-maxage=600, stale-while-revalidate=86400';
 
+declare const __BUILD_ID__: string;
+/** deploy-scoped cache key: a new build can never serve the old build's pages */
+const cacheKey = (url: string) => `${url}${url.includes('?') ? '&' : '?'}__v=${__BUILD_ID__}`;
+
 const edgeCache: Middleware = async (request, next) => {
   // Production-only: in dev the local Cache API persists to .wrangler/state
   // and serves stale pages across edits/restarts.
@@ -48,7 +53,7 @@ const edgeCache: Middleware = async (request, next) => {
   const cacheStore = (globalThis as { caches?: { default?: Cache } }).caches?.default;
   if (request.method !== 'GET') return next(request);
 
-  const cached = await cacheStore?.match(request.url);
+  const cached = await cacheStore?.match(cacheKey(request.url));
   if (cached) return cached;
 
   const response = await next(request);
@@ -60,12 +65,22 @@ const edgeCache: Middleware = async (request, next) => {
     || /application\/xml|text\/markdown|text\/plain/.test(contentType);
   if (!cacheable) return response;
 
+  // NEVER buffer the body (no arrayBuffer/text): the SSR renderer settles
+  // async work while the stream is being consumed, and draining it eagerly
+  // here skips @solidjs/meta's head fill — every page loses <title>/<meta>.
+  // Wrap the live stream for the client and let cache.put consume a clone
+  // in parallel.
   const headers = new Headers(response.headers);
   if (contentType.includes('text/html')) headers.set('cache-control', EDGE_HTML_CACHE_CONTROL);
-  const body = await response.arrayBuffer();
-  const finished = new Response(body, { status: 200, headers });
-  await cacheStore?.put(request.url, finished.clone()).catch(() => {});
+  const finished = new Response(response.body, { status: 200, headers });
+  if (cacheStore) {
+    const forCache = finished.clone();
+    void cacheStore.put(cacheKey(request.url), forCache).catch(() => {});
+  }
   return finished;
 };
 
-export default [normalizeTrailingSlash, edgeCache, createAPIHandler(routes)];
+const postMarkdown: Middleware = (request, next) =>
+  servePostMarkdown(request) ?? next(request);
+
+export default [normalizeTrailingSlash, edgeCache, postMarkdown, createAPIHandler(routes)];

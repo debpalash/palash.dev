@@ -1,4 +1,5 @@
-import { NoHydration, Show } from 'solid-js';
+import { Show } from 'solid-js';
+import { Script } from '@solidjs/meta';
 import ProfileShell from '../components/ProfileShell';
 import WorkFeed from '../components/WorkFeed';
 import JsonLd from '../components/JsonLd';
@@ -117,10 +118,8 @@ export default function Home() {
       mainEntityId={personId}
     >
       <JsonLd data={jsonLd} />
-      {/* server-only, like JsonLd: raw scripts must stay out of the hydration claim walk */}
-      <NoHydration>
-        <script innerHTML={hashForward} />
-      </NoHydration>
+      {/* hoisted to head like JsonLd: raw scripts must stay out of the hydration claim walk */}
+      <Script>{hashForward}</Script>
 
       <Show when={products.length > 0} fallback={<p class="feed-empty">Nothing here yet.</p>}>
         <WorkFeed products={products} gallery={gallery} />
