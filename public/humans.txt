@@ -12,6 +12,9 @@ X: https://x.com/idebpalash
 VoiceStudio.sh: https://voicestudio.sh
 VoiceStudio.sh on palash.dev: https://palash.dev/omnivoice/
 VoiceStudio.sh source: https://github.com/debpalash/VoiceStudio
+Bootable: https://bootable.palash.dev
+Bootable on palash.dev: https://palash.dev/bootable/
+Bootable source: https://github.com/debpalash/bootable
 Opal: https://palash.dev/opal/
 Opal source: https://github.com/debpalash/Opal
 memXT: https://palash.dev/memxt/

@@ -1,0 +1,58 @@
+{
+  "name": "Bootable",
+  "alternateNames": ["Bootable USB Writer"],
+  "tagline": "Cross-platform boot media writer",
+  "description": "Write and verify ISO, IMG, RAW, and compressed images on USB or SD media. Available as a native desktop app and mouse-enabled TUI for Linux, Windows, and macOS.",
+  "audience": "Linux, Windows, and macOS users who create bootable USB or SD media.",
+  "features": [
+    {
+      "title": "Find images",
+      "description": "Browse DistroWatch, Omarchy, and Raspberry Pi images, or select a local file."
+    },
+    {
+      "title": "Review the target",
+      "description": "Lists removable media only, excludes system disks, and revalidates the device before erasure."
+    },
+    {
+      "title": "Write and verify",
+      "description": "Checks publisher hashes and written bytes, supports cancellation, and flags incomplete media."
+    }
+  ],
+  "proof": [
+    { "value": "3", "label": "platforms" },
+    { "value": "2", "label": "native interfaces" },
+    { "value": "1", "label": "privileged helper" }
+  ],
+  "updatedDate": "2026-08-19",
+  "url": "https://github.com/debpalash/bootable",
+  "website": "https://bootable.palash.dev",
+  "github": "https://github.com/debpalash/bootable",
+  "stars": 0,
+  "license": "Apache-2.0",
+  "pricing": "free",
+  "openSource": true,
+  "icon": "💾",
+  "status": "alpha",
+  "stack": [
+    "Rust",
+    "GPUI",
+    "Ratatui",
+    "UEFI"
+  ],
+  "order": 2,
+  "logoUrl": "https://raw.githubusercontent.com/debpalash/bootable/main/assets/bootable-app-mark.svg",
+  "workImage": "https://raw.githubusercontent.com/debpalash/bootable/main/docs/screenshots/gui-discover.png",
+  "category": "UtilitiesApplication",
+  "os": "Linux, Windows, macOS",
+  "keywords": [
+    "Bootable",
+    "bootable USB writer",
+    "cross-platform ISO writer",
+    "Rufus alternative",
+    "Etcher alternative",
+    "Windows installation media",
+    "Raspberry Pi image writer",
+    "Rust desktop app",
+    "Palash Debnath"
+  ]
+}

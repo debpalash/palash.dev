@@ -34,6 +34,7 @@ function ProductPage(props: { product: Product }) {
   const licenseUrl = p.license
     ? ({
         'AGPL-3.0': 'https://spdx.org/licenses/AGPL-3.0-only.html',
+        'Apache-2.0': 'https://spdx.org/licenses/Apache-2.0.html',
         'GPL-3.0': 'https://spdx.org/licenses/GPL-3.0-only.html',
         MIT: 'https://spdx.org/licenses/MIT.html',
       } as Record<string, string>)[p.license] ?? p.license
@@ -41,6 +42,7 @@ function ProductPage(props: { product: Product }) {
   const seoTitle =
     ({
       omnivoice: 'VoiceStudio.sh — Open-source AI voice studio',
+      bootable: 'Bootable — Cross-platform boot media writer',
       memxt: 'memXT — Local-first memory for AI agents',
       opal: 'Opal — AI media player for everything',
     } as Record<string, string>)[p.id] ?? `${p.name} — ${p.tagline}`;
@@ -48,6 +50,8 @@ function ProductPage(props: { product: Product }) {
     ({
       omnivoice:
         'VoiceStudio.sh is an open-source ElevenLabs alternative for AI dubbing, voice cloning, and multilingual voice generation.',
+      bootable:
+        'Open-source bootable USB and SD writer for ISO, IMG, RAW, and compressed images on Linux, Windows, and macOS.',
       memxt:
         'memXT is local-first, open-source long-term memory for AI coding agents. Persistent context in one static binary, entirely on-device.',
       opal:
@@ -73,6 +77,9 @@ function ProductPage(props: { product: Product }) {
         ...(readmeUrl ? { subjectOf: { '@type': 'CreativeWork', name: `${p.name} README`, url: readmeUrl } } : {}),
         sameAs: [p.website, p.github].filter(Boolean),
         ...(p.features.length ? { featureList: p.features.map((feature) => feature.title) } : {}),
+        ...(p.audience
+          ? { audience: { '@type': 'Audience', audienceType: p.audience } }
+          : {}),
         ...(screenshots.length
           ? {
               screenshot: screenshots.slice(0, 6).map((shot) => ({
@@ -154,26 +161,14 @@ function ProductPage(props: { product: Product }) {
                 <a href={p.website} target="_blank" rel="noopener">website ↗</a>
               </Show>
               <Show when={repoUrl}>
-                <a href={repoUrl} target="_blank" rel="noopener">github ↗</a>
+                <a href={repoUrl} target="_blank" rel="noopener">source ↗</a>
               </Show>
-              <Show when={readmeUrl}>
-                <a href={readmeUrl} target="_blank" rel="noopener">readme ↗</a>
+              <Show when={downloadUrl}>
+                <a href={downloadUrl} target="_blank" rel="noopener">downloads ↗</a>
               </Show>
-              <a href={SITE.x} target="_blank" rel="me noopener">x ↗</a>
             </nav>
           </div>
         </header>
-
-        <div class="btn-row product-cta-row">
-          <Show when={repoUrl}>
-            <a class="btn btn-primary" href={repoUrl} target="_blank" rel="noopener">
-              Explore the Source ↗
-            </a>
-          </Show>
-          <Show when={p.website}>
-            <a class="btn" href={p.website} target="_blank" rel="noopener">Visit {p.website!.replace('https://', '')} ↗</a>
-          </Show>
-        </div>
 
         <Show when={p.proof.length > 0}>
           <dl class="product-proof" aria-label={`${p.name} at a glance`}>
@@ -189,18 +184,13 @@ function ProductPage(props: { product: Product }) {
         </Show>
 
         <section class="product-section product-thesis">
-          <p class="product-eyebrow mono">The thesis</p>
-          <Show when={p.positioning}><h2>{p.positioning}</h2></Show>
+          <h2>Overview</h2>
           <p>{p.description}</p>
-          <Show when={p.audience}>
-            <p class="product-audience"><strong>Built for:</strong> {p.audience}</p>
-          </Show>
         </section>
 
         <Show when={p.features.length > 0}>
           <section class="product-section">
-            <p class="product-eyebrow mono">What it changes</p>
-            <h2>Complex Machinery, Direct Experience</h2>
+            <h2>Capabilities</h2>
             <div class="feature-grid">
               <For each={p.features}>
                 {(feature, index) => (
@@ -249,8 +239,7 @@ function ProductPage(props: { product: Product }) {
           <section class="product-section product-gallery">
             <div class="section-head">
               <div>
-                <p class="product-eyebrow mono">Inside the product</p>
-                <h2>Screens, Not Claims</h2>
+                <h2>Screenshots</h2>
               </div>
               <span class="section-more mono muted">{screenshots.length} views</span>
             </div>
@@ -260,8 +249,7 @@ function ProductPage(props: { product: Product }) {
 
         <Show when={relatedPosts.length > 0}>
           <section class="product-section related-notes">
-            <p class="product-eyebrow mono">Field notes</p>
-            <h2>The Thinking Behind {p.name}</h2>
+            <h2>Related writing</h2>
             <div class="related-list">
               <For each={relatedPosts}>
                 {(post) => (
@@ -277,17 +265,6 @@ function ProductPage(props: { product: Product }) {
             </div>
           </section>
         </Show>
-
-        <aside class="product-final-cta">
-          <p class="product-eyebrow mono">Open by design</p>
-          <h2>Inspect the Work. Run It. Change It.</h2>
-          <p>{p.name} is built in public, with the source and engineering decisions open to scrutiny.</p>
-          <Show when={repoUrl}>
-            <a class="btn btn-primary" href={repoUrl} target="_blank" rel="noopener">
-              Open {p.name} on GitHub ↗
-            </a>
-          </Show>
-        </aside>
       </article>
     </PageShell>
   );

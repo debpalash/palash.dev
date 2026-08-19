@@ -40,7 +40,7 @@
     "MCP",
     "AI Memory"
   ],
-  "order": 2,
+  "order": 3,
   "logoUrl": "https://raw.githubusercontent.com/debpalash/memxt/main/assets/logo.svg",
   "category": "DeveloperApplication",
   "os": "macOS, Linux, Windows",

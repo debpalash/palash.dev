@@ -209,7 +209,7 @@ await render(
     chrome: '~/screenshots',
     kicker: '$ open ~/shots/*.png',
     title: 'MEDIA',
-    subtitle: 'Screenshots from VoiceStudio.sh, Opal and memxt.',
+    subtitle: 'Screenshots from VoiceStudio.sh, Bootable, Opal and memXT.',
     metaLeft: 'palash.dev/media',
     metaRight: 'palash.dev · Palash Debnath',
   }),

@@ -4,6 +4,7 @@
  * come pre-rendered from scripts/gen-content.mjs (see src/generated).
  */
 import omnivoice from '../content/products/omnivoice.json';
+import bootable from '../content/products/bootable.json';
 import memxt from '../content/products/memxt.json';
 import opal from '../content/products/opal.json';
 import experimentsJson from '../content/experiments.json';
@@ -49,7 +50,7 @@ export interface Product {
   workImage?: string;
   theme?: string;
   icon: string;
-  status: 'live' | 'beta' | 'coming-soon';
+  status: 'live' | 'alpha' | 'beta' | 'coming-soon';
   stack: string[];
   order: number;
   category: string;
@@ -130,6 +131,7 @@ const toProduct = (id: string, raw: Record<string, unknown>): Product => ({
 /** Work-tab order (the `order` field), same as the Astro sort. */
 export const products: Product[] = [
   toProduct('omnivoice', omnivoice),
+  toProduct('bootable', bootable),
   toProduct('memxt', memxt),
   toProduct('opal', opal),
 ].sort((a, b) => a.order - b.order);

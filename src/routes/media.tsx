@@ -44,7 +44,7 @@ export default function Media() {
   return (
     <ProfileShell
       title="Media — screenshots from the work"
-      description="Screenshots from Opal, VoiceStudio.sh and memxt — the tools Palash Debnath builds."
+      description="Screenshots from VoiceStudio.sh, Bootable, Opal, and memXT — the tools Palash Debnath builds."
       ogImage="/og/media.png"
       path="/media/"
       active="media"

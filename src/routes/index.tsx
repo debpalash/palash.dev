@@ -80,6 +80,9 @@ const jsonLd = {
         author: { '@id': personId },
         offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
         ...(p.features.length ? { featureList: p.features.map((feature) => feature.title) } : {}),
+        ...(p.audience
+          ? { audience: { '@type': 'Audience', audienceType: p.audience } }
+          : {}),
         ...(p.keywords.length ? { keywords: p.keywords.join(', ') } : {}),
         ...(p.updatedDate ? { dateModified: p.updatedDate.toISOString() } : {}),
       };
@@ -96,7 +99,7 @@ const hashForward = [
   '(function(){try{',
   'var id=location.hash.slice(1);',
   'if(!id)return;',
-  'var m=id.match(/^prg-(omnivoice|memxt|opal)$/);',
+  'var m=id.match(/^prg-(omnivoice|bootable|memxt|opal)$/);',
   "if(m){location.replace('/'+m[1]);return;}",
   'm=id.match(/^doc-(.+)$/);',
   "if(m){location.replace('/blog/'+m[1]);return;}",

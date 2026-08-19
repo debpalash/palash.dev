@@ -6,7 +6,7 @@ export const GET: APIHandler = () => {
   const lines: string[] = [
     '# Palash Debnath — palash.dev',
     '',
-    '> Software engineer and product builder in India. Building open-source, local-first tools for AI audio, media, and developer memory.',
+    '> Software engineer and product builder in India. Building open-source tools for AI audio, media, boot media, and developer memory.',
     '',
     '---',
     '',

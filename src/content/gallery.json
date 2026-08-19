@@ -154,6 +154,34 @@
     "group": "omnivoice"
   },
   {
+    "id": "bootable-gui-discover",
+    "title": "Bootable — native desktop catalog",
+    "caption": "Desktop discovery",
+    "src": "https://raw.githubusercontent.com/debpalash/bootable/main/docs/screenshots/gui-discover.png",
+    "group": "bootable"
+  },
+  {
+    "id": "bootable-tui-main",
+    "title": "Bootable — mouse-friendly terminal interface",
+    "caption": "Terminal interface",
+    "src": "https://raw.githubusercontent.com/debpalash/bootable/main/docs/screenshots/tui-main.png",
+    "group": "bootable"
+  },
+  {
+    "id": "bootable-gui-demo",
+    "title": "Bootable — desktop discovery demo",
+    "caption": "Desktop demo",
+    "src": "https://raw.githubusercontent.com/debpalash/bootable/main/docs/screenshots/gui-demo.gif",
+    "group": "bootable"
+  },
+  {
+    "id": "bootable-tui-demo",
+    "title": "Bootable — terminal discovery demo",
+    "caption": "Terminal demo",
+    "src": "https://raw.githubusercontent.com/debpalash/bootable/main/docs/screenshots/tui-demo.gif",
+    "group": "bootable"
+  },
+  {
     "id": "memxt-demo",
     "title": "memxt — semantic recall demo",
     "caption": "Semantic recall",

@@ -6,7 +6,7 @@ export const GET: APIHandler = () => {
   const lines: string[] = [
     '# Palash Debnath',
     '',
-    '> Palash Debnath is a software engineer and product builder in India. He builds open-source, local-first tools for AI audio, media, and developer memory.',
+    '> Palash Debnath is a software engineer and product builder in India. He builds open-source tools for AI audio, media, boot media, and developer memory.',
     '',
     'Canonical website: https://palash.dev/',
     'Author: https://palash.dev/#person',
@@ -62,7 +62,7 @@ export const GET: APIHandler = () => {
   }
 
   lines.push('## About', '');
-  lines.push('Engineer, product builder, and systems thinker building VoiceStudio.sh, Opal, and memXT in the open.');
+  lines.push('Engineer, product builder, and systems thinker building VoiceStudio.sh, Bootable, Opal, and memXT in the open.');
   lines.push('Also known as: debpalash (GitHub), idebpalash (X). Domain: palash.dev.');
   lines.push(`Stack: ${SITE.stack.join(', ')}`);
   lines.push('Contact: mailto:hi@palash.dev');
