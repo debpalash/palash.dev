@@ -10,7 +10,7 @@ const shotFor = (gallery: GalleryShot[], id: string) =>
 
 export default function WorkFeed(props: { products: Product[]; gallery: GalleryShot[] }) {
   return (
-    <div class="feed-list">
+    <div class="feed-list feed-grid">
       <For each={props.products}>
         {(p) => {
           const shot = shotFor(props.gallery, p.id);

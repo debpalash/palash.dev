@@ -3112,3 +3112,86 @@ html[data-mode='light'] .ptabs.is-stuck {
   content: ' — ';
   color: var(--text-faint);
 }
+
+/* ---------------------------------------------------------------------------
+   Work cards run compact: tighter vertical rhythm, a smaller avatar and
+   one-step-down type so more projects fit above the fold. Writing/lab keep
+   their existing proportions. */
+.fitem-work {
+  grid-template-columns: 32px minmax(0, 1fr);
+  gap: 0.75rem;
+  padding-block: 0.85rem;
+}
+
+.fitem-work .fitem-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+}
+
+.fitem-work .fitem-title {
+  font-size: 0.95rem;
+}
+
+.fitem-work .fitem-desc {
+  font-size: 0.87rem;
+  line-height: 1.45;
+}
+
+.fitem-work .fitem-media {
+  margin-top: 0.55rem;
+}
+
+.fitem-work .fitem-details {
+  margin-left: 2.9rem;
+}
+
+/* ---------------------------------------------------------------------------
+   Work tab as a card grid: projects flow into responsive columns instead of
+   a single ruled list. Each cell regains its own card chrome — border,
+   radius, padding — while keeping the accent tick and grain texture. */
+.feed-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.9rem;
+  align-items: stretch;
+  padding-top: 1rem;
+}
+
+/* laptops and up: two side-by-side project cards */
+@media (min-width: 640px) {
+  .feed-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* large desktops only (a 13" laptop at 1280–1440px stays two-up): a third column */
+@media (min-width: 1600px) {
+  .feed-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.feed-grid .fitem {
+  display: flex;
+  flex-direction: column;
+  margin-inline: 0;
+  padding-inline: 1.15rem;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+/* the list's rail-to-rail separator rule doesn't apply inside the grid */
+.feed-grid > .fitem + .fitem {
+  border-top: 1px solid var(--border);
+}
+
+.feed-grid .fitem::before {
+  left: 1.15rem;
+}
+
+/* equal-height cells: the details row pins to the card's foot */
+.feed-grid .fitem-details {
+  margin-block: 0.95rem auto;
+}
