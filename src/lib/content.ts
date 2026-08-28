@@ -39,7 +39,7 @@ export interface Product {
   website?: string;
   github?: string;
   stars?: number;
-  /** total release-asset downloads, refreshed at build (scripts/refresh-stats.mjs) */
+  /** public stable-release binary/archive downloads, refreshed at build */
   downloads?: number;
   license?: string;
   pricing?: 'free' | 'paid' | 'freemium';

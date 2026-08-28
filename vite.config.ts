@@ -6,6 +6,8 @@ import solid from '@solidjs/vite-plugin';
 import { generatePosts } from './scripts/content-pipeline.mjs';
 import { refreshStats } from './scripts/stats-pipeline.mjs';
 
+const reviewedBuildId = process.env.SITE_CHANGE_BUILD_ID?.match(/^[0-9a-f]{64}$/)?.[0];
+
 /**
  * The generated-content pipeline as a plugin: renders blog posts to
  * src/generated/posts.json and refreshes GitHub stats at build start, and
@@ -70,9 +72,10 @@ export default defineConfig({
     },
   },
   // Salted into edge-cache keys so a deploy never serves the previous
-  // build's cached pages.
+  // build's cached pages. Exact site reviews provide a source fingerprint so
+  // repeated builds of the same reviewed bytes stay reproducible.
   define: {
-    __BUILD_ID__: JSON.stringify(Date.now().toString(36)),
+    __BUILD_ID__: JSON.stringify(reviewedBuildId?.slice(0, 16) ?? Date.now().toString(36)),
   },
   build: {
     target: 'esnext',

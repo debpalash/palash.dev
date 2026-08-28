@@ -25,6 +25,16 @@ Blog posts are markdown in `src/content/blog`; `scripts/gen-content.mjs` renders
 to HTML at build time (GFM + smart quotes + heading ids + shiki `github-dark-default`)
 so the Worker ships zero markdown machinery.
 
+## Build-time metrics
+
+The product download figure counts uploaded binary and archive assets from public,
+stable GitHub releases. It includes AppImage, DMG, MSI, EXE, ZIP, DEB, RPM, RUN,
+and TAR.GZ files. It excludes drafts, prereleases, updater metadata, checksums,
+signatures, and scripts.
+
+Docker Hub pulls and GHCR downloads stay in the generated stats breakdown for
+analysis. The public download figure does not add them to release-file downloads.
+
 ## Commands
 
 ```sh

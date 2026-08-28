@@ -1,0 +1,63 @@
+---
+title: "What Local-First Has to Explain"
+description: "VoiceStudio, Opal, and Bootable keep different things under user control. Their useful trust boundaries are more specific than one label."
+publishDate: 2026-08-28T15:55:00Z
+tags: ["engineering", "privacy", "open-source", "programs"]
+draft: false
+ogKicker: "$ cat THE_LOG"
+---
+
+I use *local-first* for software I build. The phrase only helps when I can say where the boundary is.
+
+A desktop app can keep its database on disk while sending search terms to a catalog service. It can keep the interface unprivileged while asking for administrator access for one operation. It can run models on the user's hardware while offering an explicit remote worker.
+
+VoiceStudio, Opal, and Bootable make those choices in different places. Looking at all three is more useful than treating local-first as one blanket promise.
+
+## VoiceStudio: follow the data path
+
+VoiceStudio's core creation workflow needs no account, API key, subscription, or usage meter. The desktop app talks to its backend over loopback, and local engines process audio on the user's machine.
+
+That default does not make every route local. Remote workers and OpenAI-compatible speech recognition are opt-in paths where project data or audio can leave the machine. VoiceStudio labels those paths in the interface. Analytics stays off until consent; when enabled, its allowlist excludes text, audio, file names, voices, and projects.
+
+The [v0.5.1 speech-platform guide](https://github.com/debpalash/VoiceStudio/blob/v0.5.1/docs/speech-platform.md) makes a narrower boundary visible. Native dictation control binds to `127.0.0.1`, rejects untrusted browser origins, and never accepts audio. The separately shareable speech backend keeps remote access behind its existing authentication boundary and warns operators to use a trusted network plus HTTPS or WSS outside a trusted LAN.
+
+The practical question is not whether VoiceStudio is a desktop app. It is which engine and transport a workflow selected.
+
+## Opal: local state still uses network sources
+
+Opal keeps watch history in SQLite. Its optional taste profile is computed on-device, skipped in incognito mode, and does not create a telemetry feed.
+
+The [v0.6.6 privacy manifest](https://github.com/debpalash/Opal/blob/v0.6.6/docs/PRIVACY.md) also records two launch-time network paths: a GitHub release check, and a `yt-dlp` download when that helper is missing. This is why I prefer an endpoint list over a broad privacy claim.
+
+Catalog browsing is a network feature too. When a user has no TMDB key, v0.6.6 [queries Cinemeta](https://github.com/debpalash/Opal/blob/v0.6.6/src/services/tmdb_api.zig#L226-L264) for movies, series, searches, seasons, and episodes. Poster requests can go to Metahub. Playback sources have their own boundaries. BitTorrent peers and trackers can see the user's IP because that is how the protocol works.
+
+For Opal, local state means viewing history and recommendations do not require a central analytics profile. It does not mean offline playback or invisible network activity.
+
+## Bootable: keep privilege narrow
+
+Bootable's boundary is authority over a destructive device operation. Its desktop and terminal interfaces stay unprivileged. After the user reviews an erase plan and acknowledges it, the interface launches a fixed, root-owned helper through the operating system's authentication path.
+
+The helper does not trust the device path handed over by the interface. It rediscovers the target by stable identity, repeats the removable and system-disk policy, compares capacity and safety flags with the reviewed plan, and unmounts child filesystems before writing. Raw writes are hashed while streaming and read back over the image length for comparison. The details are in the immutable [v0.1.1 safety model](https://github.com/debpalash/bootable/blob/v0.1.1/docs/safety.md) and [architecture note](https://github.com/debpalash/bootable/blob/v0.1.1/docs/architecture.md).
+
+Those checks cannot identify the physical drive the user meant to erase. The user still has to verify it. The v0.1.1 packages are also unsigned, so the release documentation asks users to verify checksums and keep backups.
+
+For Bootable, the useful question is which code receives administrator access and what it verifies again after authentication.
+
+## Questions I want the documentation to answer
+
+Before I trust a local-first claim, I look for concrete answers:
+
+- Which network requests happen on launch before a feature is selected?
+- Which feature sends which data to which host?
+- Where does the app retain history, and what does incognito or deletion change?
+- Which process crosses a privilege boundary, and how narrow is its command surface?
+- Which checks run again immediately before an irreversible action?
+- Which limitations still depend on user judgment, packaging, or network configuration?
+
+If the documentation cannot answer those questions, I treat the label as incomplete. The boundary should be specific enough for another person to inspect in source.
+
+Current source and documentation:
+
+- [VoiceStudio](https://github.com/debpalash/VoiceStudio) and its [local speech platform](https://github.com/debpalash/VoiceStudio/blob/v0.5.1/docs/speech-platform.md)
+- [Opal](https://github.com/debpalash/Opal) and its [v0.6.6 privacy manifest](https://github.com/debpalash/Opal/blob/v0.6.6/docs/PRIVACY.md)
+- [Bootable](https://github.com/debpalash/bootable) and its [v0.1.1 safety model](https://github.com/debpalash/bootable/blob/v0.1.1/docs/safety.md)

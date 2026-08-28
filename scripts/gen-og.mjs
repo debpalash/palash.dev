@@ -3,7 +3,7 @@
  *
  * Cards are rendered as a PALASH.OS window in the shaktimaan palette, so a
  * shared link looks like a screenshot of the site. Runs in plain Node (see
- * `bun run og`, and the `build` script) — satori turns text into paths, so the
+ * `bun run og`, and the `build` script). Satori turns text into paths, so the
  * PNG needs no fonts at raster time.
  */
 import { readFile, readdir, writeFile, mkdir } from 'node:fs/promises';
@@ -14,6 +14,9 @@ import { Resvg } from '@resvg/resvg-js';
 
 const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const OUT = path.join(root, 'public/og');
+const includeDrafts = process.argv.includes('--include-drafts');
+// Preserve existing published card bytes unless a post declares its own kicker.
+const legacyLiveLogKicker = '$ cat \u2014 THE LOG';
 
 // shaktimaan palette (src/styles/global.css)
 const C = {
@@ -65,7 +68,7 @@ function card({ chrome, kicker, title, subtitle, metaLeft, metaRight, titleSize 
               alignItems: 'center',
               justifyContent: 'space-between',
             },
-            // ASCII / Latin-1 only — the embedded font subset has no box-drawing glyphs
+            // ASCII / Latin-1 only because the embedded font subset has no box-drawing glyphs
             [text({}, chrome), text({ letterSpacing: 4 }, '_ [] ×')],
           ),
           // body
@@ -155,15 +158,17 @@ const posts = (await readdir(blogDir)).filter((f) => /\.mdx?$/.test(f));
 let live = 0;
 for (const file of posts) {
   const fm = frontmatter(await readFile(path.join(blogDir, file), 'utf8'));
-  if (!fm || fm.draft === 'true') continue;
-  live++;
+  if (!fm) continue;
+  const draft = fm.draft === 'true';
+  if (draft && !includeDrafts) continue;
+  if (!draft) live++;
   const slug = file.replace(/\.mdx?$/, '');
   const date = (fm.publishDate || '').split('T')[0];
   await render(
     `blog-${slug}`,
     card({
       chrome: `articles/${slug}.md`,
-      kicker: '$ cat — THE LOG',
+      kicker: fm.ogKicker || (draft ? '$ cat THE_LOG' : legacyLiveLogKicker),
       title: clamp(fm.title || slug, 62),
       subtitle: clamp(fm.description || '', 150),
       metaLeft: (fm.tags || []).map((t) => `#${t}`).join(' '),
