@@ -62,7 +62,7 @@ const edgeCache: Middleware = async (request, next) => {
 
   // HTML gets the edge policy stamped on; feeds already declare their own.
   const cacheable = contentType.includes('text/html')
-    || /application\/xml|text\/markdown|text\/plain/.test(contentType);
+    || /application\/(xml|json|pdf)|text\/(markdown|plain)/.test(contentType);
   if (!cacheable) return response;
 
   // NEVER buffer the body (no arrayBuffer/text): the SSR renderer settles

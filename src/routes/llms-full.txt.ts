@@ -18,6 +18,7 @@ export const GET: APIHandler = () => {
     '- Contact: mailto:hi@palash.dev',
     '- RSS: https://palash.dev/rss.xml',
     '- Humans.txt: https://palash.dev/humans.txt',
+    '- Resume: https://palash.dev/resume/ (PDF: /resume.pdf, text: /resume.txt, LLM markdown: /resume.llm.txt, JSON: /resume.json)',
     '',
     '## Projects',
     '',

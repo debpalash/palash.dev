@@ -2318,6 +2318,95 @@ html[data-mode='light'] .phead-banner-kicker {
   min-height: 2.75rem;
 }
 
+/* ------------------------------------------------------ resume human/agent views */
+
+.view-toggle {
+  display: inline-flex;
+  gap: 0;
+  margin: 0 0 1.75rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 3px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+}
+
+.view-toggle button {
+  appearance: none;
+  border: 0;
+  border-radius: 999px;
+  background: none;
+  color: var(--text-muted);
+  font: inherit;
+  padding: 0.45rem 1.1rem;
+  min-height: 2.5rem;
+  cursor: pointer;
+}
+
+.view-toggle button[aria-pressed='true'] {
+  background: var(--bg-inset);
+  color: var(--text);
+  border: 1px solid var(--border-strong);
+  margin: -1px;
+}
+
+.resume-agent-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1rem;
+  margin-bottom: 1rem;
+}
+
+.resume-agent-head p {
+  margin: 0;
+  flex: 1 1 16rem;
+}
+
+.resume-copy {
+  appearance: none;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: none;
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  padding: 0.5rem 1rem;
+  min-height: 2.5rem;
+  cursor: pointer;
+}
+
+.resume-copy:hover {
+  border-color: var(--border-strong);
+}
+
+.resume-agent pre {
+  max-height: none;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.resume-updated {
+  margin: -1rem 0 1.75rem;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+/* Recruiters print the human view: chrome off, content only. */
+@media print {
+  .view-toggle,
+  .resume-copy,
+  .resume-agent-head,
+  .back-link {
+    display: none;
+  }
+
+  .resume-agent pre {
+    border: 0;
+    padding: 0;
+  }
+}
+
 .product-proof {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));

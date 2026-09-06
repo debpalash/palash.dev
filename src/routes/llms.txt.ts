@@ -17,6 +17,7 @@ export const GET: APIHandler = () => {
     '## Start here',
     '',
     '- [Homepage](https://palash.dev/): profile, shipped work, and current focus',
+    '- [Resume](https://palash.dev/resume/): agent-first resume with human/agent views',
     '- [Writing](https://palash.dev/blog/): engineering and product notes',
     '- [Experiments](https://palash.dev/lab/): small open-source prototypes',
     '- [Media](https://palash.dev/media/): product screenshots and visual references',
@@ -65,6 +66,10 @@ export const GET: APIHandler = () => {
   lines.push('Engineer, product builder, and systems thinker building VoiceStudio.sh, Bootable, Opal, and memXT in the open.');
   lines.push('Also known as: debpalash (GitHub), idebpalash (X). Domain: palash.dev.');
   lines.push(`Stack: ${SITE.stack.join(', ')}`);
+  lines.push('Resume (ATS PDF): https://palash.dev/resume.pdf');
+  lines.push('Resume (plain text): https://palash.dev/resume.txt');
+  lines.push('Resume (LLM markdown): https://palash.dev/resume.llm.txt');
+  lines.push('Resume (JSON): https://palash.dev/resume.json');
   lines.push('Contact: mailto:hi@palash.dev');
   lines.push('GitHub: https://github.com/debpalash');
   lines.push('X: https://x.com/idebpalash');

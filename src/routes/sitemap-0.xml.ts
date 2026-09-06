@@ -23,6 +23,7 @@ export const GET: APIHandler = () => {
       priority: '0.8',
     })),
     { loc: '/contact/', changefreq: 'yearly', priority: '0.5' },
+    { loc: '/resume/', lastmod: newestContentDate, changefreq: 'monthly', priority: '0.6' },
     { loc: '/lab/', changefreq: 'monthly', priority: '0.7' },
     { loc: '/media/', changefreq: 'monthly', priority: '0.7' },
     ...products.map((product) => ({
