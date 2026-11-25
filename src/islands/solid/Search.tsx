@@ -43,7 +43,7 @@ export default function Search() {
         <Show when={ready()}>
           <p role="status" aria-live="polite">{results().length} results</p>
           <Show when={results().length} fallback={<p>No matches. Try another term.</p>}>
-            <ul><For each={results()}>{entry => <li><a href={entry.url}>{entry.title}</a><p>{entry.description}</p></li>}</For></ul>
+            <ul class="list results"><For each={results()}>{entry => <li><a href={entry.url}>{entry.title}</a><p>{entry.description}</p></li>}</For></ul>
           </Show>
         </Show>
         </Show>

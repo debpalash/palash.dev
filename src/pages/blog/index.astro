@@ -1,10 +1,19 @@
 ---
 import Site from '../../layouts/Site.astro';
 import { posts } from '../../lib/content';
+import Authorship from '../../components/Authorship.astro';
 import { pageByPath } from '../../lib/page-data';
 ---
-<Site page={pageByPath('/blog/')}>
-  <h1>Writing</h1><p>Notes on software, AI, and building things.</p>
-  <p><a href="/rss.xml">Subscribe via RSS</a> · <a href="/search/">Search</a></p>
-  {posts.map(post => <article><h2><a href={`/blog/${post.id}/`}>{post.title}</a></h2><time datetime={post.publishDate.toISOString()}>{post.publishDate.toISOString().slice(0, 10)}</time><p>{post.description}</p></article>)}
+<Site page={pageByPath('/blog/')} status={`${posts.length} articles`}>
+  <h1>Writing</h1><p class="lede">Notes on software, AI, and building things.</p>
+  <div class="buttons"><a class="button primary" href="/rss.xml">Subscribe via RSS</a><a class="button" href="/search/?kind=article">Search</a></div>
+  <div class="listview">
+    <div class="listview-head" aria-hidden="true"><span>Name</span><span>Date</span></div>
+    <ol>{posts.map(post => <li><a href={`/blog/${post.id}/`}>{post.title}</a><time class="when" datetime={post.publishDate.toISOString()}>{post.publishDate.toISOString().slice(0, 10)}</time><span class="sub"><span class="mins">{post.readMinutes} min</span> <Authorship value={post.authorship} /> {post.description}</span></li>)}</ol>
+  </div>
 </Site>
+
+<style>
+  .mins { color: var(--text-2); font-weight: 700; }
+  .listview li:focus-within .mins, .listview li:has(a:active) .mins { color: #fff; }
+</style>

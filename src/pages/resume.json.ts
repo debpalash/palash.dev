@@ -1,45 +1,12 @@
 import type { APIRoute } from 'astro';
-import { RESUME, resumeContactParts, resumeLocationLine, resumeProjects, resumeTotalStars } from '../lib/resume';
+import { RESUME, resumeData } from '../lib/resume';
 
 /**
  * Structured resume for agents: the same facts as /resume.llm.txt as JSON.
  * Stable keys — safe to parse without an LLM.
  */
 export const GET: APIRoute = () => {
-  const body = JSON.stringify(
-    {
-      name: RESUME.name,
-      aka: RESUME.aka,
-      title: RESUME.title,
-      location: resumeLocationLine(),
-      email: RESUME.email,
-      ...(RESUME.phone ? { phone: RESUME.phone } : {}),
-      ...(RESUME.yearsOfExperience ? { yearsOfExperience: RESUME.yearsOfExperience } : {}),
-      timezone: RESUME.timezone,
-      ...(RESUME.workAuthorization ? { workAuthorization: RESUME.workAuthorization } : {}),
-      openTo: RESUME.openTo,
-      contacts: resumeContactParts(),
-      site: `${RESUME.site}/`,
-      github: RESUME.github,
-      x: RESUME.x,
-      summary: RESUME.summary,
-      skills: RESUME.skills,
-      experience: RESUME.experience,
-      projects: resumeProjects(),
-      education: RESUME.education,
-      links: {
-        resumeHtml: `${RESUME.site}/resume/`,
-        resumePdf: `${RESUME.site}/resume.pdf`,
-        resumeTxt: `${RESUME.site}/resume.txt`,
-        resumeLlm: `${RESUME.site}/resume.llm.txt`,
-        resumeJson: `${RESUME.site}/resume.json`,
-      },
-      portfolioStars: resumeTotalStars(),
-      updated: RESUME.updated,
-    },
-    null,
-    2,
-  );
+  const body = JSON.stringify(resumeData(), null, 2);
   return new Response(body, {
     headers: {
       'Content-Type': 'application/json; charset=utf-8',

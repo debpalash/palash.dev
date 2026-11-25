@@ -31,10 +31,11 @@ export const GET: APIRoute = () => {
 
   const body = [
     '<?xml version="1.0" encoding="UTF-8"?>',
-    '<rss version="2.0"><channel>',
+    '<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel>',
     `<title>${escapeXml('Palash Debnath — The Log')}</title>`,
     `<description>${escapeXml('Engineering, product, AI, and open-source notes from Palash Debnath.')}</description>`,
     `<link>${SITE.url}/</link>`,
+    `<atom:link href="${SITE.url}/rss.xml" rel="self" type="application/rss+xml"/>`,
     '<language>en-us</language>',
     `<copyright>© ${SITE.author}</copyright>`,
     `<managingEditor>${SITE.email} (${SITE.author})</managingEditor>`,

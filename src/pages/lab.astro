@@ -3,8 +3,18 @@ import Site from '../layouts/Site.astro';
 import { experiments, company } from '../lib/content';
 import { pageByPath } from '../lib/page-data';
 ---
-<Site page={pageByPath('/lab/')}>
-  <h1>Lab</h1>
-  <section><h2>Experiments</h2>{experiments.map(p => <article><h3><a href={p.url}>{p.name}</a></h3><p>{p.description}</p><p>{p.lang}</p></article>)}</section>
-  <section><h2>At YUPCHA</h2>{company.map(p => <article><h3><a href={p.url}>{p.name}</a></h3><p>{p.description}</p></article>)}</section>
+<Site page={pageByPath('/lab/')} status={`${experiments.length + company.length} items`}>
+  <h1>Lab</h1><p class="lede">Every other public repo — experiments, tools, plugins, and courses — plus work from YUPCHA.</p>
+  <section aria-labelledby="experiments"><h2 id="experiments">Repositories · <span data-live-lab-count>{experiments.length}</span></h2>
+    <div class="listview">
+      <div class="listview-head" aria-hidden="true"><span>Name</span><span>Language</span></div>
+      <ul data-live-lab>{experiments.map(p => <li><a href={p.url}>{p.name}</a><span class="when">{[p.lang, p.stars ? `★ ${p.stars}` : ''].filter(Boolean).join(' · ') || '—'}</span>{p.description && <span class="sub">{p.description}</span>}</li>)}</ul>
+    </div>
+  </section>
+  <section aria-labelledby="yupcha"><h2 id="yupcha">At YUPCHA</h2>
+    <div class="listview">
+      <div class="listview-head" aria-hidden="true"><span>Name</span><span>Language</span></div>
+      <ul>{company.map(p => <li><a href={p.url}>{p.name}</a><span class="when">{p.lang}</span><span class="sub">{p.description}</span></li>)}</ul>
+    </div>
+  </section>
 </Site>

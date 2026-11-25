@@ -1,0 +1,20 @@
+---
+import { authorshipLabel } from '../lib/content';
+interface Props { value?: keyof typeof authorshipLabel }
+const { value } = Astro.props;
+const title = { human: 'Written by a person without AI drafting', 'ai-assisted': 'Written by a person with AI help', ai: 'Drafted mostly by AI, reviewed by a person' };
+---
+{value && <span class={`authorship a-${value}`} title={title[value]}><span class="glyph" aria-hidden="true">{value === 'human' ? '✎' : value === 'ai' ? '✦' : '✎✦'}</span>{authorshipLabel[value]}</span>}
+
+<style>
+  .authorship { display: inline-flex; align-items: center; gap: 4px; padding: 0 7px; border: 1px solid; border-radius: 999px; font: 700 .625rem/1.7 var(--font-ui); letter-spacing: .02em; white-space: nowrap; vertical-align: middle; }
+  .glyph { font-weight: 400; }
+  .a-human { color: #1f6b33; background: #e2f5e2; border-color: #9fd3a6; }
+  .a-ai-assisted { color: #1d4f98; background: #e2ebfa; border-color: #a8bfe6; }
+  .a-ai { color: #5b2f8f; background: #efe5fb; border-color: #c9b2ea; }
+  @media (prefers-color-scheme: dark) {
+    .a-human { color: #9fe0a8; background: #1d3524; border-color: #2f6b3c; }
+    .a-ai-assisted { color: #a9c8ff; background: #1f2f4d; border-color: #35558c; }
+    .a-ai { color: #d8bdfc; background: #2f2342; border-color: #5b3f86; }
+  }
+</style>

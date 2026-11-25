@@ -40,7 +40,7 @@
     "UEFI"
   ],
   "order": 2,
-  "logoUrl": "https://raw.githubusercontent.com/debpalash/bootable/main/assets/bootable-app-mark.svg",
+  "logoUrl": "/projects/bootable-logo.svg",
   "workImage": "https://raw.githubusercontent.com/debpalash/bootable/main/docs/screenshots/gui-discover.png",
   "category": "UtilitiesApplication",
   "os": "Linux, Windows, macOS",

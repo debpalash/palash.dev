@@ -2,10 +2,36 @@
 import Site from '../layouts/Site.astro';
 import { pageByPath } from '../lib/page-data';
 import { SITE } from '../site.config';
+const support = SITE.links.filter(l => ['ko-fi', 'paypal'].includes(l.label));
 ---
-<Site page={pageByPath('/contact/')}>
-  <h1>Contact</h1>
-  <p><a href={`mailto:${SITE.email}`}>{SITE.email}</a></p>
-  <ul><li><a href={SITE.github}>GitHub</a></li><li><a href={SITE.x}>X</a></li><li><a href={SITE.company.url}>YUPCHA</a></li></ul>
-  <h2>Support the work</h2><ul>{SITE.links.filter(l => ['ko-fi', 'paypal'].includes(l.label)).map(l => <li><a href={l.href}>{l.label}</a></li>)}</ul>
+<Site page={pageByPath('/contact/')} status="1 card">
+  <section class="card panel" aria-labelledby="contact-title">
+    <header>
+      <img class="avatar" src="/avatar.webp" alt="" width="64" height="64" />
+      <div>
+        <h1 id="contact-title">{SITE.author}</h1>
+        <p class="muted">Software engineer · {SITE.company.name}</p>
+      </div>
+    </header>
+    <dl class="info">
+      <dt>email</dt><dd><a href={`mailto:${SITE.email}`}>{SITE.email}</a></dd>
+      <dt>GitHub</dt><dd><a href={SITE.github} rel="me">github.com/{SITE.handle}</a></dd>
+      <dt>X</dt><dd><a href={SITE.x} rel="me">@{SITE.xHandle}</a></dd>
+      <dt>company</dt><dd><a href={SITE.company.url}>{SITE.company.name}</a></dd>
+      <dt>homepage</dt><dd><a href={SITE.voicestudio}>voicestudio.sh</a></dd>
+      {support.map((l, i) => <><dt>{i === 0 ? 'support' : ''}</dt><dd><a href={l.href}>{l.label === 'ko-fi' ? 'Ko-fi' : 'PayPal'}</a></dd></>)}
+    </dl>
+    <div class="buttons"><a class="button primary" href={`mailto:${SITE.email}`}>Send Email</a><a class="button" href="/resume/">Résumé</a></div>
+  </section>
 </Site>
+
+<style>
+  .card { max-width: 460px; padding: 18px 20px; }
+  header { display: flex; gap: 14px; align-items: center; padding-bottom: 14px; margin-bottom: 12px; border-bottom: 1px solid var(--hairline); }
+  .avatar { width: 64px; height: 64px; border-radius: 10px; box-shadow: 0 1px 4px rgba(0, 0, 0, .3); }
+  h1 { margin: 0; font-size: 1.6rem; }
+  header .muted { margin: 2px 0 0; }
+  .info { gap: 5px 12px; font-size: .8125rem; }
+  .info dt:empty::after { content: none; }
+  .buttons { justify-content: flex-end; margin-bottom: 0; }
+</style>

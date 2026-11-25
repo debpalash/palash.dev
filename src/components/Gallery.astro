@@ -1,0 +1,107 @@
+---
+import type { GalleryShot } from '../lib/content';
+interface Props { shots: GalleryShot[] }
+const { shots } = Astro.props;
+---
+<ul class="gallery">{shots.map(s => <li><figure><a href={s.src}><img src={`/gallery/${s.id}.webp`} alt={s.title} width="600" height="375" loading="lazy" decoding="async" /></a><figcaption>{s.caption}</figcaption></figure></li>)}</ul>
+
+<script>
+  // Preview: opens screenshots in a viewer window instead of navigating to the raw file.
+  const still = matchMedia('(prefers-reduced-motion: reduce)');
+  const viewer = document.createElement('dialog');
+  viewer.className = 'preview';
+  viewer.setAttribute('aria-label', 'Preview');
+  viewer.innerHTML = `
+    <div class="preview-titlebar">
+      <div class="lights"><button type="button" class="light close" data-close aria-label="Close preview"><span aria-hidden="true">×</span></button><button type="button" class="light minimize" data-close aria-label="Minimize preview"><span aria-hidden="true">−</span></button><button type="button" class="light zoom" data-zoom aria-label="Zoom preview" aria-pressed="false"><span aria-hidden="true">+</span></button></div>
+      <div class="preview-title"></div>
+    </div>
+    <div class="preview-toolbar">
+      <div class="nav-buttons"><button type="button" data-step="-1" aria-label="Previous screenshot">◀</button><button type="button" data-step="1" aria-label="Next screenshot">▶</button></div>
+      <span class="preview-count" aria-live="polite"></span>
+      <a class="button preview-open" target="_blank" rel="noopener">Open Original ↗</a>
+    </div>
+    <div class="preview-stage"><img alt="" /></div>`;
+  document.body.append(viewer);
+  const stage = viewer.querySelector<HTMLImageElement>('.preview-stage img')!;
+  const title = viewer.querySelector<HTMLElement>('.preview-title')!;
+  const count = viewer.querySelector<HTMLElement>('.preview-count')!;
+  const original = viewer.querySelector<HTMLAnchorElement>('.preview-open')!;
+  let links: HTMLAnchorElement[] = [];
+  let index = 0;
+
+  const thumbOf = (i: number) => links[i]?.querySelector('img') ?? null;
+  const show = (i: number) => {
+    index = (i + links.length) % links.length;
+    const link = links[index];
+    const thumb = thumbOf(index)!;
+    stage.src = thumb.currentSrc || thumb.src;
+    stage.alt = thumb.alt;
+    const full = new Image();
+    full.onload = () => { if (links[index] === link) stage.src = full.src; };
+    full.src = link.href;
+    title.textContent = thumb.alt;
+    viewer.querySelector('.preview-titlebar')!.setAttribute('title', thumb.alt);
+    count.textContent = `${index + 1} of ${links.length}`;
+    original.href = link.href;
+  };
+  // Shared-element zoom between the thumbnail and the viewer image.
+  const morph = (update: () => void, from: HTMLElement | null, to: HTMLElement | null) => {
+    if (!document.startViewTransition || still.matches || !from || !to) { update(); return; }
+    from.style.viewTransitionName = 'preview-image';
+    const vt = document.startViewTransition(() => {
+      update();
+      from.style.viewTransitionName = '';
+      to.style.viewTransitionName = 'preview-image';
+    });
+    vt.ready.catch(() => {});
+    vt.finished.catch(() => {}).finally(() => { from.style.viewTransitionName = ''; to.style.viewTransitionName = ''; });
+  };
+  const open = (list: HTMLAnchorElement[], i: number) => {
+    links = list;
+    show(i);
+    morph(() => viewer.showModal(), thumbOf(index), stage);
+  };
+  const close = () => {
+    if (!viewer.open) return;
+    morph(() => viewer.close(), stage, thumbOf(index));
+  };
+
+  for (const gallery of document.querySelectorAll<HTMLElement>('.gallery')) {
+    const list = [...gallery.querySelectorAll<HTMLAnchorElement>('a')];
+    list.forEach((link, i) => link.addEventListener('click', e => {
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
+      e.preventDefault();
+      open(list, i);
+    }));
+  }
+  viewer.addEventListener('click', e => {
+    const target = e.target as HTMLElement;
+    if (target === viewer || target.closest('[data-close]')) close();
+    const zoom = target.closest<HTMLElement>('[data-zoom]');
+    if (zoom) zoom.setAttribute('aria-pressed', String(viewer.classList.toggle('zoomed')));
+    const step = target.closest<HTMLElement>('[data-step]');
+    if (step) show(index + Number(step.dataset.step));
+  });
+  viewer.addEventListener('cancel', e => { e.preventDefault(); close(); });
+  viewer.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight') { e.preventDefault(); show(index + 1); }
+    if (e.key === 'ArrowLeft') { e.preventDefault(); show(index - 1); }
+  });
+  let touchX = 0;
+  stage.parentElement!.addEventListener('touchstart', e => { touchX = e.touches[0].clientX; }, { passive: true });
+  stage.parentElement!.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - touchX;
+    if (Math.abs(dx) > 50) show(index + (dx < 0 ? 1 : -1));
+  });
+</script>
+
+<style>
+  .gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(128px, 100%), 1fr)); gap: 12px 10px; margin: 6px 0 4px; padding: 0; list-style: none; }
+  figure { margin: 0; }
+  a { display: block; padding: 3px; background: #fff; border-radius: 2px; box-shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 4px 10px rgba(0, 0, 0, .12); transition: transform .15s ease; }
+  a:hover, a:focus-visible { transform: scale(1.04); }
+  @media (prefers-color-scheme: dark) { a { background: #3a3b41; box-shadow: 0 1px 2px rgba(0, 0, 0, .5), 0 4px 10px rgba(0, 0, 0, .3); } }
+  img { display: block; width: 100%; aspect-ratio: 16 / 10; object-fit: cover; }
+  figcaption { margin-top: 5px; overflow: hidden; color: var(--text-3); font-size: .6875rem; text-align: center; text-overflow: ellipsis; white-space: nowrap; }
+</style>

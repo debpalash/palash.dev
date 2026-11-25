@@ -5,8 +5,8 @@
   "start_url": "/",
   "scope": "/",
   "display": "minimal-ui",
-  "background_color": "#080a0d",
-  "theme_color": "#080a0d",
+  "background_color": "#cad8ea",
+  "theme_color": "#cad8ea",
   "lang": "en",
   "icons": [
     { "src": "/favicon.png", "sizes": "128x128", "type": "image/png" }

@@ -17,7 +17,6 @@ import { fileURLToPath } from 'node:url';
 const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const outFile = path.join(root, 'src/generated/stats.json');
 const MAX_AGE_MS = 60 * 60 * 1000;
-const USER_DOWNLOAD_ASSET = /\.(?:appimage|dmg|msi|exe|zip|deb|rpm|run|tar\.gz)$/i;
 
 // Unauthenticated GitHub API limits are tight (60/h/IP); borrow the gh
 // CLI's token when the env doesn't provide one. Some command shims print
@@ -27,22 +26,8 @@ export function cleanGitHubToken(value) {
   return lines.find((line) => /^(?:gh[pousr]_[A-Za-z0-9_]{20,255}|github_pat_[A-Za-z0-9_]{20,255})$/.test(line)) ?? '';
 }
 
-export function isUserDownloadAsset(name) {
-  return typeof name === 'string' && USER_DOWNLOAD_ASSET.test(name.trim());
-}
-
-export function releaseDownloadCount(releases) {
-  if (!Array.isArray(releases)) return 0;
-
-  return releases
-    .filter((release) => release?.draft === false && release?.prerelease === false)
-    .flatMap((release) => release.assets ?? [])
-    .filter((asset) => isUserDownloadAsset(asset?.name))
-    .reduce((sum, asset) => {
-      const count = asset?.download_count;
-      return sum + (Number.isFinite(count) && count >= 0 ? count : 0);
-    }, 0);
-}
+export { isUserDownloadAsset, releaseDownloadCount, releaseSummary, releaseDigest, recentReleases, selectLabRepos } from '../src/lib/github-digest.mjs';
+import { releaseDownloadCount, recentReleases, selectLabRepos } from '../src/lib/github-digest.mjs';
 
 function cliToken() {
   try {
@@ -60,6 +45,8 @@ const headers = {
   ...(token ? { Authorization: `Bearer ${token}` } : {}),
 };
 
+const PROFILE = 'debpalash';
+
 const repoOf = (url) => url?.match(/github\.com\/([^/]+\/[^/#?]+)/)?.[1];
 
 async function gh(pathName) {
@@ -71,9 +58,11 @@ async function gh(pathName) {
 async function repoStats(repo, registries = {}) {
   const info = await gh(`/repos/${repo}`);
   const breakdown = { releases: 0, dockerHub: 0, ghcr: 0 };
+  let recent = [];
   try {
     const releases = await gh(`/repos/${repo}/releases?per_page=100`);
     breakdown.releases = releaseDownloadCount(releases);
+    recent = recentReleases(releases, 1);
   } catch { /* releases stay 0 */ }
   // Docker Hub pulls use its public JSON API.
   if (registries.dockerHub) {
@@ -96,6 +85,7 @@ async function repoStats(repo, registries = {}) {
     // container pulls with release-file downloads in the public total.
     downloads: breakdown.releases,
     breakdown,
+    recent,
   };
 }
 
@@ -110,7 +100,7 @@ async function loadFallback() {
   for (const x of JSON.parse(await readFile(path.join(root, 'src/content/experiments.json'), 'utf8'))) {
     experiments[x.id] = { stars: x.stars ?? 0 };
   }
-  return { products, experiments, fetchedAt: null };
+  return { products, experiments, repos: [], releases: [], fetchedAt: null };
 }
 
 /** single-flight across concurrent build environments */
@@ -125,15 +115,18 @@ export function refreshStats() {
 
 async function run() {
   const fresh = await stat(outFile).then((s) => Date.now() - s.mtimeMs < MAX_AGE_MS).catch(() => false);
-  if (fresh) return;
+  const hasRepos = await readFile(outFile, 'utf8').then((text) => { const s = JSON.parse(text); return Array.isArray(s.repos) && Array.isArray(s.releases); }).catch(() => false);
+  if (fresh && hasRepos) return;
 
   try {
-    const stats = { products: {}, experiments: {}, fetchedAt: new Date().toISOString() };
+    const stats = { products: {}, experiments: {}, repos: [], releases: [], fetchedAt: new Date().toISOString() };
+    const productRepos = [];
 
     const prodDir = path.join(root, 'src/content/products');
     for (const file of (await readdir(prodDir)).filter((f) => f.endsWith('.json'))) {
       const p = JSON.parse(await readFile(path.join(prodDir, file), 'utf8'));
       const repo = repoOf(p.github ?? p.url);
+      if (repo) productRepos.push(repo, repo.split('/')[1]);
       if (repo) stats.products[file.replace(/\.json$/, '')] = await repoStats(repo, p.registries ?? {});
     }
 
@@ -144,6 +137,18 @@ async function run() {
         stats.experiments[x.id] = { stars: info.stargazers_count ?? 0 };
       }
     }
+
+    const owned = [];
+    for (let page = 1; page <= 5; page++) {
+      const batch = await gh(`/users/${PROFILE}/repos?type=owner&sort=pushed&per_page=100&page=${page}`);
+      owned.push(...batch);
+      if (batch.length < 100) break;
+    }
+    stats.repos = selectLabRepos(owned, PROFILE, productRepos);
+    stats.releases = Object.entries(stats.products)
+      .flatMap(([product, s]) => (s.recent ?? []).map((r) => ({ product, ...r })))
+      .sort((a, b) => b.publishedAt.localeCompare(a.publishedAt));
+    for (const s of Object.values(stats.products)) delete s.recent;
 
     await mkdir(path.dirname(outFile), { recursive: true });
     await writeFile(outFile, JSON.stringify(stats, null, 2));

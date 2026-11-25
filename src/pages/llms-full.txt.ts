@@ -34,7 +34,8 @@ export const GET: APIRoute = () => {
     if (p.proof.length) {
       lines.push(`- **Evidence**: ${p.proof.map((item) => `${item.value} ${item.label}`).join('; ')}`);
     }
-    lines.push(`- **Page**: https://palash.dev/${p.id}/`);
+    lines.push(`- **Canonical page**: ${SITE.url}/${p.id}/`);
+    lines.push(`- **Markdown**: ${SITE.url}/${p.id}.md`);
     if (p.website) lines.push(`- **Website**: ${p.website}`);
     if (p.github) lines.push(`- **Source**: ${p.github}`);
     if (p.url && p.url !== p.github) lines.push(`- **URL**: ${p.url}`);
@@ -66,7 +67,8 @@ export const GET: APIRoute = () => {
     lines.push(`- **Date**: ${date}`);
     lines.push(`- **Description**: ${post.description}`);
     lines.push(`- **Tags**: ${post.tags.join(', ')}`);
-    lines.push(`- **URL**: https://palash.dev/blog/${post.id}/`);
+    lines.push(`- **Canonical page**: ${SITE.url}/blog/${post.id}/`);
+    lines.push(`- **Markdown**: ${SITE.url}/blog/${post.id}.md`);
     lines.push('');
     if (post.body) {
       lines.push('#### Content', '');

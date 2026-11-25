@@ -1,0 +1,8 @@
+---
+import type { Product } from '../lib/content';
+interface Props { product: Product; tone: number; size: number; class?: string }
+const { product: p, tone, size, class: className = '' } = Astro.props;
+---
+{p.logoUrl
+  ? <img class={`app-logo ${className}`} src={p.logoUrl} alt="" width={size} height={size} loading="lazy" decoding="async" />
+  : <span class={`icon artwork tone-${tone % 6} mini-${size < 32} ${className}`} aria-hidden="true"><b>{p.name.charAt(0)}</b></span>}

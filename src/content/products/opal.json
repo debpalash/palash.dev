@@ -40,7 +40,7 @@
     "Desktop"
   ],
   "order": 4,
-  "logoUrl": "https://raw.githubusercontent.com/debpalash/Opal/main/assets/logo.svg",
+  "logoUrl": "/projects/opal-logo.svg",
   "workImage": "/projects/opal-home.webp",
   "category": "MultimediaApplication",
   "os": "macOS, Linux, Windows",

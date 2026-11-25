@@ -1,6 +1,8 @@
 ---
 import { render, type CollectionEntry } from 'astro:content';
 import Site from '../../layouts/Site.astro';
+import Authorship from '../../components/Authorship.astro';
+import SpeedReader from '../../components/SpeedReader.astro';
 import { blogEntries, posts } from '../../lib/content';
 import { pageByPath } from '../../lib/page-data';
 export function getStaticPaths() { return blogEntries.map(entry => ({ params: { slug: entry.id }, props: { entry } })); }
@@ -10,17 +12,88 @@ const { Content, headings } = await render(entry);
 const page = pageByPath(`/blog/${entry.id}/`);
 const post = page.post!;
 const related = posts.filter(p => p.id !== post.id && p.tags.some(t => post.tags.includes(t))).slice(0, 3);
+const longDate = (d: Date) => d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
+const section = (post.tags[0] ?? 'Notes').replace(/-/g, ' ');
 ---
-<Site page={page}>
-  <article class="post">
-    <header class="post-header"><p><a class="pill" href="/blog/">← Writing</a></p><h1>{post.title}</h1>
-      <p class="post-byline"><a href="/" rel="author">Palash Debnath</a> · <time datetime={post.publishDate.toISOString()}>{post.publishDate.toISOString().slice(0, 10)}</time> · {Math.max(1, Math.ceil(post.wordCount / 220))} min read</p>
-      {post.updatedDate && <p class="post-byline">Updated <time datetime={post.updatedDate.toISOString()}>{post.updatedDate.toISOString().slice(0, 10)}</time></p>}
-      <p class="post-lede">{post.description}</p>
-      <p><a class="pill" href={`/blog/${post.id}.md`}>Markdown</a></p>
+<Site page={page} status={`${post.wordCount.toLocaleString('en-US')} words · ${post.readMinutes} min read`}>
+  <article class="story">
+    <header class="story-head">
+      <p class="section-flag"><a href={`/search/?q=${encodeURIComponent(post.tags[0] ?? '')}&kind=article`}>{section}</a></p>
+      <h1 class="headline">{post.title}</h1>
+      <p class="standfirst">{post.description}</p>
+      <div class="byline">
+        <img src="/avatar.webp" alt="" width="40" height="40" />
+        <div class="byline-text">
+          <p>By <a href="/" rel="author">Palash Debnath</a></p>
+          <p class="dateline">Agartala, India · <time datetime={post.publishDate.toISOString()}>{longDate(post.publishDate)}</time>{post.updatedDate && <> · Updated <time datetime={post.updatedDate.toISOString()}>{longDate(post.updatedDate)}</time></>}</p>
+        </div>
+      </div>
+      <div class="story-meta">
+        <span class="readtime"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 4.5V8l2.4 1.6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>{post.readMinutes} min read</span>
+        <Authorship value={post.authorship} />
+        <span class="tools">
+          <SpeedReader source=".story-body" title={post.title} />
+          <a class="button" href={`/blog/${post.id}.md`}>Markdown</a>
+        </span>
+      </div>
     </header>
-    {headings.length > 2 && <nav aria-label="On this page"><details class="post-toc"><summary>On this page</summary><ul>{headings.filter(h => h.depth === 2).map(h => <li><a href={`#${h.slug}`}>{h.text}</a></li>)}</ul></details></nav>}
-    <Content />
+    {headings.length > 2 && <nav class="story-toc" aria-label="On this page"><details class="section"><summary><strong>In this story</strong></summary><ol>{headings.filter(h => h.depth === 2).map(h => <li><a href={`#${h.slug}`}>{h.text}</a></li>)}</ol></details></nav>}
+    <div class="story-body"><Content /></div>
+    <footer class="story-foot">
+      <p class="end-mark" aria-hidden="true">■</p>
+      {post.tags.length > 0 && <ul class="tokens" aria-label="Topics">{post.tags.map(t => <li><a href={`/search/?q=${encodeURIComponent(t)}&kind=article`}>{t.replace(/-/g, ' ')}</a></li>)}</ul>}
+    </footer>
   </article>
-  {related.length > 0 && <section><h2>Related articles</h2><ul>{related.map(p => <li><a href={`/blog/${p.id}/`}>{p.title}</a></li>)}</ul></section>}
+  {related.length > 0 && <section class="more" aria-labelledby="more-title"><h2 id="more-title">More from Writing</h2>
+    <ol>{related.map(p => <li><a href={`/blog/${p.id}/`}><span class="more-flag">{(p.tags[0] ?? 'Notes').replace(/-/g, ' ')}</span><span class="more-title">{p.title}</span><span class="muted">{p.readMinutes} min read</span></a></li>)}</ol>
+  </section>}
 </Site>
+
+<style>
+  .story { max-width: 680px; margin: 0 auto; }
+  .story-head { padding-bottom: 6px; margin-bottom: 10px; }
+  .section-flag { margin: 0 0 10px; }
+  .section-flag a { display: inline-block; padding: 1px 8px; color: #fff; background: var(--news-red); font: 700 .6875rem/1.6 var(--font-display); letter-spacing: .12em; text-transform: uppercase; text-decoration: none; }
+  .headline { margin: 0 0 12px; font: 700 clamp(1.9rem, 5.2vw, 2.9rem)/1.08 var(--font-headline); letter-spacing: -.015em; text-wrap: balance; }
+  .standfirst { margin: 0 0 16px; color: var(--text-2); font: 400 clamp(1.05rem, 2.3vw, 1.25rem)/1.45 var(--font-serif); }
+  .byline { display: flex; align-items: center; gap: 10px; padding-top: 12px; border-top: 3px double var(--hairline); }
+  .byline img { width: 40px; height: 40px; border-radius: 50%; box-shadow: 0 0 0 1px var(--hairline); }
+  .byline-text p { margin: 0; font-size: .8125rem; }
+  .byline-text p:first-child { font-weight: 700; text-transform: uppercase; letter-spacing: .04em; font-size: .75rem; }
+  .byline-text a { color: var(--text); }
+  .dateline { color: var(--text-3); font-size: .75rem !important; }
+  .story-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin-top: 12px; }
+  .readtime { display: inline-flex; align-items: center; gap: 5px; color: var(--text-2); font-size: .75rem; font-weight: 700; }
+  .readtime svg { width: 14px; height: 14px; }
+  .tools { display: inline-flex; gap: 6px; margin-left: auto; }
+  .story-toc { margin-bottom: 8px; }
+  .story-toc ol { margin: 4px 0 6px; padding-left: 20px; font-size: .8125rem; }
+
+  /* Body copy: newspaper serif, drop cap, pull quotes */
+  .story-body { font: 400 1.0625rem/1.72 var(--font-serif); color: var(--text); }
+  .story-body :global(p) { margin: 0 0 1.05em; }
+  .story-body > :global(p:first-of-type)::first-letter { float: left; margin: .06em .08em 0 0; color: var(--news-red); font: 700 3.6em/.8 var(--font-headline); }
+  .story-body :global(h2) { margin: 1.8em 0 .5em; color: var(--text); font: 700 1.4rem/1.2 var(--font-headline); letter-spacing: -.005em; text-transform: none; }
+  .story-body :global(h3) { margin: 1.5em 0 .4em; font: 700 1.1rem/1.3 var(--font-headline); }
+  .story-body :global(blockquote) { margin: 1.6em 0; padding: 14px 0; color: var(--text); border: 0; border-top: 3px solid var(--news-red); border-bottom: 1px solid var(--hairline); font: italic 400 1.35rem/1.4 var(--font-headline); text-align: center; }
+  .story-body :global(blockquote p) { margin: 0; }
+  .story-body :global(ul), .story-body :global(ol) { padding-left: 1.3em; }
+  .story-body :global(li) { margin-bottom: .35em; }
+  .story-body :global(a) { color: var(--link); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 2px; }
+  .story-body :global(pre) { font-size: .8125rem; }
+  .story-body :global(img) { display: block; margin: 1.4em auto; border-radius: 3px; }
+  .story-body :global(hr) { width: 80px; margin: 2em auto; background: var(--news-red); height: 2px; }
+  .story-foot { margin-top: 20px; }
+  .end-mark { margin: 0 0 14px; color: var(--news-red); font-size: .7rem; }
+  .story-foot .tokens a { color: inherit; text-decoration: none; text-transform: capitalize; }
+
+  .more { max-width: 680px; margin: 32px auto 0; padding-top: 12px; border-top: 3px double var(--hairline); }
+  .more h2 { margin-top: 0; color: var(--text); font: 700 1rem/1.2 var(--font-headline); letter-spacing: 0; text-transform: none; }
+  .more ol { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin: 0; padding: 0; list-style: none; }
+  .more a { display: grid; gap: 4px; padding-top: 8px; color: var(--text); border-top: 1px solid var(--hairline); text-decoration: none; }
+  .more-flag { color: var(--news-red); font: 700 .625rem/1.4 var(--font-display); letter-spacing: .1em; text-transform: uppercase; }
+  .more-title { font: 700 .9375rem/1.3 var(--font-headline); }
+  .more a:hover .more-title { text-decoration: underline; }
+  @media (prefers-color-scheme: dark) { .section-flag a, .story-body > :global(p:first-of-type)::first-letter { background-color: transparent; } .section-flag a { background: #d8283f; } }
+  @media (max-width: 699px) { .tools { margin-left: 0; } .story-body { font-size: 1rem; } }
+</style>

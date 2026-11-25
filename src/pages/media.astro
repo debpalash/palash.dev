@@ -1,10 +1,11 @@
 ---
 import Site from '../layouts/Site.astro';
-import Gallery from '../islands/solid/Gallery';
+import Gallery from '../components/Gallery.astro';
 import { products, gallery } from '../lib/content';
 import { pageByPath } from '../lib/page-data';
+const groups = products.map(p => ({ product: p, shots: gallery.filter(s => s.group === p.id) })).filter(g => g.shots.length);
 ---
-<Site page={pageByPath('/media/')}>
-  <h1>Screenshots</h1>
-  {products.map(p => <section><h2><a href={`/${p.id}/`}>{p.name}</a></h2><Gallery client:visible shots={gallery.filter(s => s.group === p.id)} /></section>)}
+<Site page={pageByPath('/media/')} status={`${gallery.length} screenshots`}>
+  <h1>Screenshots</h1><p class="lede">Desktop and terminal interfaces from the projects.</p>
+  {groups.map(({ product: p, shots }) => <details class="section" open><summary><h2>{p.name}</h2><span class="count"><a href={`/${p.id}/`}>Info</a> · {shots.length}</span></summary><Gallery shots={shots} /></details>)}
 </Site>

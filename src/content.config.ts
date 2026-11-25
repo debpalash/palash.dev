@@ -8,6 +8,8 @@ const blog = defineCollection({
     title: z.string(), description: z.string(), publishDate: z.coerce.date(),
     updatedDate: z.coerce.date().optional(), tags: z.array(z.string()).default([]),
     draft: z.boolean().default(false),
+    /** Who wrote it: shown as a badge on the article and in the list. */
+    authorship: z.enum(['human', 'ai-assisted', 'ai']).optional(),
   }),
 });
 const products = defineCollection({
@@ -25,6 +27,8 @@ const products = defineCollection({
     pricing: z.enum(['free', 'paid', 'freemium']).optional(),
     openSource: z.boolean().default(false), logoUrl: z.string().optional(),
     featured: z.boolean().default(false), banner: z.string().optional(), workImage: z.string().optional(),
+    /** Locally cached current home screen and its responsive half-size variant. */
+    homeImage: z.string().optional(), homeImageSmall: z.string().optional(),
     theme: z.string().optional(), icon: z.string().default(''),
     status: z.enum(['live', 'alpha', 'beta', 'coming-soon']).default('live'),
     stack: z.array(z.string()).default([]), order: z.number().default(0),

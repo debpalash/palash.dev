@@ -1,0 +1,133 @@
+---
+import { products } from '../lib/content';
+import type { PageData } from '../lib/page-data';
+import { SITE } from '../site.config';
+import AppIcon from './AppIcon.astro';
+interface Props { page: PageData; appName: string }
+const { page, appName } = Astro.props;
+const go = [['/', 'Work', '⌘1'], ['/blog/', 'Writing', '⌘2'], ['/lab/', 'Lab', '⌘3'], ['/media/', 'Media', '⌘4'], ['/search/', 'Search', '⌘K']];
+const current = (href: string) => (page.path === href ? 'page' : undefined);
+---
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="menubar">
+  <nav aria-label="Menu bar">
+    <ul class="menus">
+      <li>
+        <details class="menu">
+          <summary class="orb-button"><span class="orb" aria-hidden="true"></span><span class="visually-hidden">Site menu</span></summary>
+          <ul class="menu-list">
+            <li><a href="/">About Palash Debnath</a></li>
+            <li class="sep" role="separator"></li>
+            <li><a href="/resume/">Résumé…</a></li>
+            <li><a href="/contact/">Contact…</a></li>
+            <li class="sep" role="separator"></li>
+            <li><a href={SITE.github} rel="me">GitHub</a></li>
+            <li><a href={SITE.x} rel="me">X</a></li>
+            <li><a href="/rss.xml">RSS Feed</a></li>
+            <li class="sep" role="separator"></li>
+            <li class="note">© {new Date().getFullYear()} {SITE.author}</li>
+          </ul>
+        </details>
+      </li>
+      <li class="app-name">{appName}</li>
+      <li>
+        <details class="menu">
+          <summary>Go</summary>
+          <ul class="menu-list">{go.map(([href, label, key]) => <li><a href={href} aria-current={current(href)}>{label}<kbd>{key}</kbd></a></li>)}</ul>
+        </details>
+      </li>
+      <li>
+        <details class="menu">
+          <summary>Applications</summary>
+          <ul class="menu-list">{products.map((p, i) => <li class={`tone-${i % 6}`}><a href={`/${p.id}/`} aria-current={current(`/${p.id}/`)}><AppIcon product={p} tone={i} size={16} />{p.name}</a></li>)}</ul>
+        </details>
+      </li>
+      <li class="wide">
+        <details class="menu">
+          <summary>Help</summary>
+          <ul class="menu-list">
+            <li><a href="/llms.txt">llms.txt</a></li>
+            <li><a href="/resume.txt">Résumé as Text</a></li>
+            <li><a href="/preview/">Publishing Preview</a></li>
+          </ul>
+        </details>
+      </li>
+    </ul>
+  </nav>
+  <div class="extras">
+    <time class="clock" aria-hidden="true"></time>
+    <a class="spotlight" href="/search/" aria-current={current('/search/')}><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="6.5" cy="6.5" r="4.5" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="m10 10 4 4" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></svg><span class="visually-hidden">Search</span></a>
+  </div>
+</header>
+
+<script>
+  const bar = document.querySelector<HTMLElement>('.menubar')!;
+  const menus = [...bar.querySelectorAll<HTMLDetailsElement>('details.menu')];
+  const closeAll = (except?: HTMLDetailsElement) => menus.forEach(m => { if (m !== except) m.open = false; });
+  for (const menu of menus) {
+    menu.addEventListener('toggle', () => {
+      if (menu.open) closeAll(menu);
+      bar.classList.toggle('tracking', menus.some(m => m.open));
+    });
+    // Once a menu is open, sliding across the bar switches menus, as on the desktop.
+    menu.querySelector('summary')!.addEventListener('pointerenter', () => {
+      if (bar.classList.contains('tracking') && !menu.open) menu.open = true;
+    });
+  }
+  document.addEventListener('pointerdown', e => { if (!bar.contains(e.target as Node)) closeAll(); });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      const open = menus.find(m => m.open);
+      if (open) { open.open = false; open.querySelector('summary')!.focus(); }
+    }
+    if ((e.metaKey || e.ctrlKey) && !e.altKey && !e.shiftKey) {
+      const to = { k: '/search/', 1: '/', 2: '/blog/', 3: '/lab/', 4: '/media/' }[e.key.toLowerCase()];
+      if (to) { e.preventDefault(); location.href = to; }
+    }
+  });
+
+  const clock = bar.querySelector<HTMLTimeElement>('.clock');
+  const tick = () => { if (clock) clock.textContent = new Date().toLocaleString('en-US', { weekday: 'short', hour: 'numeric', minute: '2-digit' }).replace(',', ''); };
+  tick();
+  setInterval(tick, 20_000);
+</script>
+
+<style>
+  .menubar { position: relative; z-index: 50; display: flex; align-items: stretch; padding: 0 6px; background: var(--menubar-bg); border-bottom: 1px solid var(--menubar-line); box-shadow: 0 1px 5px rgba(0, 0, 0, .12); -webkit-backdrop-filter: blur(20px) saturate(1.6); backdrop-filter: blur(20px) saturate(1.6); font-size: .8125rem; user-select: none; }
+  nav { display: flex; min-width: 0; }
+  .menus { display: flex; align-items: stretch; margin: 0; padding: 0; list-style: none; }
+  .menus > li { display: flex; }
+  .app-name { align-items: center; padding: 0 8px 0 4px; font-weight: 700; white-space: nowrap; max-width: 34vw; overflow: hidden; text-overflow: ellipsis; display: block !important; line-height: var(--menubar-h); }
+  .wide { display: none !important; }
+  details { position: relative; display: flex; }
+  summary { display: flex; align-items: center; padding: 0 9px; color: var(--text); list-style: none; cursor: default; white-space: nowrap; }
+  summary::-webkit-details-marker { display: none; }
+  summary:focus-visible { box-shadow: inset 0 0 0 2px rgba(64, 145, 235, .7); border-radius: 0; }
+  details[open] > summary, summary:hover { color: #fff; background: linear-gradient(var(--select-top), var(--select-bottom)); }
+  .orb-button { padding: 0 10px; }
+  .orb { width: 14px; height: 14px; border-radius: 50%; background: radial-gradient(circle at 36% 28%, #fff 0 14%, transparent 42%), radial-gradient(circle at 50% 100%, #a8d6ff, #2f72d6 72%); box-shadow: inset 0 0 0 .5px rgba(0, 0, 0, .4), 0 1px 0 rgba(255, 255, 255, .6); }
+  .menu-list { position: absolute; top: 100%; left: 0; z-index: 60; min-width: 190px; margin: 0; padding: 4px 0; list-style: none; background: repeating-linear-gradient(var(--menu-bg) 0 1px, var(--menu-stripe-bg) 1px 2px); border: .5px solid rgba(0, 0, 0, .3); border-top: 0; border-radius: 0 0 6px 6px; box-shadow: 0 8px 22px rgba(0, 0, 0, .28); animation: drop .12s ease-out; }
+  @keyframes drop { from { opacity: 0; transform: translateY(-3px); } }
+  .menu-list a, .note { display: flex; align-items: center; gap: 8px; padding: 3px 16px 3px 18px; color: var(--text); font-size: .8125rem; line-height: 1.45; text-decoration: none; white-space: nowrap; }
+  .menu-list a:hover, .menu-list a:focus-visible { color: #fff; background: linear-gradient(var(--select-top), var(--select-bottom)); box-shadow: none; border-radius: 0; }
+  .menu-list a[aria-current='page']::before { content: '✓'; position: absolute; left: 5px; font-size: .75rem; }
+  .menu-list li { position: relative; }
+  @media (hover: none) { kbd { display: none; } }
+  kbd { margin-left: auto; padding-left: 24px; color: var(--text-3); font: inherit; }
+  a:hover kbd { color: rgba(255, 255, 255, .8); }
+  .note { color: var(--text-3); font-size: .75rem; }
+  .sep { height: 1px; margin: 4px 0; background: var(--hairline); }
+  .menu-list :global(.app-logo) { width: 16px; height: 16px; }
+  .swatch::after { content: ''; order: -1; width: 12px; height: 12px; border-radius: 3px; background: linear-gradient(135deg, var(--tone-a), var(--tone-b)); box-shadow: inset 0 0 0 .5px rgba(0, 0, 0, .25); }
+  .extras { display: flex; align-items: stretch; margin-left: auto; }
+  .clock { display: none; align-items: center; padding: 0 9px; white-space: nowrap; }
+  .spotlight { display: flex; align-items: center; padding: 0 10px; color: var(--text); }
+  .spotlight:hover, .spotlight[aria-current='page'] { color: #fff; background: linear-gradient(var(--select-top), var(--select-bottom)); }
+  .spotlight svg { width: 14px; height: 14px; }
+  @media (min-width: 700px) {
+    .wide { display: flex !important; }
+    .clock { display: flex; }
+    .app-name { max-width: none; }
+    summary { padding: 0 10px; }
+  }
+</style>

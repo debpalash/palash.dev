@@ -39,7 +39,7 @@
   "status": "live",
   "stack": ["Python", "FastAPI", "React", "PostgreSQL", "Docker", "MCP"],
   "order": 5,
-  "logoUrl": "https://raw.githubusercontent.com/debpalash/OpenGTM/main/apps/web/public/opengtm-lockup.svg",
+  "logoUrl": "/projects/opengtm-logo.svg",
   "workImage": "https://raw.githubusercontent.com/debpalash/OpenGTM/main/docs/assets/opengtm-workbook-light.png",
   "category": "BusinessApplication",
   "os": "Linux, macOS, Windows (Docker)",

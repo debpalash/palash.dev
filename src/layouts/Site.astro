@@ -1,148 +1,231 @@
 ---
-import '@fontsource/ibm-plex-mono/400.css';
-import '@fontsource/ibm-plex-mono/700.css';
-import '@fontsource-variable/instrument-sans';
+import '../styles/site.css';
 import { renderHead } from '../lib/head';
 import type { PageData } from '../lib/page-data';
-import ArcadeHeader from '../components/ArcadeHeader.astro';
-import ArcadeFooter from '../components/ArcadeFooter.astro';
-interface Props { page: PageData }
-const { page } = Astro.props;
+import { products } from '../lib/content';
+import { SITE } from '../site.config';
+import AppIcon from '../components/AppIcon.astro';
+import Backdrop from '../components/Backdrop.astro';
+import DesktopIcons from '../components/DesktopIcons.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+interface Props { page: PageData; status?: string }
+const { page, status } = Astro.props;
+const sections: Record<string, string> = { '/': 'Work', '/blog/': 'Writing', '/lab/': 'Lab', '/media/': 'Media', '/resume/': 'Résumé', '/contact/': 'Contact', '/search/': 'Search', '/preview/': 'Preview' };
+const crumbs: [string, string][] = page.product ? [['/', 'Work'], [page.path, page.product.name]]
+  : page.post ? [['/blog/', 'Writing'], [page.path, page.post.title]]
+  : [[page.path, sections[page.path] ?? 'Finder']];
+const appName = page.product ? page.product.name : page.post ? 'Writing' : sections[page.path] ?? 'Finder';
+const windowTitle = page.path === '/' ? SITE.author : page.title.split(' — ')[0];
+const productIndex = page.product ? products.findIndex(p => p.id === page.product!.id) : -1;
 ---
 <!doctype html>
 <html lang="en">
   <head><Fragment set:html={renderHead(page)} /></head>
   <body>
-    <ArcadeHeader page={page} />
-    <main class="site-main" id="main" tabindex="-1"><slot /></main>
-    <ArcadeFooter />
+    <script is:inline>
+      try { if (localStorage.getItem('zoomed') === '1') document.documentElement.classList.add('zoomed'); } catch {}
+      // Must run before first paint: mark a Dock launch so the window grows out of the icon.
+      addEventListener('pagereveal', function (e) {
+        var launched = false;
+        try { launched = sessionStorage.getItem('launch') === '1'; sessionStorage.removeItem('launch'); } catch {}
+        if (launched && e.viewTransition && e.viewTransition.types) e.viewTransition.types.add('launch');
+      });
+    </script>
+    <Backdrop />
+    <Header page={page} appName={appName} />
+    <div class="desktop">
+      <DesktopIcons />
+      <div class="window">
+        <div class="titlebar">
+          <div class="lights">
+            <button class="light close" type="button" aria-label="Close window"><span aria-hidden="true">×</span></button>
+            <button class="light minimize" type="button" aria-label="Minimize window"><span aria-hidden="true">−</span></button>
+            <button class="light zoom" type="button" aria-label="Zoom window" aria-pressed="false"><span aria-hidden="true">+</span></button>
+          </div>
+          <div class="nav-buttons">
+            <button type="button" data-history="back" aria-label="Back">◀</button>
+            <button type="button" data-history="forward" aria-label="Forward">▶</button>
+          </div>
+          <div class={`window-title${productIndex >= 0 ? ` tone-${productIndex % 6}` : ''}`}>{page.product ? <AppIcon product={page.product} tone={productIndex} size={16} /> : <span class="proxy" aria-hidden="true"></span>}<span>{windowTitle}</span></div>
+        </div>
+        <div class="window-body">
+          <aside class="sidebar">
+            <nav aria-label="Products">
+              <h2>Applications</h2>
+              <ul>{products.map((product, i) => <li class={`tone-${i % 6} has-logo`}><a href={`/${product.id}/`} aria-current={page.product?.id === product.id ? 'page' : undefined}><AppIcon product={product} tone={i} size={20} />{product.name}</a></li>)}</ul>
+            </nav>
+            <nav aria-label="Elsewhere">
+              <h2>Elsewhere</h2>
+              <ul>
+                <li class="has-logo"><a href={SITE.github} rel="me"><span class="mini-tile ic-github" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m8.5 7.5-4.5 4.5 4.5 4.5m7-9 4.5 4.5-4.5 4.5M13.5 5l-3 14" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>GitHub</a></li>
+                <li class="has-logo"><a href={SITE.x} rel="me"><span class="mini-tile ic-x" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 5h3.2l8.8 14h-3.2ZM18 5l-5.2 6.2M6 19l5.2-6.2" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>X</a></li>
+                <li class="has-logo"><a href="/rss.xml"><span class="mini-tile ic-rss" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="6.5" cy="17.5" r="2.2" fill="#fff"/><path d="M4.5 11a8.5 8.5 0 0 1 8.5 8.5M4.5 5a14.5 14.5 0 0 1 14.5 14.5" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/></svg></span>RSS</a></li>
+                <li class="has-logo"><a href="/llms.txt"><span class="mini-tile ic-doc" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6.5 3.5h7.5l4 4v13h-11.5Z" fill="#fff"/><path d="M14 3.5v4h4" fill="#cfe3ff"/><path d="M9 11h6M9 14h6M9 17h4" stroke="#3a7fd8" stroke-width="1.5" stroke-linecap="round"/></svg></span>llms.txt</a></li>
+              </ul>
+            </nav>
+          </aside>
+          <main class="content" id="main" tabindex="-1"><slot /></main>
+        </div>
+        <div class="statusbar">
+          <nav class="pathbar" aria-label="Path"><ol><li><a href="/"><span class="pb-disk" aria-hidden="true"></span>palash.dev</a></li>{crumbs.map(([href, label], i) => <li>{i === crumbs.length - 1 ? <span aria-current="page">{label}</span> : <a href={href}>{label}</a>}</li>)}</ol></nav>
+          {status && <span class="status-text">{status}</span>}
+        </div>
+      </div>
+    </div>
+    <Footer page={page} />
   </body>
 </html>
 
-<style is:global>
-  :root {
-    --ink: #171b22;
-    --night: #101720;
-    --paper: #d9d6ca;
-    --surface: #e8e5dc;
-    --brass: #8d8158;
-    --brick: #88453f;
-    --teal: #2f6b68;
-    --moss: #6d7953;
-    --muted: #59616c;
-    --line: #979286;
+<script>
+  // GitHub-style relative times; the build-time date stays as the fallback and tooltip.
+  const rtf = new Intl.RelativeTimeFormat('en', { numeric: 'auto' });
+  const units: [Intl.RelativeTimeFormatUnit, number, string][] = [['year', 31536e6, 'y'], ['month', 2592e6, 'mo'], ['week', 6048e5, 'w'], ['day', 864e5, 'd'], ['hour', 36e5, 'h'], ['minute', 6e4, 'm']];
+  const formatTimes = (scope: ParentNode = document) => {
+    for (const time of scope.querySelectorAll<HTMLTimeElement>('time.ago')) {
+      const diff = new Date(time.dateTime).getTime() - Date.now();
+      const [unit, ms, short] = units.find(([, ms]) => Math.abs(diff) >= ms) ?? units[units.length - 1];
+      const n = Math.round(diff / ms);
+      time.title = new Date(time.dateTime).toLocaleString();
+      time.textContent = time.classList.contains('short') ? `${Math.max(1, Math.abs(n))}${short}` : rtf.format(n, unit);
+    }
+  };
+  formatTimes();
+
+  // Live data: the edge Worker's GitHub snapshot refreshes numbers and releases baked in at build time.
+  type Release = { tag: string; name: string; url: string; publishedAt: string; headline?: string; points?: string[] };
+  type Live = { products: Record<string, { name: string; website: string | null; logoUrl: string | null; stars: number; downloads: number; release: Release | null }>; repos: { name: string; url: string; lang: string; stars: number; description: string }[] };
+  const esc = (v: unknown) => String(v ?? '').replace(/[&<>"']/g, c => `&#${c.charCodeAt(0)};`);
+  const compact = (n: number) => (n >= 1000 ? `${(n / 1000).toFixed(n >= 10000 ? 0 : 1)}k` : String(n));
+  // Scoped Astro styles key off a data-astro-cid attribute; copy it onto generated markup.
+  const stamp = (host: Element) => {
+    const cid = [...host.attributes].find(a => a.name.startsWith('data-astro-cid'));
+    if (cid) for (const el of host.querySelectorAll('*')) el.setAttribute(cid.name, '');
+  };
+  const loadLive = async (): Promise<Live | null> => {
+    try { const hit = JSON.parse(sessionStorage.getItem('live') ?? 'null'); if (hit && Date.now() - hit.at < 5 * 6e4) return hit.data; } catch {}
+    try {
+      const res = await fetch('/api/live.json', { signal: AbortSignal.timeout(8000) });
+      if (!res.ok) return null;
+      const data = await res.json() as Live;
+      try { sessionStorage.setItem('live', JSON.stringify({ at: Date.now(), data })); } catch {}
+      return data;
+    } catch { return null; }
+  };
+  const applyLive = (live: Live) => {
+    const products = Object.entries(live.products);
+    for (const el of document.querySelectorAll<HTMLElement>('[data-live-stars]')) { const p = live.products[el.dataset.liveStars!]; if (p) el.textContent = p.stars.toLocaleString('en-US'); }
+    for (const el of document.querySelectorAll<HTMLElement>('[data-live-downloads]')) { const p = live.products[el.dataset.liveDownloads!]; if (p) el.textContent = p.downloads.toLocaleString('en-US'); }
+    for (const el of document.querySelectorAll<HTMLElement>('[data-live-total]')) {
+      const total = el.dataset.liveTotal === 'stars'
+        ? products.reduce((s, [, p]) => s + p.stars, 0) + live.repos.reduce((s, r) => s + r.stars, 0)
+        : products.reduce((s, [, p]) => s + p.downloads, 0);
+      el.textContent = compact(total);
+    }
+    for (const el of document.querySelectorAll<HTMLElement>('[data-live-release-inline]')) {
+      const r = live.products[el.dataset.liveReleaseInline!]?.release;
+      if (!r) continue;
+      el.innerHTML = `<a href="${esc(r.url)}"><strong>${esc(r.tag)}</strong></a> · <time class="ago" datetime="${esc(r.publishedAt)}">${esc(r.publishedAt.slice(0, 10))}</time>`;
+      stamp(el);
+    }
+    for (const el of document.querySelectorAll<HTMLElement>('[data-live-release]')) {
+      const r = live.products[el.dataset.liveRelease!]?.release;
+      if (!r) continue;
+      el.innerHTML = `<a class="release" href="${esc(r.url)}" title="${esc(r.name)}"><span class="dot" aria-hidden="true"></span>${esc(r.tag)} · <time class="ago short" datetime="${esc(r.publishedAt)}">${esc(r.publishedAt.slice(0, 10))}</time></a>`;
+      stamp(el);
+    }
+    const card = document.querySelector<HTMLElement>('[data-live-now]');
+    const newest = products.filter(([, p]) => p.release).sort((a, b) => b[1].release!.publishedAt.localeCompare(a[1].release!.publishedAt))[0];
+    if (card && newest && card.dataset.liveNow !== `${newest[0]}@${newest[1].release!.tag}`) {
+      const [id, p] = newest; const r = p.release!;
+      const title = r.name.replace(r.tag, '').replace(new RegExp(p.name.replace(/\.\w+$/, ''), 'i'), '').replace(/^[\s—–:|-]+|[\s—–:|-]+$/g, '').trim();
+      const heading = title || r.headline || '';
+      const points = (title && r.headline ? [r.headline, ...(r.points ?? [])] : r.points ?? []).slice(0, 3);
+      card.innerHTML = `<h2 id="now-title">Now shipping</h2>
+        <div class="rel-head">${p.logoUrl ? `<img class="app-logo rel-icon" src="${esc(p.logoUrl)}" alt="" width="34" height="34">` : ''}<div class="rel-id"><a class="rel-app" href="/${esc(id)}/">${esc(p.name)}</a><p class="rel-meta"><a class="rel-tag" href="${esc(r.url)}">${esc(r.tag)}</a><span class="badge">Latest</span><time class="ago" datetime="${esc(r.publishedAt)}">${esc(r.publishedAt.slice(0, 10))}</time></p></div></div>
+        ${heading ? `<h3 class="rel-title">${esc(heading)}</h3>` : ''}
+        ${points.length ? `<ul class="rel-points">${points.map(pt => `<li>${esc(pt)}</li>`).join('')}</ul>` : ''}
+        <div class="buttons"><a class="button" href="${esc(r.url)}">Release Notes ↗</a>${p.website ? `<a class="button primary" href="${esc(p.website)}">Download ↗</a>` : ''}</div>`;
+      card.dataset.liveNow = `${id}@${r.tag}`;
+      stamp(card);
+    }
+    const lab = document.querySelector<HTMLElement>('[data-live-lab]');
+    if (lab && live.repos.length) {
+      // Keep curated descriptions already on the page; GitHub's fill in for new repos.
+      const curated = new Map([...lab.querySelectorAll('li')].map(li => [li.querySelector('a')?.textContent ?? '', li.querySelector('.sub')?.textContent ?? '']));
+      lab.innerHTML = live.repos.map(r => { const note = curated.get(r.name) || r.description; return `<li><a href="${esc(r.url)}">${esc(r.name)}</a><span class="when">${esc([r.lang, r.stars ? `★ ${r.stars}` : ''].filter(Boolean).join(' · ') || '—')}</span>${note ? `<span class="sub">${esc(note)}</span>` : ''}</li>`; }).join('');
+      const count = document.querySelector('[data-live-lab-count]');
+      if (count) count.textContent = String(live.repos.length);
+    }
+    formatTimes();
+  };
+  if (document.querySelector('[data-live-stars], [data-live-total], [data-live-release], [data-live-release-inline], [data-live-now], [data-live-lab]')) {
+    window.setTimeout(async () => {
+      const live = await loadLive();
+      if (live) applyLive(live);
+    }, 2000);
   }
-  * { box-sizing: border-box; }
-  html { scroll-behavior: smooth; filter: grayscale(1); }
-  body { margin: 0; color: var(--ink); background: var(--paper); font-family: 'Instrument Sans Variable', system-ui, sans-serif; font-size: 1.0625rem; line-height: 1.68; text-rendering: optimizeLegibility; }
-  .site-main { width: min(100% - 36px, 74ch); min-height: 52vh; margin-inline: auto; padding-block: clamp(34px, 6vw, 64px); }
-  img { max-width: 100%; height: auto; }
-  pre, table { max-width: 100%; overflow: auto; }
 
-  /* Headings — Bungee display type with hard arcade shadows */
-  h1, h2 { font-family: Bungee, system-ui, sans-serif; font-weight: 400; line-height: 1.12; text-transform: uppercase; letter-spacing: .015em; }
-  h1 { margin: 0 0 18px; max-width: 20ch; font-size: clamp(1.75rem, 4.5vw, 2.55rem); text-shadow: 3px 3px 0 var(--brick), 6px 6px 0 #0c1118; }
-  h2 { margin: 40px 0 14px; padding-bottom: 8px; font-size: clamp(1.15rem, 3vw, 1.5rem); border-bottom: 4px solid var(--ink); box-shadow: 0 4px 0 var(--brass); }
-  h2::before { content: '\25B6'; margin-right: 10px; color: var(--brick); font-size: .8em; }
-  h3, h4 { font-family: 'Instrument Sans Variable', system-ui, sans-serif; font-weight: 750; line-height: 1.25; letter-spacing: -.015em; }
-  h3 { margin: 28px 0 8px; font-size: clamp(1.15rem, 2.4vw, 1.35rem); }
-  h4 { margin: 22px 0 6px; font-size: 1.05rem; color: #3a4256; }
-  :is(h2, h3, h4) + p { margin-top: .4em; }
-  strong { color: #111722; }
+  const root = document.documentElement;
+  const win = document.querySelector<HTMLElement>('.window')!;
+  const still = matchMedia('(prefers-reduced-motion: reduce)');
 
-  /* Links — chunky arcade states */
-  a { color: #245f5c; text-decoration-thickness: 2px; text-underline-offset: 3px; }
-  a:hover { color: #672f2b; background: #b9b69f; text-decoration: none; }
-  a:focus-visible { outline: 3px solid var(--brick); outline-offset: 2px; }
-
-  /* Cards — boxed with hard drop shadows (projects, lab, blog list) */
-  .site-main article { margin-block: 20px; padding: 20px 22px; border: 3px solid #151821; border-radius: 10px; background: var(--surface); box-shadow: 5px 5px 0 #15101c; }
-  .site-main article > :first-child { margin-top: 0; }
-  .site-main article > :last-child { margin-bottom: 0; }
-  .site-main article:hover { box-shadow: 5px 5px 0 #15101c; }
-  .site-main article:has(> h2 > a):hover, .site-main article:has(> h3 > a):hover { box-shadow: 7px 7px 0 var(--brass); translate: -2px -2px; }
-
-  /* Lists — arcade markers */
-  ul { padding-left: 1.4em; }
-  ul li::marker { content: '\25B8  '; color: var(--brick); font-weight: 700; }
-  ol li::marker { color: var(--teal); font-weight: 700; }
-  dt { color: #111722; }
-  dd { margin-inline-start: 1.2em; border-left: 3px solid var(--brass); padding-left: 10px; }
-
-  /* Code — CRT screen look */
-  code { padding: 1px 5px; background: #090c13; color: #9eb56a; border: 1px solid #151821; border-radius: 4px; font-family: 'IBM Plex Mono', monospace; font-size: .88em; }
-  pre { padding: 14px 16px; background: #090c13; border: 3px solid #151821; border-radius: 10px; box-shadow: 4px 4px 0 #15101c; }
-  pre code { padding: 0; background: none; border: 0; }
-  pre:not(.astro-code) { color: #9eb56a; }
-
-  /* Tables — chunky scoreboard */
-  table { border-collapse: collapse; border: 3px solid #151821; background: var(--surface); box-shadow: 4px 4px 0 #15101c; }
-  th, td { padding: 8px 12px; border: 2px solid #151821; text-align: left; }
-  thead th { color: #eee7d7; background: #111722; font-family: Bungee, system-ui, sans-serif; font-weight: 400; font-size: .85em; text-transform: uppercase; letter-spacing: .04em; }
-  tbody th { background: #ded2ad; }
-
-  /* Blockquotes and rules */
-  blockquote { margin-inline: 0; padding: 10px 18px; border-left: 6px solid var(--brass); background: var(--surface); box-shadow: 4px 4px 0 #15101c; font-style: italic; }
-  hr { border: 0; border-top: 4px dashed #151821; opacity: .55; }
-
-  /* Form controls (search island) — press-start buttons */
-  input, select, button { color: #151821; background: var(--surface); border: 3px solid #151821; border-radius: 8px; box-shadow: 3px 3px 0 #15101c; font-family: 'IBM Plex Mono', monospace; font-size: .9rem; padding: 8px 10px; }
-  input:focus-visible, select:focus-visible, button:focus-visible { outline: 3px solid var(--brick); outline-offset: 2px; }
-  button { cursor: pointer; }
-  button:hover { color: #111722; background: #cbb76f; }
-  button:active { translate: 2px 2px; box-shadow: 1px 1px 0 #15101c; }
-
-  /* Pills — coin-slot action buttons */
-  .pill { display: inline-flex; align-items: center; min-height: 34px; padding: 4px 14px; color: var(--night); background: #a9ad91; border: 2px solid var(--ink); border-radius: 999px; box-shadow: 3px 3px 0 #0c1118; font-family: 'IBM Plex Mono', monospace; font-size: .76rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; text-decoration: none; transition: translate .1s ease, box-shadow .1s ease; }
-  .pill:hover { color: var(--night); background: var(--surface); translate: -1px -1px; box-shadow: 4px 4px 0 var(--brick); }
-  .pill:active { translate: 2px 2px; box-shadow: 1px 1px 0 #15101c; }
-
-  /* Blog post — long-form reading, no card cage */
-  .site-main article.post { padding: 0; border: 0; background: none; box-shadow: none; }
-  .post-header { margin-bottom: 30px; padding-bottom: 18px; border-bottom: 4px solid #151821; box-shadow: 0 4px 0 var(--brass); }
-  .post-header > p:first-child { margin: 0 0 18px; }
-  .post-byline { color: #5a6376; font-family: 'IBM Plex Mono', monospace; font-size: .76rem; letter-spacing: .06em; text-transform: uppercase; }
-  .post-lede { margin-top: 14px; color: #2a2f3d; font-size: clamp(1.1rem, 2vw, 1.25rem); line-height: 1.55; }
-  .post-toc { margin-block: 24px; padding: 12px 18px; background: var(--surface); border: 3px solid #151821; border-radius: 10px; box-shadow: 4px 4px 0 #15101c; }
-  .post-toc summary { cursor: pointer; font-weight: 700; font-size: .85rem; letter-spacing: .08em; text-transform: uppercase; }
-  .post-toc summary:hover { color: var(--brick); }
-  .post-toc ul { margin: 10px 0 4px; }
-  article.post section h2 { margin-top: 44px; }
-
-  /* Figures in content — framed cabinet screens */
-  .site-main figure { margin: 26px 0; padding: 10px; background: var(--surface); border: 3px solid #151821; border-radius: 10px; box-shadow: 5px 5px 0 #15101c; }
-  .site-main figure img { display: block; width: 100%; border-radius: 4px; }
-  .site-main figcaption { margin-top: 8px; color: #5a6376; font-family: 'IBM Plex Mono', monospace; font-size: .74rem; letter-spacing: .05em; text-align: center; text-transform: uppercase; }
-
-  /* Arcade gallery — thumbnails as cabinet screens */
-  .arcade-gallery ul { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(230px, 100%), 1fr)); gap: 18px; margin: 0; padding: 0; list-style: none; }
-  .shot-thumb { display: block; width: 100%; padding: 6px; background: #090c13; border: 3px solid #151821; border-radius: 10px; box-shadow: 4px 4px 0 #15101c; cursor: pointer; transition: translate .12s ease, box-shadow .12s ease; }
-  .shot-thumb:hover { translate: -2px -2px; box-shadow: 6px 6px 0 var(--brass); }
-  .shot-thumb:active { translate: 2px 2px; box-shadow: 1px 1px 0 #15101c; }
-  .shot-thumb img { display: block; width: 100%; border-radius: 4px; }
-  .shot-caption { margin: 7px 2px 0; color: #5a6376; font-size: .76rem; letter-spacing: .07em; text-transform: uppercase; }
-
-  /* Arcade viewer — full-screen CRT lightbox */
-  .arcade-viewer { position: fixed; inset: 0; z-index: 60; display: grid; grid-template-rows: auto 1fr auto; gap: 12px; padding: clamp(12px, 3vw, 30px); background-color: rgba(9, 12, 19, .96); background-image: repeating-linear-gradient(0deg, rgba(255, 249, 220, .035) 0 2px, transparent 2px 4px); }
-  .arcade-viewer :focus-visible { outline-color: #fff; }
-  .viewer-eyebrow { margin: 0; color: #9eb56a; font-size: .72rem; letter-spacing: .12em; text-transform: uppercase; }
-  .viewer-screen { display: grid; place-items: center; min-height: 0; cursor: zoom-out; }
-  .viewer-screen img { max-width: 100%; max-height: calc(100vh - 190px); background: #000; border: 4px solid var(--brass); border-radius: 6px; box-shadow: 0 0 0 4px #111722, 10px 10px 0 rgba(169, 75, 66, .72); }
-  .viewer-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 12px; }
-  .viewer-bar button { color: #eee7d7; background: #111722; border-color: var(--brass); box-shadow: 3px 3px 0 #000; font-size: .85rem; letter-spacing: .06em; text-transform: uppercase; }
-  .viewer-bar button:hover { color: #111722; background: #c8b36a; }
-  .viewer-bar button:active { translate: 2px 2px; box-shadow: 1px 1px 0 #000; }
-  .viewer-exit { margin-left: 8px; border-color: var(--brick) !important; }
-  .viewer-caption { margin: 0; color: #c8b36a; font-size: .85rem; letter-spacing: .1em; text-transform: uppercase; }
-
-  /* 404 — GAME OVER screen */
-  .game-over { margin-top: 48px; padding: 48px 24px 40px; text-align: center; background: #111722; border: 4px solid #151821; border-radius: 14px; box-shadow: 8px 8px 0 #15101c, inset 0 0 90px rgba(57, 124, 121, .14); }
-  .game-over-title { margin: 0 0 10px; color: #c8b36a; font-size: clamp(2rem, 7vw, 3.4rem); text-shadow: 4px 4px 0 var(--brick), 8px 8px 0 #05070c; }
-  .game-over-sub { margin: 0 0 26px; color: #9eb56a; letter-spacing: .1em; text-transform: uppercase; }
-  .game-over-actions { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-bottom: 26px; }
-  .game-over-coin { margin: 0; color: #5faaa5; font-size: .8rem; letter-spacing: .14em; text-transform: uppercase; animation: coin-blink 1.2s steps(2) infinite; }
-  @keyframes coin-blink { to { visibility: hidden; } }
-
-  @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; } .game-over-coin { animation: none; } }
-  @media (max-width: 540px) { body { font-size: 1rem; } .site-main { width: min(100% - 24px, 74ch); } h1 { text-shadow: 2px 2px 0 var(--brick), 4px 4px 0 #15101c; } }
-</style>
+  // Genie: pinch the window toward a Dock icon (or back out of it).
+  const genie = (target: Element, out: boolean) => {
+    const from = win.getBoundingClientRect();
+    const to = target.getBoundingClientRect();
+    const dx = to.left + to.width / 2 - (from.left + from.width / 2);
+    const dy = to.top + to.height / 2 - (from.top + from.height);
+    const s = Math.max(to.width / from.width, .02);
+    const frames: Keyframe[] = [
+      { transform: 'none', clipPath: 'polygon(0 0, 100% 0, 100% 100%, 0 100%)', opacity: 1 },
+      { offset: .45, transform: `translate(${dx * .15}px, ${dy * .35}px) scale(1, .9)`, clipPath: 'polygon(0 0, 100% 0, 62% 100%, 38% 100%)', opacity: 1 },
+      { transform: `translate(${dx}px, ${dy}px) scale(${s})`, clipPath: 'polygon(40% 0, 60% 0, 52% 100%, 48% 100%)', opacity: .15 },
+    ];
+    win.style.transformOrigin = '50% 100%';
+    return win.animate(out ? frames : [...frames].reverse(), { duration: still.matches ? 1 : 480, easing: 'cubic-bezier(.45, 0, .2, 1)', fill: 'forwards' });
+  };
+  const dockTarget = () => document.querySelector('.dock-item[data-running] .tile') ?? document.querySelector('.dock .tile')!;
+  const minimize = document.querySelector<HTMLButtonElement>('.light.minimize')!;
+  minimize.addEventListener('click', async () => {
+    if (root.classList.contains('minimized')) return;
+    const run = genie(dockTarget(), true);
+    await run.finished;
+    root.classList.add('minimized');
+    run.cancel();
+  });
+  // Close: the window shrinks away; the app's Dock icon reopens it.
+  document.querySelector<HTMLButtonElement>('.light.close')!.addEventListener('click', async () => {
+    if (root.classList.contains('minimized')) return;
+    const run = win.animate([{ opacity: 1, transform: 'none' }, { opacity: 0, transform: 'scale(.94)' }], { duration: still.matches ? 1 : 200, easing: 'ease-in', fill: 'forwards' });
+    await run.finished;
+    root.classList.add('minimized', 'closed');
+    run.cancel();
+  });
+  document.addEventListener('window:restore', async () => {
+    const closed = root.classList.contains('closed');
+    const run = closed
+      ? win.animate([{ opacity: 0, transform: 'scale(.94)' }, { opacity: 1, transform: 'none' }], { duration: still.matches ? 1 : 260, easing: 'cubic-bezier(.2, .85, .25, 1)', fill: 'forwards' })
+      : genie(dockTarget(), false);
+    root.classList.remove('minimized', 'closed');
+    await run.finished;
+    run.cancel();
+    document.getElementById('main')?.focus({ preventScroll: true });
+  });
+  const zoom = document.querySelector<HTMLButtonElement>('.light.zoom')!;
+  const sync = () => zoom.setAttribute('aria-pressed', String(root.classList.contains('zoomed')));
+  sync();
+  zoom.addEventListener('click', () => {
+    const on = root.classList.toggle('zoomed');
+    try { localStorage.setItem('zoomed', on ? '1' : '0'); } catch {}
+    sync();
+  });
+  document.querySelector('.titlebar')!.addEventListener('dblclick', e => { if (!(e.target as Element).closest('button')) zoom.click(); });
+  for (const button of document.querySelectorAll<HTMLButtonElement>('[data-history]')) {
+    button.addEventListener('click', () => {
+      if (button.dataset.history === 'forward') history.forward();
+      else if (history.length > 1 && document.referrer.startsWith(location.origin)) history.back();
+      else location.href = '/';
+    });
+  }
+</script>

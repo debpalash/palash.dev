@@ -1,84 +1,67 @@
 ---
 import Site from '../layouts/Site.astro';
-import Gallery from '../islands/solid/Gallery';
-import ProductMark from '../components/ProductMark.astro';
-import { products, gallery, posts, type Product } from '../lib/content';
+import Gallery from '../components/Gallery.astro';
+import AppIcon from '../components/AppIcon.astro';
+import { products, gallery, posts, latestRelease, type Product } from '../lib/content';
 import { pageByPath } from '../lib/page-data';
-export function getStaticPaths() { return products.map(product => ({ params: { slug: product.id }, props: { product } })); }
-interface Props { product: Product }
-const { product: p } = Astro.props;
+export function getStaticPaths() { return products.map((product, index) => ({ params: { slug: product.id }, props: { product, index } })); }
+interface Props { product: Product; index: number }
+const { product: p, index } = Astro.props;
 const shots = gallery.filter(s => s.group === p.id);
 const related = posts.filter(post => post.tags.includes(p.id));
+const release = latestRelease(p.id);
 ---
-<Site page={pageByPath(`/${p.id}/`)}>
-  <section class={`product-hero product-${p.id}`} aria-labelledby="product-title">
-    <div class="product-copy">
-      <a class="back-link" href="/">← Workshop</a>
-      <p class="product-kicker">{p.category.replace('Application', '')} · {p.status}</p>
-      <h1 id="product-title">{p.name}</h1>
-      <p class="product-lede">{p.tagline}</p>
-      <p class="product-summary">{p.description}</p>
-      <nav class="product-actions" aria-label={`${p.name} links`}>
-        {p.website && <a class="pill" href={p.website}>Open product ↗</a>}
-        <a href={p.github ?? p.url}>Source ↗</a>
-        {p.github && <a href={`${p.github}/releases`}>Releases ↗</a>}
-      </nav>
+<Site page={pageByPath(`/${p.id}/`)} status={`${p.name} Info`}>
+  <section class={`getinfo tone-${index % 6}`} aria-labelledby="product-title">
+    <div class="main">
+    <header>
+      <AppIcon product={p} tone={index} size={72} class="hero-icon" />
+      <div>
+        <h1 id="product-title">{p.name}</h1>
+        <p class="tagline">{p.tagline}</p>
+      </div>
+    </header>
+    <p class="prose">{p.description}</p>
+    <nav class="buttons" aria-label={`${p.name} links`}>
+      {p.website && <a class="button primary" href={p.website}>Open ↗</a>}
+      <a class={p.website ? 'button' : 'button primary'} href={p.github ?? p.url}>Source ↗</a>
+      {p.github && <a class="button" href={`${p.github}/releases`}>Releases ↗</a>}
+    </nav>
     </div>
-    <aside class="machine-dossier" aria-label={`${p.name} dossier`}>
-      <div class="dossier-top"><span>Machine dossier</span><span>{p.id.toUpperCase()}</span></div>
-      <div class="dossier-mark"><span class="dossier-ring" aria-hidden="true"></span><ProductMark id={p.id} /></div>
-      <dl>{p.proof.map(item => <div><dt>{item.value}</dt><dd>{item.label}</dd></div>)}</dl>
-      <p>{p.license} · {p.os}</p>
+    <aside class="inspector panel" aria-label={`${p.name} info`}>
+    <dl class="info">
+      <dt>Kind</dt><dd>{p.category.replace('Application', '').trim()} application</dd>
+      <dt>Status</dt><dd>{p.status === 'coming-soon' ? 'Coming soon' : p.status.charAt(0).toUpperCase() + p.status.slice(1)}</dd>
+      <dt>License</dt><dd>{p.license}</dd>
+      <dt>Runs on</dt><dd>{p.os}</dd>
+      {release && <><dt>Latest</dt><dd data-live-release-inline={p.id}><a href={release.url}>{release.tag}</a> · <time class="ago" datetime={release.publishedAt}>{release.publishedAt.slice(0, 10)}</time></dd></>}
+      {p.stars ? <><dt>Stars</dt><dd data-live-stars={p.id}>{p.stars.toLocaleString('en-US')}</dd></> : null}
+    </dl>
+    <dl class="stats">{p.proof.map(item => <div><dt>{item.value}</dt><dd>{item.label}</dd></div>)}</dl>
     </aside>
   </section>
-  {p.status === 'alpha' && p.id === 'bootable' && <aside class="safety-note"><strong>Field warning</strong><span>Writing erases the selected device. Check the target and keep backups.</span></aside>}
-  <section class="build-record" aria-labelledby="build-record"><p>Build record</p><h2 id="build-record">Inside the machine</h2><ul>{p.stack.map(item => <li>{item}</li>)}</ul></section>
-  {p.features.length > 0 && <section class="capabilities"><h2>Capabilities</h2><div>{p.features.map((f, i) => <article><span>{String(i + 1).padStart(2, '0')}</span><h3>{f.title}</h3><p>{f.description}</p></article>)}</div></section>}
-  {p.tables.map(t => <section><h2>{t.heading}</h2>{t.lead && <p>{t.lead}</p>}<div class="table-scroll" tabindex="0" role="region" aria-label={`${t.heading} table`}><table><thead><tr>{t.columns.map(c => <th scope="col">{c}</th>)}</tr></thead><tbody>{t.rows.map(row => <tr><th scope="row">{row[0]}</th>{row.slice(1).map(c => <td>{c}</td>)}</tr>)}</tbody></table></div>{t.footnote && <p>{t.footnote}</p>}</section>)}
-  {shots.length > 0 && <section><h2>Screenshots</h2><Gallery client:visible shots={shots} /></section>}
-  {related.length > 0 && <section><h2>Related writing</h2><ul>{related.map(post => <li><a href={`/blog/${post.id}/`}>{post.title}</a></li>)}</ul></section>}
+  {p.status === 'alpha' && p.id === 'bootable' && <aside class="alert"><p><strong>Writing erases the selected device.</strong> Check the target and keep backups.</p></aside>}
+  <details class="section" open><summary><h2 id="stack">Stack</h2><span class="count">{p.stack.length}</span></summary><ul class="tokens">{p.stack.map(item => <li>{item}</li>)}</ul></details>
+  {p.features.length > 0 && <details class="section" open><summary><h2>Capabilities</h2><span class="count">{p.features.length}</span></summary><div class="panel-grid">{p.features.map(f => <article class="panel"><h3>{f.title}</h3><p>{f.description}</p></article>)}</div></details>}
+  {p.tables.map(t => <details class="section" open><summary><h2>{t.heading}</h2></summary>{t.lead && <p class="muted">{t.lead}</p>}<div class="table-scroll" tabindex="0" role="region" aria-label={`${t.heading} table`}><table><thead><tr>{t.columns.map(c => <th scope="col">{c}</th>)}</tr></thead><tbody>{t.rows.map(row => <tr><th scope="row">{row[0]}</th>{row.slice(1).map(c => <td>{c}</td>)}</tr>)}</tbody></table></div>{t.footnote && <p class="muted">{t.footnote}</p>}</details>)}
+  {shots.length > 0 && <details class="section" open><summary><h2>Screenshots</h2><span class="count">{shots.length}</span></summary><Gallery shots={shots} /></details>}
+  {related.length > 0 && <details class="section" open><summary><h2>Related writing</h2><span class="count">{related.length}</span></summary><div class="listview"><ul>{related.map(post => <li><a href={`/blog/${post.id}/`}>{post.title}</a><time class="when" datetime={post.publishDate.toISOString()}>{post.publishDate.toISOString().slice(0, 10)}</time></li>)}</ul></div></details>}
 </Site>
 
 <style>
-  .product-hero { --machine-accent: #326d69; display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(300px, .8fr); gap: clamp(32px, 6vw, 80px); width: min(1080px, calc(100vw - 36px)); margin-inline: 50%; transform: translateX(-50%); }
-  .product-bootable { --machine-accent: #8b4741; }.product-memxt { --machine-accent: #66744d; }.product-opal { --machine-accent: #62566f; }.product-opengtm { --machine-accent: #826044; }.product-friday { --machine-accent: #4c6575; }
-  .product-copy { min-width: 0; align-self: center; }
-  .back-link { display: inline-block; margin-bottom: 28px; font-family: 'IBM Plex Mono', monospace; font-size: .74rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
-  .product-kicker { margin: 0 0 8px; color: var(--machine-accent); font-family: 'IBM Plex Mono', monospace; font-size: .72rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
-  .product-hero h1 { margin-bottom: 12px; font-size: clamp(2.2rem, 5vw, 4.5rem); }
-  .product-lede { margin: 0 0 22px; color: #303645; font-size: clamp(1.15rem, 2vw, 1.35rem); }
-  .product-summary { max-width: 58ch; }
-  .product-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 18px; margin-top: 28px; font-family: 'IBM Plex Mono', monospace; font-size: .72rem; font-weight: 700; text-transform: uppercase; }
-  .machine-dossier { position: relative; min-width: 0; align-self: center; padding: 18px; color: #e8e5dc; background: #101720; border: 3px solid #171a22; border-radius: 16px; box-shadow: 9px 9px 0 #0c1118; overflow: hidden; }
-  .machine-dossier::before { content: ''; position: absolute; inset: 0; background: repeating-linear-gradient(0deg, rgba(237, 231, 216, .035) 0 1px, transparent 1px 4px); pointer-events: none; }
-  .dossier-top { position: relative; display: flex; justify-content: space-between; padding-bottom: 12px; border-bottom: 1px solid #596176; color: #9eb56a; font-family: 'IBM Plex Mono', monospace; font-size: .62rem; letter-spacing: .1em; text-transform: uppercase; }
-  .dossier-mark { position: relative; display: grid; place-items: center; min-height: 200px; }
-  .dossier-mark :global(.product-mark) { position: relative; width: 150px; }
-  .dossier-ring { position: absolute; width: 190px; aspect-ratio: 1; border: 1px solid var(--machine-accent); border-radius: 50%; opacity: .38; box-shadow: 0 0 0 18px rgba(255,255,255,.02), 0 0 0 36px rgba(255,255,255,.015); }
-  .machine-dossier dl { position: relative; display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 0; }
-  .machine-dossier dl div { min-width: 0; padding-top: 10px; border-top: 2px solid var(--machine-accent); }
-  .machine-dossier dt { color: #ede7d8; font-family: Bungee, system-ui, sans-serif; font-size: .9rem; line-height: 1.15; }
-  .machine-dossier dd { margin: 5px 0 0; padding: 0; border: 0; color: #aab0bc; font-size: .65rem; line-height: 1.3; }
-  .machine-dossier > p { position: relative; margin: 18px 0 0; color: #7f8796; font-family: 'IBM Plex Mono', monospace; font-size: .6rem; letter-spacing: .05em; text-transform: uppercase; }
-  .safety-note { display: flex; gap: 16px; margin: 40px 0 0; padding: 14px 18px; color: #5b2d29; background: #e3d0c8; border-left: 6px solid #a94b42; }
-  .safety-note strong { flex: 0 0 auto; font-family: 'IBM Plex Mono', monospace; text-transform: uppercase; }
-  .build-record { margin-top: 56px; }
-  .build-record > p { margin: 0 0 7px; color: #326e6a; font-family: 'IBM Plex Mono', monospace; font-size: .7rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
-  .build-record h2 { margin-top: 0; }
-  .build-record ul { display: flex; flex-wrap: wrap; gap: 8px; padding: 0; list-style: none; }
-  .build-record li { padding: 5px 10px; border: 1px solid #8b8375; border-radius: 999px; font-family: 'IBM Plex Mono', monospace; font-size: .7rem; }
-  .capabilities > div { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
-  .capabilities article { position: relative; margin: 0; padding-top: 42px; }
-  .capabilities article > span { position: absolute; top: 14px; right: 16px; color: #b7ad9d; font-family: Bungee, system-ui, sans-serif; font-size: 2.4rem; line-height: 1; }
-  .capabilities h3 { position: relative; margin-top: 0; }
-  .capabilities p { position: relative; }
-  .table-scroll { max-width: 100%; overflow-x: auto; padding: 0 5px 5px 0; }
-  .table-scroll:focus-visible { outline: 3px solid var(--machine-accent); outline-offset: 3px; }
-  @media (max-width: 760px) {
-    .product-hero { grid-template-columns: 1fr; width: min(100vw - 24px, 1080px); }
-    .machine-dossier { order: -1; }
-    .back-link { margin-bottom: 20px; }
-    .product-hero h1 { font-size: clamp(2rem, 9vw, 3.4rem); overflow-wrap: anywhere; }
-    .safety-note { align-items: flex-start; flex-direction: column; gap: 4px; }
+  .getinfo header { display: flex; gap: 14px; align-items: center; margin-bottom: 12px; }
+  .getinfo :global(.hero-icon) { width: 60px; height: 60px; }
+  .getinfo { display: grid; gap: 4px 28px; margin-bottom: 14px; }
+  .getinfo h1 { margin: 0; }
+  .main > .prose { margin-bottom: 0; }
+  .inspector { align-self: start; margin: 0; }
+  .inspector .info { margin-top: 0; }
+  .inspector .stats { margin: 10px 0 0; padding-top: 10px; border-top: 1px solid var(--hairline); }
+  .inspector .stats div { flex: 1 1 0; }
+  h1 { overflow-wrap: anywhere; }
+  .tagline { margin: 2px 0 0; color: var(--text-2); }
+  @media (min-width: 1100px) { .getinfo { grid-template-columns: minmax(0, 1fr) 300px; } }
+  @media (min-width: 700px) {
+    .getinfo :global(.hero-icon) { width: 72px; height: 72px; }
   }
 </style>

@@ -28,20 +28,18 @@ export const GET: APIRoute = () => {
   ];
 
   for (const p of products) {
-    lines.push(`### ${p.name} [${p.status}]`);
-    lines.push(`- Tagline: ${p.tagline}`);
-    lines.push(`- Description: ${p.description}`);
-    if (p.audience) lines.push(`- Built for: ${p.audience}`);
-    if (p.positioning) lines.push(`- Product thesis: ${p.positioning}`);
+    lines.push(`- [${p.name}](${SITE.url}/${p.id}.md): ${p.description}`);
+    lines.push(`  - Status: ${p.status}`);
+    lines.push(`  - Canonical page: ${SITE.url}/${p.id}/`);
+    if (p.audience) lines.push(`  - Built for: ${p.audience}`);
+    if (p.positioning) lines.push(`  - Product thesis: ${p.positioning}`);
     if (p.proof.length) {
-      lines.push(`- Evidence: ${p.proof.map((item) => `${item.value} ${item.label}`).join('; ')}`);
+      lines.push(`  - Evidence: ${p.proof.map((item) => `${item.value} ${item.label}`).join('; ')}`);
     }
-    lines.push(`- Page: https://palash.dev/${p.id}/`);
-    if (p.website) lines.push(`- Website: ${p.website}`);
-    if (p.github) lines.push(`- Source: ${p.github}`);
-    if (p.url && p.url !== p.github) lines.push(`- Project URL: ${p.url}`);
-    lines.push(`- Stack: ${p.stack.join(', ')}`);
-    lines.push(`- Keywords: ${p.keywords.join(', ')}`);
+    if (p.website) lines.push(`  - Website: ${p.website}`);
+    if (p.github) lines.push(`  - Source: ${p.github}`);
+    lines.push(`  - Stack: ${p.stack.join(', ')}`);
+    lines.push(`  - Keywords: ${p.keywords.join(', ')}`);
     lines.push('');
   }
 
@@ -55,10 +53,10 @@ export const GET: APIRoute = () => {
 
   for (const post of posts) {
     const date = post.publishDate.toISOString().split('T')[0];
-    lines.push(`### ${post.title}`);
-    lines.push(`*${date}* — ${post.description}`);
-    lines.push(`Tags: ${post.tags.join(', ')}`);
-    lines.push(`URL: https://palash.dev/blog/${post.id}/`);
+    lines.push(`- [${post.title}](${SITE.url}/blog/${post.id}.md): ${post.description}`);
+    lines.push(`  - Published: ${date}`);
+    lines.push(`  - Canonical page: ${SITE.url}/blog/${post.id}/`);
+    lines.push(`  - Tags: ${post.tags.join(', ')}`);
     lines.push('');
   }
 
@@ -74,6 +72,9 @@ export const GET: APIRoute = () => {
   lines.push('GitHub: https://github.com/debpalash');
   lines.push('X: https://x.com/idebpalash');
   lines.push('Humans: https://palash.dev/humans.txt');
+  lines.push('');
+  lines.push('## Optional', '');
+  lines.push(`- [Full site context](${SITE.url}/llms-full.txt): Expanded project details and complete article text.`);
   lines.push('');
   lines.push('---');
   lines.push('Source: https://palash.dev');

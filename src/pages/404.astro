@@ -2,15 +2,25 @@
 import Site from '../layouts/Site.astro';
 ---
 <Site page={{ path: '/404.html', title: 'Page not found — palash.dev', description: 'This page does not exist. Return to Palash Debnath’s work, writing, screenshots, or site search.', image: '/social/home.png', kind: 'WebPage', noIndex: true }}>
-  <section class="game-over">
-    <h1 class="game-over-title">Game over</h1>
-    <p class="game-over-sub">404 — that page is not in this arcade.</p>
-    <nav class="game-over-actions" aria-label="Recovery">
-      <a class="pill" href="/">Home</a>
-      <a class="pill" href="/blog/">Writing</a>
-      <a class="pill" href="/media/">Screenshots</a>
-      <a class="pill" href="/search/">Search</a>
-    </nav>
-    <p class="game-over-coin">Insert coin to continue</p>
+  <section class="sheet" role="alertdialog" aria-labelledby="nf-title" aria-describedby="nf-body">
+    <span class="caution" aria-hidden="true">!</span>
+    <div>
+      <h1 id="nf-title">The page can’t be found.</h1>
+      <p id="nf-body">It may have moved, or the link may be wrong. (Error 404)</p>
+      <nav class="buttons" aria-label="Recovery">
+        <a class="button" href="/search/">Search…</a><a class="button" href="/blog/">Writing</a><a class="button primary" href="/">Go Home</a>
+      </nav>
+    </div>
   </section>
 </Site>
+
+<style>
+  /* A sheet: drops out from under the title bar */
+  .sheet { display: flex; gap: 14px; max-width: 440px; margin: -26px auto 0; padding: 18px 20px 14px; background: var(--panel-bg); border: 1px solid var(--hairline); border-top: 0; border-radius: 0 0 8px 8px; box-shadow: 0 10px 28px rgba(0, 0, 0, .25), inset 0 8px 8px -8px rgba(0, 0, 0, .25); animation: sheet .28s cubic-bezier(.2, .8, .2, 1); transform-origin: top; }
+  @keyframes sheet { from { transform: translateY(-100%); opacity: .4; } }
+  .caution { flex: 0 0 auto; display: grid; place-items: center; width: 44px; height: 40px; color: #3b2a00; background: linear-gradient(#ffe38a, #f0b429); clip-path: polygon(50% 0, 100% 100%, 0 100%); font: 700 1.2rem/1 var(--font-display); padding-top: 12px; }
+  h1 { margin: 0 0 4px; font: 700 .9375rem/1.35 var(--font-ui); letter-spacing: 0; }
+  p { margin: 0; color: var(--text-2); font-size: .75rem; }
+  .buttons { justify-content: flex-end; margin: 14px 0 0; }
+  @media (max-width: 699px) { .sheet { margin-top: -16px; } }
+</style>

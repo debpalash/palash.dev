@@ -1,0 +1,21 @@
+<div class="backdrop" aria-hidden="true">
+  <div class="glow"></div>
+  <div class="silk"></div>
+  <div class="grain"></div>
+</div>
+
+<style>
+  .backdrop { position: fixed; inset: 0; z-index: 0; overflow: hidden; background: var(--desk-base); pointer-events: none; }
+  .glow { position: absolute; inset: -20%; background:
+      radial-gradient(40% 45% at 18% 22%, var(--desk-a), transparent 70%),
+      radial-gradient(38% 42% at 82% 18%, var(--desk-d), transparent 70%),
+      radial-gradient(45% 40% at 72% 82%, var(--desk-b), transparent 70%),
+      radial-gradient(35% 38% at 20% 85%, var(--desk-c), transparent 70%);
+    animation: drift 48s ease-in-out infinite alternate; }
+  .silk { position: absolute; inset: 0; background: var(--silk-color); -webkit-mask: url('/backdrop.svg') center / cover no-repeat; mask: url('/backdrop.svg') center / cover no-repeat; }
+  .grain { position: absolute; inset: 0; background: url('/grain.svg'); background-size: 240px; mix-blend-mode: overlay; opacity: var(--grain-opacity); }
+  @keyframes drift {
+    from { transform: translate3d(-2%, -1%, 0) rotate(0deg) scale(1); }
+    to { transform: translate3d(2%, 2%, 0) rotate(6deg) scale(1.06); }
+  }
+</style>

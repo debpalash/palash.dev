@@ -1,15 +1,79 @@
 ---
 import Site from '../layouts/Site.astro';
 import { pageByPath } from '../lib/page-data';
-import { RESUME, resumeProjects, resumeLocationLine } from '../lib/resume';
+import { posts } from '../lib/content';
+import { RESUME, resumeProjects, resumeLocationLine, resumeHighlights, resumeOtherRepos } from '../lib/resume';
 ---
-<Site page={pageByPath('/resume/')}>
-  <h1>{RESUME.name}</h1><p>{RESUME.title}</p><p>{resumeLocationLine()}</p>
-  <nav aria-label="Résumé formats" class="format-nav"><a class="pill" href="/resume.pdf">PDF</a><a class="pill" href="/resume.txt">Text</a><a class="pill" href="/resume.llm.txt">Markdown</a><a class="pill" href="/resume.json">JSON</a></nav>
-  <p>{RESUME.summary}</p><p><a href={`mailto:${RESUME.email}`}>{RESUME.email}</a></p>
-  {RESUME.openTo.length > 0 && <p>Open to: {RESUME.openTo.join(', ')}.</p>}
-  <section><h2>Skills</h2><dl>{RESUME.skills.map(s => <><dt><strong>{s.label}</strong></dt><dd>{s.value}</dd></>)}</dl></section>
-  <section><h2>Experience</h2>{RESUME.experience.map(e => <><h3>{e.role}</h3><p>{e.org} · {e.period}</p><ul>{e.bullets.map(b => <li>{b}</li>)}</ul></>)}</section>
-  <section><h2>Projects</h2>{resumeProjects().map(p => <><h3>{p.name}</h3><p>{p.tagline}</p><ul>{p.bullets.map(b => <li>{b}</li>)}</ul></>)}</section>
-  {RESUME.education.length > 0 && <section><h2>Education</h2><ul>{RESUME.education.map(e => <li>{e.school} · {e.detail}</li>)}</ul></section>}
+<Site page={pageByPath('/resume/')} status={`Updated ${RESUME.updated}`}>
+  <div class="viewer">
+    <nav class="buttons toolbar" aria-label="Résumé formats"><a class="button primary" href="/resume.pdf">Download PDF</a><a class="button" href="/resume.txt">Text</a><a class="button" href="/resume.llm.txt">Markdown</a><a class="button" href="/resume.json">JSON</a></nav>
+    <article class="paper">
+      <header>
+        <h1>{RESUME.name}</h1>
+        <p class="title">{RESUME.title}</p>
+        <p class="contact"><a href={`mailto:${RESUME.email}`}>{RESUME.email}</a> · <a href={RESUME.site}>palash.dev</a> · <a href={RESUME.github}>{RESUME.githubHandle}</a> · <a href={RESUME.x}>x.com/idebpalash</a></p>
+        <p class="muted">{resumeLocationLine()}</p>
+        <p class="highlights">{resumeHighlights().join(' · ')}</p>
+        {RESUME.openTo.length > 0 && <p class="muted">Open to: {RESUME.openTo.join('; ')}</p>}
+      </header>
+
+      <section><h2>Summary</h2><p>{RESUME.summary}</p></section>
+
+      <section><h2>Skills</h2><dl class="skills">{RESUME.skills.map(s => <><dt>{s.label}</dt><dd>{s.value}</dd></>)}</dl></section>
+
+      <section><h2>Experience</h2>{RESUME.experience.map(e => <div class="entry">
+        <div class="entry-head"><h3>{e.role}</h3><span class="meta">{e.period}</span></div>
+        <p class="sub">{e.org}</p>
+        <ul>{e.bullets.map(b => <li>{b}</li>)}</ul>
+      </div>)}</section>
+
+      <section><h2>Selected open-source work</h2>{resumeProjects().map(p => <div class="entry">
+        <div class="entry-head"><h3>{p.name}</h3>{p.meta && <span class="meta">{p.meta}</span>}</div>
+        <p class="sub">{p.tagline}</p>
+        <ul>{p.bullets.slice(0, -1).map(b => <li>{b}</li>)}</ul>
+        <p class="stack">{p.bullets[p.bullets.length - 1]}</p>
+      </div>)}
+        <p class="muted">Other public repos: {resumeOtherRepos()} — <a href="/lab/">see the Lab</a>.</p>
+      </section>
+
+      <section><h2>Writing</h2><ul>{posts.slice(0, 3).map(p => <li><a href={`/blog/${p.id}/`}>{p.title}</a></li>)}</ul><p class="muted">{posts.length} articles at <a href="/blog/">palash.dev/blog</a>.</p></section>
+
+      {RESUME.education.length > 0 && <section><h2>Education</h2><ul>{RESUME.education.map(e => <li>{e.school} · {e.detail}</li>)}</ul></section>}
+    </article>
+  </div>
 </Site>
+
+<style>
+  :global(.content) > .viewer { max-width: none; }
+  .viewer { min-height: calc(100% + 44px); margin: -16px -14px -28px; padding: 14px 14px 28px; background: radial-gradient(circle at 50% 0, #9a9ca0, #7c7e82); }
+  @media (min-width: 700px) { .viewer { margin: -26px -34px -40px; padding: 18px 34px 40px; min-height: calc(100% + 66px); } }
+  .toolbar { justify-content: center; margin: 0 0 14px; }
+  .paper { max-width: 720px; margin: 0 auto; padding: 36px 40px 40px; color: #1a1a1c; background: #fff; box-shadow: 0 2px 4px rgba(0, 0, 0, .25), 0 12px 30px rgba(0, 0, 0, .25); font: .8125rem/1.5 var(--font-ui); }
+  .paper a { color: #1f5fbf; }
+  h1 { margin: 0; color: #1a1a1c; font: 700 1.9rem/1.1 var(--font-display); letter-spacing: -.01em; }
+  .title { margin: 2px 0 8px; color: #1f5fbf; font-size: 1rem; }
+  header p { margin: 0 0 2px; }
+  .muted { color: #6b6f76; }
+  .highlights { margin: 8px 0 4px !important; font-weight: 700; }
+  header { padding-bottom: 12px; border-bottom: 2px solid #1f5fbf; }
+  h2 { margin: 20px 0 8px; padding-bottom: 3px; color: #1f5fbf; border-bottom: 1px solid #d6d8dc; font: 700 .6875rem/1.4 var(--font-ui); letter-spacing: .1em; text-transform: uppercase; }
+  .paper p { margin: 0 0 6px; }
+  .skills { display: grid; grid-template-columns: 88px 1fr; gap: 3px 12px; margin: 0; }
+  .skills dt { font-weight: 700; }
+  .skills dd { margin: 0; color: #1a1a1c; }
+  .entry { margin-bottom: 12px; }
+  .entry-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0 12px; }
+  h3 { margin: 0; color: #1a1a1c; font: 700 .875rem/1.35 var(--font-ui); }
+  .meta { color: #6b6f76; font-size: .75rem; }
+  .sub { color: #6b6f76; font-style: italic; }
+  .paper ul { margin: 2px 0 4px; padding-left: 18px; }
+  .paper li { margin-bottom: 2px; }
+  .stack { color: #6b6f76; font-size: .75rem; overflow-wrap: anywhere; }
+  @media (max-width: 699px) {
+    .viewer { margin: -16px -14px -28px; padding: 10px 6px 20px; }
+    .paper { padding: 20px 16px 24px; }
+    .skills { grid-template-columns: 1fr; }
+    .skills dd { margin-bottom: 6px; }
+  }
+  @media print { .viewer { margin: 0; padding: 0; background: none; } .toolbar { display: none; } .paper { box-shadow: none; padding: 0; } }
+</style>

@@ -41,7 +41,7 @@
     "AI Memory"
   ],
   "order": 3,
-  "logoUrl": "https://raw.githubusercontent.com/debpalash/memxt/main/assets/logo.svg",
+  "logoUrl": "/projects/memxt-logo.svg",
   "category": "DeveloperApplication",
   "os": "macOS, Linux, Windows",
   "keywords": [

@@ -99,6 +99,8 @@
   "featured": true,
   "banner": "/projects/omnivoice-signal-field-1200.webp",
   "workImage": "/projects/voicestudio-launchpad.webp",
+  "homeImage": "/projects/voicestudio-voice-cloning.webp",
+  "homeImageSmall": "/projects/voicestudio-voice-cloning-675.webp",
   "theme": "omnivoice",
   "category": "MultimediaApplication",
   "os": "macOS, Linux, Windows",

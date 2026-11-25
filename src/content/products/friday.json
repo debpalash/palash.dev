@@ -39,7 +39,7 @@
   "status": "alpha",
   "stack": ["Python", "FastAPI", "Qwen", "Parakeet", "Piper", "SQLite"],
   "order": 6,
-  "logoUrl": "https://raw.githubusercontent.com/debpalash/friday/main/assets/friday.svg",
+  "logoUrl": "/projects/friday-logo.svg",
   "workImage": "https://raw.githubusercontent.com/debpalash/friday/main/assets/friday-interface.png",
   "theme": "friday",
   "category": "UtilitiesApplication",

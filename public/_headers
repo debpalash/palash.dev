@@ -11,6 +11,35 @@
   Cache-Control: public, max-age=86400
 /social/*
   Cache-Control: public, max-age=3600
+/backdrop.svg
+  Cache-Control: public, max-age=86400
+/grain.svg
+  Cache-Control: public, max-age=86400
+/*.md
+  Content-Type: text/markdown; charset=utf-8
+  X-Content-Type-Options: nosniff
+  Cache-Control: public, max-age=3600
+  X-Robots-Tag: noindex, follow
 /blog/*.md
   Content-Type: text/markdown; charset=utf-8
   X-Content-Type-Options: nosniff
+  Cache-Control: public, max-age=3600
+  X-Robots-Tag: noindex, follow
+/llms.txt
+  Content-Type: text/markdown; charset=utf-8
+  Cache-Control: public, max-age=3600
+  X-Content-Type-Options: nosniff
+  X-Robots-Tag: noindex, follow
+/llms-full.txt
+  Content-Type: text/markdown; charset=utf-8
+  Cache-Control: public, max-age=3600
+  X-Content-Type-Options: nosniff
+  X-Robots-Tag: noindex, follow
+/resume.llm.txt
+  Content-Type: text/markdown; charset=utf-8
+  X-Content-Type-Options: nosniff
+  X-Robots-Tag: noindex, follow
+/resume.txt
+  Content-Type: text/plain; charset=utf-8
+  X-Content-Type-Options: nosniff
+  X-Robots-Tag: noindex, follow

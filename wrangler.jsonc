@@ -1,7 +1,9 @@
 {
   "name": "broad-mode-90b0",
   "compatibility_date": "2026-09-18",
+  "main": "worker/index.js",
   "assets": {
+    "binding": "ASSETS",
     "directory": "./dist",
     "html_handling": "force-trailing-slash",
     "not_found_handling": "404-page"
